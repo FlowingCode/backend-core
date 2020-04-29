@@ -9,7 +9,7 @@ import java.io.Serializable;
  *
  * @param <K>
  */
-public interface IdentifiableObject<K extends Serializable> {
+public interface IdentifiableObject<K extends Serializable> extends Serializable {
 	
 	K getId();
 	void setId(K id);
