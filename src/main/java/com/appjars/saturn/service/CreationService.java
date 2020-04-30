@@ -24,17 +24,25 @@ import com.appjars.saturn.service.validation.Validator;
  * @param <T>
  * @param <K>
  */
-public interface CreationService<T extends IdentifiableObject<K>, K extends Serializable> extends CreationDaoSupport<T,K>, ValidationSupport<T> {
-	
-	@Transactional(value=TxType.REQUIRED,rollbackOn=Exception.class)
-	default K saveOrUpdate(T entity, Errors errors) {
-		Objects.requireNonNull(errors, "errors no puede ser nulo");
-		List<Validator<T>> validators = getValidators().stream().filter(item->(item instanceof CreationValidation)).collect(Collectors.toList());
-		validators.stream().forEach(validator->validator.validate(entity, errors));
-		if (errors.hasErrors()) {
-			throw new ValidationException(errors);
+public interface CreationService<T extends IdentifiableObject<K>, K extends Serializable> {
+
+	@SuppressWarnings("unchecked")
+	@Transactional(value = TxType.REQUIRED, rollbackOn = Exception.class)
+	default K saveOrUpdate(T entity, Errors errors) throws ValidationException {
+		Objects.requireNonNull(errors, "Errors cannot be null");
+		if (this instanceof ValidationSupport) {
+			List<Validator<T>> validators = ((ValidationSupport<T>) this).getValidators().stream()
+					.filter(item -> (item instanceof CreationValidation)).collect(Collectors.toList());
+			validators.stream().forEach(validator -> validator.validate(entity, errors));
+			if (errors.hasErrors()) {
+				throw new ValidationException(errors);
+			}
 		}
-		return getDao().save(entity);
+		if (this instanceof CreationDaoSupport) {
+			return ((CreationDaoSupport<T, K>) this).getCreationDao().save(entity);
+		} else {
+			throw new ClassCastException("Class implementing CreationService must also implement CreationDaoSupport");
+		}
 	}
 
 }

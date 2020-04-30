@@ -7,6 +7,6 @@ import com.appjars.saturn.model.IdentifiableObject;
 
 public interface CreationDaoSupport<T extends IdentifiableObject<K>, K extends Serializable> {
 	
-	CreationDao<T,K> getDao();
+	CreationDao<T,K> getCreationDao();
 
 }

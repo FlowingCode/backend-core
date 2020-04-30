@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 import com.appjars.saturn.model.IdentifiableObject;
 
-public interface Dao<T extends IdentifiableObject<K>, K extends Serializable> {
+public interface RemovalDao<T extends IdentifiableObject<K>, K extends Serializable> {
+	
+	void remove(T entity);
 
 }
