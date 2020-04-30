@@ -7,7 +7,7 @@ import com.appjars.saturn.dao.CrudDao;
 import com.appjars.saturn.model.Person;
 import com.appjars.saturn.service.dao.CrudDaoSupport;
 import com.appjars.saturn.service.validation.CreationValidator;
-import com.appjars.saturn.service.validation.RemovalValidator;
+import com.appjars.saturn.service.validation.DeletionValidator;
 import com.appjars.saturn.service.validation.ValidationSupport;
 import com.appjars.saturn.service.validation.Validator;
 
@@ -19,7 +19,7 @@ public class PersonCrudServiceImpl
 		return Arrays.asList(
 				CreationValidator.of(person -> person.getName() != null,
 						(person, errors) -> errors.addError("name.not.null")),
-				RemovalValidator.of(person -> person.getName() != null,
+				DeletionValidator.of(person -> person.getName() != null,
 						(person, errors) -> errors.addError("name.not.null")));
 	}
 

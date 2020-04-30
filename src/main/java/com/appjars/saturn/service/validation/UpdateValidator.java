@@ -6,17 +6,17 @@ import java.util.function.Predicate;
 
 import com.appjars.saturn.model.Errors;
 
-public interface RemovalValidator<T extends Serializable> extends Validator<T> {
+public interface UpdateValidator<T extends Serializable> extends Validator<T> {
 
-	static <T extends Serializable> RemovalValidator<T> of(Validator<T> validator) {
+	static <T extends Serializable> UpdateValidator<T> of(Validator<T> validator) {
 		return validator::validate;
 	}
 
-	default CreationValidator<T> and(RemovalValidator<T> then) {
+	default UpdateValidator<T> and(UpdateValidator<T> then) {
 		return (t, errors) -> this.validate(t, errors) && then.validate(t, errors);
 	}
 
-	static <T extends Serializable> RemovalValidator<T> of(Predicate<T> predicate,
+	static <T extends Serializable> UpdateValidator<T> of(Predicate<T> predicate,
 			BiConsumer<T, Errors> errorHandler) {
 		return (t, errors) -> {
 			if (predicate.test(t))

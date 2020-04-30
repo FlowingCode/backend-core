@@ -13,7 +13,7 @@ public class PersonCreationServiceTest {
 	public void basicTests() {
 		Person p = new Person();
 		PersonCreationServiceImpl personService = new PersonCreationServiceImpl();
-		Assertions.assertThrows(ValidationException.class, () -> personService.saveOrUpdate(p, new Errors()));
+		Assertions.assertThrows(ValidationException.class, () -> personService.save(p, new Errors()));
 	}
 
 }

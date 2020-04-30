@@ -10,6 +10,14 @@ import com.appjars.saturn.model.IdentifiableObject;
 import com.appjars.saturn.service.dao.QueryDaoSupport;
 import com.appjars.saturn.service.validation.ValidationSupport;
 
+/**
+ * A special kind of service that allows entities querying
+ * 
+ * @author mlopez
+ *
+ * @param <T>
+ * @param <K>
+ */
 public interface QueryService<T extends IdentifiableObject<K>, K extends Serializable> extends ValidationSupport<T> {
 
 	@SuppressWarnings("unchecked")

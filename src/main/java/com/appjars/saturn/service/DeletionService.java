@@ -11,29 +11,37 @@ import javax.transaction.Transactional.TxType;
 import com.appjars.saturn.exception.ValidationException;
 import com.appjars.saturn.model.Errors;
 import com.appjars.saturn.model.IdentifiableObject;
-import com.appjars.saturn.service.dao.RemovalDaoSupport;
-import com.appjars.saturn.service.validation.RemovalValidator;
+import com.appjars.saturn.service.dao.DeletionDaoSupport;
+import com.appjars.saturn.service.validation.DeletionValidator;
 import com.appjars.saturn.service.validation.ValidationSupport;
 import com.appjars.saturn.service.validation.Validator;
 
-public interface RemovalService<T extends IdentifiableObject<K>, K extends Serializable> {
+/**
+ * A special kind of service that allows entities deletion
+ * 
+ * @author mlopez
+ *
+ * @param <T>
+ * @param <K>
+ */
+public interface DeletionService<T extends IdentifiableObject<K>, K extends Serializable> {
 
 	@SuppressWarnings("unchecked")
 	@Transactional(value = TxType.REQUIRED, rollbackOn = Exception.class)
-	default void remove(T entity, Errors errors) {
+	default void delete(T entity, Errors errors) {
 		Objects.requireNonNull(errors, "errors cannot be null");
 		if (this instanceof ValidationSupport) {
 			List<Validator<T>> validators = ((ValidationSupport<T>) this).getValidators().stream()
-					.filter(item -> (item instanceof RemovalValidator)).collect(Collectors.toList());
+					.filter(item -> (item instanceof DeletionValidator)).collect(Collectors.toList());
 			validators.stream().forEach(validator -> validator.validate(entity, errors));
 			if (errors.hasErrors()) {
 				throw new ValidationException(errors);
 			}
 		}
-		if (this instanceof RemovalDaoSupport) {
-			((RemovalDaoSupport<T, K>) this).getRemovalDao().remove(entity);
+		if (this instanceof DeletionDaoSupport) {
+			((DeletionDaoSupport<T, K>) this).getDeletionDao().delete(entity);
 		} else {
-			throw new ClassCastException("Class implementing RemovalService must also implement RemovalDaoSupport");
+			throw new ClassCastException("Class implementing DeletionService must also implement DeletionDaoSupport");
 		}
 	}
 

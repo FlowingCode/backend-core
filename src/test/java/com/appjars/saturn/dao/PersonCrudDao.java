@@ -13,7 +13,7 @@ public class PersonCrudDao implements CrudDao<Person, Integer> {
 	}
 
 	@Override
-	public void remove(Person entity) {
+	public void delete(Person entity) {
 		// TODO Auto-generated method stub
 
 	}
@@ -28,6 +28,12 @@ public class PersonCrudDao implements CrudDao<Person, Integer> {
 	public List<Person> findAll() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void saveOrUpdate(Person entity) {
+		// TODO Auto-generated method stub
+
 	}
 
 }

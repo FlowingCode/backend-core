@@ -12,7 +12,7 @@ public class PersonCrudServiceTest {
 	public void basicTests() {
 		Person p = new Person();
 		PersonCrudService personService = new PersonCrudServiceImpl();
-		Integer id = personService.saveOrUpdate(p, new Errors());
+		Integer id = personService.save(p, new Errors());
 		Assertions.assertNotNull(id);
 	}
 
