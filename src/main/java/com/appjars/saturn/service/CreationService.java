@@ -12,7 +12,7 @@ import com.appjars.saturn.exception.ValidationException;
 import com.appjars.saturn.model.Errors;
 import com.appjars.saturn.model.IdentifiableObject;
 import com.appjars.saturn.service.dao.CreationDaoSupport;
-import com.appjars.saturn.service.validation.CreationValidation;
+import com.appjars.saturn.service.validation.CreationValidator;
 import com.appjars.saturn.service.validation.ValidationSupport;
 import com.appjars.saturn.service.validation.Validator;
 
@@ -32,7 +32,7 @@ public interface CreationService<T extends IdentifiableObject<K>, K extends Seri
 		Objects.requireNonNull(errors, "Errors cannot be null");
 		if (this instanceof ValidationSupport) {
 			List<Validator<T>> validators = ((ValidationSupport<T>) this).getValidators().stream()
-					.filter(item -> (item instanceof CreationValidation)).collect(Collectors.toList());
+					.filter(item -> (item instanceof CreationValidator)).collect(Collectors.toList());
 			validators.stream().forEach(validator -> validator.validate(entity, errors));
 			if (errors.hasErrors()) {
 				throw new ValidationException(errors);

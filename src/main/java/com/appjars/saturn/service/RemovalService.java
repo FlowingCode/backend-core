@@ -12,7 +12,7 @@ import com.appjars.saturn.exception.ValidationException;
 import com.appjars.saturn.model.Errors;
 import com.appjars.saturn.model.IdentifiableObject;
 import com.appjars.saturn.service.dao.RemovalDaoSupport;
-import com.appjars.saturn.service.validation.RemovalValidation;
+import com.appjars.saturn.service.validation.RemovalValidator;
 import com.appjars.saturn.service.validation.ValidationSupport;
 import com.appjars.saturn.service.validation.Validator;
 
@@ -24,7 +24,7 @@ public interface RemovalService<T extends IdentifiableObject<K>, K extends Seria
 		Objects.requireNonNull(errors, "errors cannot be null");
 		if (this instanceof ValidationSupport) {
 			List<Validator<T>> validators = ((ValidationSupport<T>) this).getValidators().stream()
-					.filter(item -> (item instanceof RemovalValidation)).collect(Collectors.toList());
+					.filter(item -> (item instanceof RemovalValidator)).collect(Collectors.toList());
 			validators.stream().forEach(validator -> validator.validate(entity, errors));
 			if (errors.hasErrors()) {
 				throw new ValidationException(errors);

@@ -15,6 +15,6 @@ import com.appjars.saturn.model.Errors;
 @FunctionalInterface
 public interface Validator<T extends Serializable> {
 
-	public void validate(T target, Errors errors);
-	
+	public boolean validate(T target, Errors errors);
+
 }

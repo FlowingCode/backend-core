@@ -7,7 +7,7 @@ import com.appjars.saturn.dao.CreationDao;
 import com.appjars.saturn.dao.PersonCreationDao;
 import com.appjars.saturn.model.Person;
 import com.appjars.saturn.service.dao.CreationDaoSupport;
-import com.appjars.saturn.service.validation.CreationValidation;
+import com.appjars.saturn.service.validation.CreationValidator;
 import com.appjars.saturn.service.validation.ValidationSupport;
 import com.appjars.saturn.service.validation.Validator;
 
@@ -16,10 +16,8 @@ public class PersonCreationServiceImpl
 
 	@Override
 	public List<Validator<Person>> getValidators() {
-		return Arrays.asList(CreationValidation.of((person, errors) -> {
-			if (person.getName() == null)
-				errors.addError("name.not.null");
-		}));
+		return Arrays.asList(CreationValidator.of(person -> person.getName() != null,
+				(person, errors) -> errors.addError("name.not.null")));
 	}
 
 	@Override

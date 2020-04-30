@@ -6,8 +6,8 @@ import java.util.List;
 import com.appjars.saturn.dao.CrudDao;
 import com.appjars.saturn.model.Person;
 import com.appjars.saturn.service.dao.CrudDaoSupport;
-import com.appjars.saturn.service.validation.CreationValidation;
-import com.appjars.saturn.service.validation.RemovalValidation;
+import com.appjars.saturn.service.validation.CreationValidator;
+import com.appjars.saturn.service.validation.RemovalValidator;
 import com.appjars.saturn.service.validation.ValidationSupport;
 import com.appjars.saturn.service.validation.Validator;
 
@@ -16,13 +16,11 @@ public class PersonCrudServiceImpl
 
 	@Override
 	public List<Validator<Person>> getValidators() {
-		return Arrays.asList(CreationValidation.of((person, errors) -> {
-			if (person.getName() == null)
-				errors.addError("name.not.null");
-		}), RemovalValidation.of((person, errors) -> {
-			if (person.getId() == null)
-				errors.addError("id.not.null");
-		}));
+		return Arrays.asList(
+				CreationValidator.of(person -> person.getName() != null,
+						(person, errors) -> errors.addError("name.not.null")),
+				RemovalValidator.of(person -> person.getName() != null,
+						(person, errors) -> errors.addError("name.not.null")));
 	}
 
 	@Override
