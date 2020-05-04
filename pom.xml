@@ -31,6 +31,19 @@
 		<developerConnection>scm:git:git@github.com:AppJars/${project.artifactId}.git</developerConnection>
 	</scm>
 
+	<repositories>
+        <repository>
+            <id>saturn-snapshots</id>
+            <url>https://maven.appjars.com/saturn/snapshots</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+				<updatePolicy>always</updatePolicy>
+			</snapshots>
+        </repository>
+	</repositories>
+	
 	<dependencies>
 		<dependency>
 			<groupId>javax.persistence</groupId>
