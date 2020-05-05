@@ -3,9 +3,9 @@ package com.appjars.saturn.service.dao;
 import java.io.Serializable;
 
 import com.appjars.saturn.dao.QueryDao;
-import com.appjars.saturn.model.IdentifiableObject;
+import com.appjars.saturn.model.Identifiable;
 
-public interface QueryDaoSupport<T extends IdentifiableObject<K>, K extends Serializable> {
+public interface HasQueryDao<T extends Identifiable<K>, K extends Serializable> {
 
 	QueryDao<T,K> getQueryDao();
 	

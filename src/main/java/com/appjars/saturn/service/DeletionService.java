@@ -10,8 +10,8 @@ import javax.transaction.Transactional.TxType;
 
 import com.appjars.saturn.exception.ValidationException;
 import com.appjars.saturn.model.Errors;
-import com.appjars.saturn.model.IdentifiableObject;
-import com.appjars.saturn.service.dao.DeletionDaoSupport;
+import com.appjars.saturn.model.Identifiable;
+import com.appjars.saturn.service.dao.HasDeletionDao;
 import com.appjars.saturn.service.validation.DeletionValidator;
 import com.appjars.saturn.service.validation.ValidationSupport;
 import com.appjars.saturn.service.validation.Validator;
@@ -24,7 +24,7 @@ import com.appjars.saturn.service.validation.Validator;
  * @param <T>
  * @param <K>
  */
-public interface DeletionService<T extends IdentifiableObject<K>, K extends Serializable> {
+public interface DeletionService<T extends Identifiable<K>, K extends Serializable> {
 
 	@SuppressWarnings("unchecked")
 	@Transactional(value = TxType.REQUIRED, rollbackOn = Exception.class)
@@ -38,10 +38,10 @@ public interface DeletionService<T extends IdentifiableObject<K>, K extends Seri
 				throw new ValidationException(errors);
 			}
 		}
-		if (this instanceof DeletionDaoSupport) {
-			((DeletionDaoSupport<T, K>) this).getDeletionDao().delete(entity);
+		if (this instanceof HasDeletionDao) {
+			((HasDeletionDao<T, K>) this).getDeletionDao().delete(entity);
 		} else {
-			throw new ClassCastException("Class implementing DeletionService must also implement DeletionDaoSupport");
+			throw new ClassCastException("Class implementing DeletionService must also implement HasDeletionDao");
 		}
 	}
 

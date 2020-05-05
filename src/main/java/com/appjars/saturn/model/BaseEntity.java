@@ -9,7 +9,7 @@ import java.io.Serializable;
  *
  * @param <K>
  */
-public abstract class BaseEntity<K extends Serializable> implements IdentifiableObject<K> {
+public abstract class BaseEntity<K extends Serializable> implements Identifiable<K> {
 
 	protected K id;
 
@@ -35,7 +35,7 @@ public abstract class BaseEntity<K extends Serializable> implements Identifiable
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		IdentifiableObject<K> other = (IdentifiableObject<K>) obj;
+		Identifiable<K> other = (Identifiable<K>) obj;
 		if (id == null) {
 			if (other.getId() != null)
 				return false;

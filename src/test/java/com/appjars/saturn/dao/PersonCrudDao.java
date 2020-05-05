@@ -2,6 +2,7 @@ package com.appjars.saturn.dao;
 
 import java.util.List;
 
+import com.appjars.saturn.model.BaseFilter;
 import com.appjars.saturn.model.Person;
 
 public class PersonCrudDao implements CrudDao<Person, Integer> {
@@ -34,6 +35,18 @@ public class PersonCrudDao implements CrudDao<Person, Integer> {
 	public void saveOrUpdate(Person entity) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public List<Person> filter(BaseFilter<Integer> filter) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public long count(BaseFilter<Integer> filter) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 }

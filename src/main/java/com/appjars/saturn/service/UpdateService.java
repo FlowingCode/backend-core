@@ -10,8 +10,8 @@ import javax.transaction.Transactional.TxType;
 
 import com.appjars.saturn.exception.ValidationException;
 import com.appjars.saturn.model.Errors;
-import com.appjars.saturn.model.IdentifiableObject;
-import com.appjars.saturn.service.dao.UpdateDaoSupport;
+import com.appjars.saturn.model.Identifiable;
+import com.appjars.saturn.service.dao.HasUpdateDao;
 import com.appjars.saturn.service.validation.UpdateValidator;
 import com.appjars.saturn.service.validation.ValidationSupport;
 import com.appjars.saturn.service.validation.Validator;
@@ -24,7 +24,7 @@ import com.appjars.saturn.service.validation.Validator;
  * @param <T>
  * @param <K>
  */
-public interface UpdateService<T extends IdentifiableObject<K>, K extends Serializable> {
+public interface UpdateService<T extends Identifiable<K>, K extends Serializable> {
 
 	@SuppressWarnings("unchecked")
 	@Transactional(value = TxType.REQUIRED, rollbackOn = Exception.class)
@@ -38,10 +38,10 @@ public interface UpdateService<T extends IdentifiableObject<K>, K extends Serial
 				throw new ValidationException(errors);
 			}
 		}
-		if (this instanceof UpdateDaoSupport) {
-			((UpdateDaoSupport<T, K>) this).getUpdateDao().saveOrUpdate(entity);
+		if (this instanceof HasUpdateDao) {
+			((HasUpdateDao<T, K>) this).getUpdateDao().saveOrUpdate(entity);
 		} else {
-			throw new ClassCastException("Class implementing UpdateService must also implement UpdateDaoSupport");
+			throw new ClassCastException("Class implementing UpdateService must also implement HasUpdateDao");
 		}
 	}
 

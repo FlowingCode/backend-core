@@ -7,10 +7,10 @@ import com.appjars.saturn.dao.CrudDao;
 import com.appjars.saturn.dao.DeletionDao;
 import com.appjars.saturn.dao.QueryDao;
 import com.appjars.saturn.dao.UpdateDao;
-import com.appjars.saturn.model.IdentifiableObject;
+import com.appjars.saturn.model.Identifiable;
 
-public interface CrudDaoSupport<T extends IdentifiableObject<K>, K extends Serializable>
-		extends CreationDaoSupport<T, K>, UpdateDaoSupport<T, K>, DeletionDaoSupport<T, K>, QueryDaoSupport<T, K> {
+public interface HasCrudDao<T extends Identifiable<K>, K extends Serializable>
+		extends HasCreationDao<T, K>, HasUpdateDao<T, K>, HasDeletionDao<T, K>, HasQueryDao<T, K> {
 
 	default CreationDao<T, K> getCreationDao() {
 		return getCrudDao();

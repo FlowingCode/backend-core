@@ -5,14 +5,14 @@ import java.util.List;
 
 import com.appjars.saturn.dao.CrudDao;
 import com.appjars.saturn.model.Person;
-import com.appjars.saturn.service.dao.CrudDaoSupport;
+import com.appjars.saturn.service.dao.HasCrudDao;
 import com.appjars.saturn.service.validation.CreationValidator;
 import com.appjars.saturn.service.validation.DeletionValidator;
 import com.appjars.saturn.service.validation.ValidationSupport;
 import com.appjars.saturn.service.validation.Validator;
 
 public class PersonCrudServiceImpl
-		implements PersonCrudService, CrudDaoSupport<Person, Integer>, ValidationSupport<Person> {
+		implements PersonCrudService, HasCrudDao<Person, Integer>, ValidationSupport<Person> {
 
 	@Override
 	public List<Validator<Person>> getValidators() {

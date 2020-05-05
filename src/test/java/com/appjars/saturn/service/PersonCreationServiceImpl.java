@@ -6,13 +6,13 @@ import java.util.List;
 import com.appjars.saturn.dao.CreationDao;
 import com.appjars.saturn.dao.PersonCreationDao;
 import com.appjars.saturn.model.Person;
-import com.appjars.saturn.service.dao.CreationDaoSupport;
+import com.appjars.saturn.service.dao.HasCreationDao;
 import com.appjars.saturn.service.validation.CreationValidator;
 import com.appjars.saturn.service.validation.ValidationSupport;
 import com.appjars.saturn.service.validation.Validator;
 
 public class PersonCreationServiceImpl
-		implements PersonCreationService, CreationDaoSupport<Person, Integer>, ValidationSupport<Person> {
+		implements PersonCreationService, HasCreationDao<Person, Integer>, ValidationSupport<Person> {
 
 	@Override
 	public List<Validator<Person>> getValidators() {

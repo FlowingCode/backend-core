@@ -10,8 +10,8 @@ import javax.transaction.Transactional.TxType;
 
 import com.appjars.saturn.exception.ValidationException;
 import com.appjars.saturn.model.Errors;
-import com.appjars.saturn.model.IdentifiableObject;
-import com.appjars.saturn.service.dao.CreationDaoSupport;
+import com.appjars.saturn.model.Identifiable;
+import com.appjars.saturn.service.dao.HasCreationDao;
 import com.appjars.saturn.service.validation.CreationValidator;
 import com.appjars.saturn.service.validation.ValidationSupport;
 import com.appjars.saturn.service.validation.Validator;
@@ -24,7 +24,7 @@ import com.appjars.saturn.service.validation.Validator;
  * @param <T>
  * @param <K>
  */
-public interface CreationService<T extends IdentifiableObject<K>, K extends Serializable> {
+public interface CreationService<T extends Identifiable<K>, K extends Serializable> {
 
 	@SuppressWarnings("unchecked")
 	@Transactional(value = TxType.REQUIRED, rollbackOn = Exception.class)
@@ -38,10 +38,10 @@ public interface CreationService<T extends IdentifiableObject<K>, K extends Seri
 				throw new ValidationException(errors);
 			}
 		}
-		if (this instanceof CreationDaoSupport) {
-			return ((CreationDaoSupport<T, K>) this).getCreationDao().save(entity);
+		if (this instanceof HasCreationDao) {
+			return ((HasCreationDao<T, K>) this).getCreationDao().save(entity);
 		} else {
-			throw new ClassCastException("Class implementing CreationService must also implement CreationDaoSupport");
+			throw new ClassCastException("Class implementing CreationService must also implement HasCreationDao");
 		}
 	}
 
