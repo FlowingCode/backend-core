@@ -67,8 +67,10 @@
 	</dependencyManagement>
 	
 	<modules>
-		<module>commons-dl</module>
-		<module>commons-bl</module>
+		<module>commons-data</module>
+		<module>commons-data-impl</module>
+		<module>commons-business</module>
+		<module>commons-business-impl</module>
 		<module>commons-model</module>
 	</modules>
 	
