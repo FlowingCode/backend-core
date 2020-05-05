@@ -2,6 +2,7 @@ package com.appjars.saturn.service;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Optional;
 
 import javax.transaction.Transactional;
 import javax.transaction.Transactional.TxType;
@@ -24,7 +25,7 @@ public interface QueryServiceMixin<T extends Identifiable<K>, K extends Serializ
 
 	@Transactional(value = TxType.REQUIRED, rollbackOn = Exception.class)
 	@Override
-	default T findById(K id) {
+	default Optional<T> findById(K id) {
 		return getQueryDao().findById(id);
 	}
 

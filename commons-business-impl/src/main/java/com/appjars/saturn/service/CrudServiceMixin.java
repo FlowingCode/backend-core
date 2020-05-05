@@ -3,6 +3,7 @@ package com.appjars.saturn.service;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
@@ -53,17 +54,19 @@ public interface CrudServiceMixin<T extends Identifiable<K>, K extends Serializa
 	@Override
 	default void deleteById(K id, Errors errors) {
 		Objects.requireNonNull(errors, "errors cannot be null");
-		T entity = getQueryDao().findById(id);
+		Optional<T> entity = getQueryDao().findById(id);
 
-		if (this instanceof ValidationSupport) {
-			List<Validator<T>> validators = ((ValidationSupport<T>) this).getValidators().stream()
-					.filter(item -> (item instanceof DeletionValidator)).collect(Collectors.toList());
-			validators.stream().forEach(validator -> validator.validate(entity, errors));
-			if (errors.hasErrors()) {
-				throw new ValidationException(errors);
+		entity.ifPresent(ent -> {
+			if (this instanceof ValidationSupport) {
+				List<Validator<T>> validators = ((ValidationSupport<T>) this).getValidators().stream()
+						.filter(item -> (item instanceof DeletionValidator)).collect(Collectors.toList());
+				validators.stream().forEach(validator -> validator.validate(ent, errors));
+				if (errors.hasErrors()) {
+					throw new ValidationException(errors);
+				}
 			}
-		}
-		getDeletionDao().delete(entity);
+			getDeletionDao().delete(ent);
+		});
 	}
 
 }
