@@ -1,6 +1,6 @@
 package com.appjars.saturn.dao;
 
-import com.appjars.saturn.model.Person;
+import com.appjars.saturn.model.impl.Person;
 
 public class PersonCreationDao implements CreationDao<Person,Integer> {
 

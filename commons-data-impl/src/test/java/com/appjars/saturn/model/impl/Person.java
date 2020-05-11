@@ -1,12 +1,24 @@
-package com.appjars.saturn.model;
+package com.appjars.saturn.model.impl;
 
 import java.util.Date;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+import com.appjars.saturn.model.BaseEntity;
+
 @SuppressWarnings("serial")
+@Entity
 public class Person extends BaseEntity<Integer> {
 
+	@Column
 	private String name;
+	@Column
 	private String lastName;
+	@Column
 	private Date birthDay;
 
 	public String getName() {
@@ -34,6 +46,8 @@ public class Person extends BaseEntity<Integer> {
 	}
 
 	@Override
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	public Integer getId() {
 		return id;
 	}

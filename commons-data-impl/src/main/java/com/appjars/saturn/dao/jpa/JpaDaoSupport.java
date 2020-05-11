@@ -2,8 +2,11 @@ package com.appjars.saturn.dao.jpa;
 
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Optional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
@@ -19,6 +22,19 @@ import com.appjars.saturn.model.Identifiable;
 public interface JpaDaoSupport<T extends Identifiable<K>, K extends Serializable> extends CrudDao<T, K> {
 
 	EntityManager getEntityManager();
+
+	@SuppressWarnings("unchecked")
+	default Class<T> getPersistentClass() {
+		Type[] interfaces = getClass().getGenericInterfaces();
+		for (Type type : interfaces) {
+			ParameterizedType ptype = (ParameterizedType) type;
+			if (ptype.getRawType().equals(JpaDaoSupport.class)) {
+				return (Class<T>) ptype.getActualTypeArguments()[0];
+			}
+		}
+		throw new UnsupportedOperationException("Couldn't find entity type, probably " + JpaDaoSupport.class
+				+ " is not being implemented, try overriding this method");
+	}
 
 	default K save(T entity) {
 		getEntityManager().persist(entity);
@@ -36,24 +52,60 @@ public interface JpaDaoSupport<T extends Identifiable<K>, K extends Serializable
 	}
 
 	@Override
+	default Optional<T> findById(K id) {
+		return FilterProcesor.<T, K>of(getEntityManager(), getPersistentClass()).findById(id);
+	}
+
+	@Override
+	default List<T> findAll() {
+		return FilterProcesor.<T, K>of(getEntityManager(), getPersistentClass()).findAll();
+	}
+
+	@Override
+	default long count(BaseFilter<K> filter) {
+		return FilterProcesor.<T, K>of(getEntityManager(), getPersistentClass()).count(filter);
+	}
+
+	@Override
 	default List<T> filter(BaseFilter<K> filter) {
-		return FilterProcesor.<T, K>of(getEntityManager()).filter(filter);
+		return FilterProcesor.<T, K>of(getEntityManager(), getPersistentClass()).filter(filter);
 	}
 
 	static class FilterProcesor<T extends Identifiable<K>, K extends Serializable> {
 
-		@SuppressWarnings("unchecked")
-		private Class<T> persistentClass = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass())
-				.getActualTypeArguments()[0];
+		private Class<T> persistentClass;
 		private EntityManager entityManager;
 
 		private static <T extends Identifiable<K>, K extends Serializable> FilterProcesor<T, K> of(
-				EntityManager entityManager) {
-			return new FilterProcesor<>(entityManager);
+				EntityManager entityManager, Class<T> persistentClass) {
+			return new FilterProcesor<>(entityManager, persistentClass);
 		}
 
-		private FilterProcesor(EntityManager entityManager) {
+		long count(BaseFilter<K> filter) {
+			CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+			CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+			Root<T> root = cq.from(persistentClass);
+			cq.select(cb.count(root));
+			addWhere(filter, cb, cq, root);
+			return entityManager.createQuery(cq).getSingleResult();
+		}
+
+		List<T> findAll() {
+			CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+			CriteriaQuery<T> cq = cb.createQuery(persistentClass);
+			Root<T> rootEntry = cq.from(persistentClass);
+			CriteriaQuery<T> all = cq.select(rootEntry);
+			TypedQuery<T> allQuery = entityManager.createQuery(all);
+			return allQuery.getResultList();
+		}
+
+		Optional<T> findById(K id) {
+			return Optional.ofNullable(entityManager.find(persistentClass, id));
+		}
+
+		private FilterProcesor(EntityManager entityManager, Class<T> persistentClass) {
 			this.entityManager = entityManager;
+			this.persistentClass = persistentClass;
 		}
 
 		public List<T> filter(BaseFilter<K> baseFilter) {
@@ -64,26 +116,12 @@ public interface JpaDaoSupport<T extends Identifiable<K>, K extends Serializable
 			}
 		}
 
-		protected CriteriaQuery<T> createFilterCriteria(final BaseFilter<K> baseFilter) {
-			CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+		protected CriteriaQuery<T> createFilterCriteria(final BaseFilter<K> baseFilter, CriteriaBuilder cb) {
 			CriteriaQuery<T> crit = cb.createQuery(persistentClass);
-// TODO: add support for excludeIds
-//			if (baseFilter.getExcludeIds() != null && baseFilter.getExcludeIds().length > 0) {
-//				crit.add(Restrictions.not(Restrictions.in("id", baseFilter.getExcludeIds())));
-//			}
-			for (Entry<String, String> alias : baseFilter.getAliases().entrySet()) {
-				Root<T> root = crit.from(persistentClass);
-				crit = crit.where(cb.equal(root.join(alias.getKey()), alias.getValue()));
-//				crit.createAlias(alias.getKey(), alias.getValue());
-			}
-			for (Entry<String, String> alias : baseFilter.getLeftAliases().entrySet()) {
-				Root<T> root = crit.from(persistentClass);
-				crit = crit.where(cb.equal(root.join(alias.getKey(), JoinType.LEFT), alias.getValue()));
-//				crit.createAlias(alias.getKey(), alias.getValue(), JoinType.LEFT_OUTER_JOIN);
-			}
+			Root<T> root = crit.from(persistentClass);
+			crit = addWhere(baseFilter, cb, crit, root);
 			if (baseFilter.getOrders() != null) {
 				for (Entry<String, BaseFilter.Order> entry : baseFilter.getOrders().entrySet()) {
-					Root<T> root = crit.from(persistentClass);
 					if (BaseFilter.Order.ASC.equals(entry.getValue())) {
 						crit.orderBy(cb.asc(root.get(entry.getKey())));
 //						crit.addOrder(Order.asc(entry.getKey()));
@@ -94,9 +132,8 @@ public interface JpaDaoSupport<T extends Identifiable<K>, K extends Serializable
 
 				}
 			}
-			if (baseFilter.getEagerRelationShips() != null) {
-				for (String relation : baseFilter.getEagerRelationShips()) {
-					Root<T> root = crit.from(persistentClass);
+			if (baseFilter.getEagerRelationships() != null) {
+				for (String relation : baseFilter.getEagerRelationships()) {
 					root.fetch(relation);
 //					crit.setFetchMode(relation, FetchMode.JOIN);
 				}
@@ -115,15 +152,30 @@ public interface JpaDaoSupport<T extends Identifiable<K>, K extends Serializable
 			return crit;
 		}
 
-		@SuppressWarnings("unchecked")
+		private <U> CriteriaQuery<U> addWhere(final BaseFilter<K> baseFilter, CriteriaBuilder cb, CriteriaQuery<U> cq,
+				Root<T> root) {
+
+			if (baseFilter.getExcludeIds() != null && baseFilter.getExcludeIds().length > 0) {
+				cq.where(cb.not(root.get("id").in(Arrays.asList(baseFilter.getExcludeIds()))));
+			}
+			for (Entry<String, String> alias : baseFilter.getAliases().entrySet()) {
+				cq = cq.where(cb.equal(root.join(alias.getKey()), alias.getValue()));
+			}
+			for (Entry<String, String> alias : baseFilter.getLeftAliases().entrySet()) {
+				cq = cq.where(cb.equal(root.join(alias.getKey(), JoinType.LEFT), alias.getValue()));
+			}
+			return cq;
+		}
+
 		protected List<T> filterFullData(BaseFilter<K> filter) {
-			CriteriaQuery<T> criteria = createFilterCriteria(filter);
+			CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+			CriteriaQuery<T> criteria = createFilterCriteria(filter, cb);
 			return addPagination(criteria, filter).getResultList();
 		}
 
-		@SuppressWarnings("unchecked")
 		protected List<T> filterNotFullData(BaseFilter<K> filter) {
-			CriteriaQuery<T> criteria = createFilterCriteria(filter);
+			CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+			CriteriaQuery<T> criteria = createFilterCriteria(filter, cb);
 //			ProjectionList projections = null;
 //			if (filter.getReturnedAttributes() != null) {
 //				projections = Projections.projectionList();
@@ -136,7 +188,6 @@ public interface JpaDaoSupport<T extends Identifiable<K>, K extends Serializable
 			return addPagination(criteria, filter).getResultList();
 		}
 
-		@SuppressWarnings("unchecked")
 		protected List<T> executeCriteria(CriteriaQuery<T> criteria) {
 			return this.entityManager.createQuery(criteria).getResultList();
 		}

@@ -65,11 +65,11 @@ public abstract class BaseFilter<K extends Serializable> {
 		addOrder(property, Order.ASC);
 	}
 
-	public String[] getEagerRelationShips() {
+	public String[] getEagerRelationships() {
 		return eagerRelationShips;
 	}
 
-	public void setEagerRelationShips(String[] eagerRelationShips) {
+	public void setEagerRelationships(String[] eagerRelationShips) {
 		this.eagerRelationShips = eagerRelationShips;
 	}
 

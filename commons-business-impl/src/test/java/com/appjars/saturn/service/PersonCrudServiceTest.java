@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import com.appjars.saturn.model.Errors;
-import com.appjars.saturn.model.Person;
+import com.appjars.saturn.model.impl.Person;
 
 public class PersonCrudServiceTest {
 

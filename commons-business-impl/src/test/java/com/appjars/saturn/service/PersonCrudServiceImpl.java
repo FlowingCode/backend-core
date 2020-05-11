@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.appjars.saturn.dao.CrudDao;
 import com.appjars.saturn.dao.PersonCrudDao;
-import com.appjars.saturn.model.Person;
+import com.appjars.saturn.model.impl.Person;
 import com.appjars.saturn.service.validation.CreationValidator;
 import com.appjars.saturn.service.validation.DeletionValidator;
 import com.appjars.saturn.service.validation.ValidationSupport;

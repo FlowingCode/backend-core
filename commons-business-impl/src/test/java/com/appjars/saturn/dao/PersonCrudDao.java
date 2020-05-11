@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.appjars.saturn.model.BaseFilter;
-import com.appjars.saturn.model.Person;
+import com.appjars.saturn.model.impl.Person;
 
 public class PersonCrudDao implements CrudDao<Person, Integer> {
 
