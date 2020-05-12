@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 
-import com.appjars.saturn.model.BaseFilter;
+import com.appjars.saturn.model.QuerySpec;
 import com.appjars.saturn.model.Identifiable;
 
 /**
@@ -21,8 +21,8 @@ public interface QueryService<T extends Identifiable<K>, K extends Serializable>
 
 	List<T> findAll();
 
-	List<T> filter(BaseFilter<K> filter);
+	List<T> filter(QuerySpec<K> filter);
 
-	long count(BaseFilter<K> filter);
+	long count(QuerySpec<K> filter);
 
 }

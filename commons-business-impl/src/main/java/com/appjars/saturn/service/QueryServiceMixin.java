@@ -8,7 +8,7 @@ import javax.transaction.Transactional;
 import javax.transaction.Transactional.TxType;
 
 import com.appjars.saturn.dao.QueryDao;
-import com.appjars.saturn.model.BaseFilter;
+import com.appjars.saturn.model.QuerySpec;
 import com.appjars.saturn.model.Identifiable;
 
 /**
@@ -37,13 +37,13 @@ public interface QueryServiceMixin<T extends Identifiable<K>, K extends Serializ
 
 	@Transactional(value = TxType.REQUIRED, rollbackOn = Exception.class)
 	@Override
-	default List<T> filter(BaseFilter<K> filter) {
+	default List<T> filter(QuerySpec<K> filter) {
 		return getQueryDao().filter(filter);
 	}
 
 	@Transactional(value = TxType.REQUIRED, rollbackOn = Exception.class)
 	@Override
-	default long count(BaseFilter<K> filter) {
+	default long count(QuerySpec<K> filter) {
 		return getQueryDao().count(filter);
 	}
 

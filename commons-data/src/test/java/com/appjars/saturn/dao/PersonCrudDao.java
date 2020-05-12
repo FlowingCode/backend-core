@@ -3,7 +3,7 @@ package com.appjars.saturn.dao;
 import java.util.List;
 import java.util.Optional;
 
-import com.appjars.saturn.model.BaseFilter;
+import com.appjars.saturn.model.QuerySpec;
 import com.appjars.saturn.model.Person;
 
 public class PersonCrudDao implements CrudDao<Person, Integer> {
@@ -39,13 +39,13 @@ public class PersonCrudDao implements CrudDao<Person, Integer> {
 	}
 
 	@Override
-	public List<Person> filter(BaseFilter<Integer> filter) {
+	public List<Person> filter(QuerySpec<Integer> filter) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public long count(BaseFilter<Integer> filter) {
+	public long count(QuerySpec<Integer> filter) {
 		// TODO Auto-generated method stub
 		return 0;
 	}

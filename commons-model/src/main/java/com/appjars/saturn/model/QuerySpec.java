@@ -4,11 +4,12 @@ import java.beans.BeanInfo;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.io.Serializable;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
-public abstract class BaseFilter<K extends Serializable> {
+public class QuerySpec<K extends Serializable> {
 
 	public enum Order {
 		ASC, DESC;
@@ -18,17 +19,13 @@ public abstract class BaseFilter<K extends Serializable> {
 
 	private String[] returnedAttributes;
 
-	private String[] eagerRelationShips;
-
 	private Map<String, Order> orders;
 
 	private Integer firstResult;
 
 	private Integer maxResult;
 
-	private Map<String, String> aliases = new HashMap<>();
-
-	private Map<String, String> leftAliases = new HashMap<>();
+	private Set<Constraint> constraints = new HashSet<>();
 
 	public K[] getExcludeIds() {
 		return excludeIds;
@@ -56,21 +53,13 @@ public abstract class BaseFilter<K extends Serializable> {
 
 	public void addOrder(String property, Order order) {
 		if (this.orders == null) {
-			this.orders = new LinkedHashMap<String, Order>();
+			this.orders = new LinkedHashMap<>();
 		}
 		this.orders.put(property, order);
 	}
 
 	public void addOrder(String property) {
 		addOrder(property, Order.ASC);
-	}
-
-	public String[] getEagerRelationships() {
-		return eagerRelationShips;
-	}
-
-	public void setEagerRelationships(String[] eagerRelationShips) {
-		this.eagerRelationShips = eagerRelationShips;
 	}
 
 	public Integer getFirstResult() {
@@ -89,22 +78,20 @@ public abstract class BaseFilter<K extends Serializable> {
 		this.maxResult = maxResult;
 	}
 
-	public BaseFilter<K> addAlias(String associationPath, String alias) {
-		this.aliases.put(associationPath, alias);
-		return this;
+	public void addEqualsConstraint(String attribute, Object value) {
+		this.constraints.add(new Constraint(attribute, Constraint.Type.EQUALS, value));
 	}
 
-	public Map<String, String> getAliases() {
-		return aliases;
+	public void addNotEqualsConstraint(String attribute, Object value) {
+		this.constraints.add(new Constraint(attribute, Constraint.Type.EQUALS, value));
 	}
 
-	public BaseFilter<K> addLeftAlias(String associationPath, String alias) {
-		this.leftAliases.put(associationPath, alias);
-		return this;
+	public void addLikeConstraint(String attribute, String value) {
+		this.constraints.add(new Constraint(attribute, Constraint.Type.LIKE, value));
 	}
 
-	public Map<String, String> getLeftAliases() {
-		return leftAliases;
+	public void addBetweenConstraint(String attribute, Object valueStart, Object valueEnd) {
+		this.constraints.add(new Constraint(attribute, valueStart, valueEnd));
 	}
 
 	@Override

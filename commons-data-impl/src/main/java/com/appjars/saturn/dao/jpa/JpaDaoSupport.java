@@ -12,12 +12,11 @@ import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Root;
 
 import com.appjars.saturn.dao.CrudDao;
-import com.appjars.saturn.model.BaseFilter;
 import com.appjars.saturn.model.Identifiable;
+import com.appjars.saturn.model.QuerySpec;
 
 public interface JpaDaoSupport<T extends Identifiable<K>, K extends Serializable> extends CrudDao<T, K> {
 
@@ -62,12 +61,12 @@ public interface JpaDaoSupport<T extends Identifiable<K>, K extends Serializable
 	}
 
 	@Override
-	default long count(BaseFilter<K> filter) {
+	default long count(QuerySpec<K> filter) {
 		return FilterProcesor.<T, K>of(getEntityManager(), getPersistentClass()).count(filter);
 	}
 
 	@Override
-	default List<T> filter(BaseFilter<K> filter) {
+	default List<T> filter(QuerySpec<K> filter) {
 		return FilterProcesor.<T, K>of(getEntityManager(), getPersistentClass()).filter(filter);
 	}
 
@@ -81,7 +80,7 @@ public interface JpaDaoSupport<T extends Identifiable<K>, K extends Serializable
 			return new FilterProcesor<>(entityManager, persistentClass);
 		}
 
-		long count(BaseFilter<K> filter) {
+		long count(QuerySpec<K> filter) {
 			CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 			CriteriaQuery<Long> cq = cb.createQuery(Long.class);
 			Root<T> root = cq.from(persistentClass);
@@ -108,7 +107,7 @@ public interface JpaDaoSupport<T extends Identifiable<K>, K extends Serializable
 			this.persistentClass = persistentClass;
 		}
 
-		public List<T> filter(BaseFilter<K> baseFilter) {
+		public List<T> filter(QuerySpec<K> baseFilter) {
 			if (baseFilter.getReturnedAttributes() != null && baseFilter.getReturnedAttributes().length > 0) {
 				return filterNotFullData(baseFilter);
 			} else {
@@ -116,13 +115,13 @@ public interface JpaDaoSupport<T extends Identifiable<K>, K extends Serializable
 			}
 		}
 
-		protected CriteriaQuery<T> createFilterCriteria(final BaseFilter<K> baseFilter, CriteriaBuilder cb) {
+		protected CriteriaQuery<T> createFilterCriteria(final QuerySpec<K> baseFilter, CriteriaBuilder cb) {
 			CriteriaQuery<T> crit = cb.createQuery(persistentClass);
 			Root<T> root = crit.from(persistentClass);
 			crit = addWhere(baseFilter, cb, crit, root);
 			if (baseFilter.getOrders() != null) {
-				for (Entry<String, BaseFilter.Order> entry : baseFilter.getOrders().entrySet()) {
-					if (BaseFilter.Order.ASC.equals(entry.getValue())) {
+				for (Entry<String, QuerySpec.Order> entry : baseFilter.getOrders().entrySet()) {
+					if (QuerySpec.Order.ASC.equals(entry.getValue())) {
 						crit.orderBy(cb.asc(root.get(entry.getKey())));
 //						crit.addOrder(Order.asc(entry.getKey()));
 					} else {
@@ -130,12 +129,6 @@ public interface JpaDaoSupport<T extends Identifiable<K>, K extends Serializable
 //						crit.addOrder(Order.desc(entry.getKey()));
 					}
 
-				}
-			}
-			if (baseFilter.getEagerRelationships() != null) {
-				for (String relation : baseFilter.getEagerRelationships()) {
-					root.fetch(relation);
-//					crit.setFetchMode(relation, FetchMode.JOIN);
 				}
 			}
 //			// si el objeto admite borrado lógico
@@ -152,28 +145,22 @@ public interface JpaDaoSupport<T extends Identifiable<K>, K extends Serializable
 			return crit;
 		}
 
-		private <U> CriteriaQuery<U> addWhere(final BaseFilter<K> baseFilter, CriteriaBuilder cb, CriteriaQuery<U> cq,
+		private <U> CriteriaQuery<U> addWhere(final QuerySpec<K> baseFilter, CriteriaBuilder cb, CriteriaQuery<U> cq,
 				Root<T> root) {
 
 			if (baseFilter.getExcludeIds() != null && baseFilter.getExcludeIds().length > 0) {
 				cq.where(cb.not(root.get("id").in(Arrays.asList(baseFilter.getExcludeIds()))));
 			}
-			for (Entry<String, String> alias : baseFilter.getAliases().entrySet()) {
-				cq = cq.where(cb.equal(root.join(alias.getKey()), alias.getValue()));
-			}
-			for (Entry<String, String> alias : baseFilter.getLeftAliases().entrySet()) {
-				cq = cq.where(cb.equal(root.join(alias.getKey(), JoinType.LEFT), alias.getValue()));
-			}
 			return cq;
 		}
 
-		protected List<T> filterFullData(BaseFilter<K> filter) {
+		protected List<T> filterFullData(QuerySpec<K> filter) {
 			CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 			CriteriaQuery<T> criteria = createFilterCriteria(filter, cb);
 			return addPagination(criteria, filter).getResultList();
 		}
 
-		protected List<T> filterNotFullData(BaseFilter<K> filter) {
+		protected List<T> filterNotFullData(QuerySpec<K> filter) {
 			CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 			CriteriaQuery<T> criteria = createFilterCriteria(filter, cb);
 //			ProjectionList projections = null;
@@ -196,7 +183,7 @@ public interface JpaDaoSupport<T extends Identifiable<K>, K extends Serializable
 			return this.entityManager.createQuery(criteria).getSingleResult();
 		}
 
-		protected TypedQuery<T> addPagination(CriteriaQuery<T> detachedCriteria, BaseFilter<K> filter) {
+		protected TypedQuery<T> addPagination(CriteriaQuery<T> detachedCriteria, QuerySpec<K> filter) {
 			TypedQuery<T> criteria = this.entityManager.createQuery(detachedCriteria);
 			if (filter.getFirstResult() != null) {
 				criteria.setFirstResult(filter.getFirstResult());

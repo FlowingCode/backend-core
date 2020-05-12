@@ -15,7 +15,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.appjars.saturn.dao.PersonCrudDaoImpl;
-import com.appjars.saturn.model.BaseFilter;
+import com.appjars.saturn.model.QuerySpec;
 import com.appjars.saturn.model.impl.Person;
 import com.github.javafaker.Faker;
 
@@ -92,7 +92,7 @@ class JpaDaoSupportTest {
 		fail("Not yet implemented");
 	}
 
-	private static class PersonFilter extends BaseFilter<Integer> {
+	private static class PersonFilter extends QuerySpec<Integer> {
 
 	}
 

@@ -9,6 +9,7 @@ import java.io.Serializable;
  *
  * @param <K>
  */
+@SuppressWarnings("serial")
 public abstract class BaseEntity<K extends Serializable> implements Identifiable<K> {
 
 	protected K id;
