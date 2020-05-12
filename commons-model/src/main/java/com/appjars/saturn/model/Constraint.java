@@ -1,5 +1,10 @@
 package com.appjars.saturn.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class Constraint {
 
 	public enum Type {
@@ -18,43 +23,11 @@ public class Constraint {
 		this.value = value;
 	}
 
-	public Constraint(String attribute, Object valueStart, Object valueEnd) {
+	public <T> Constraint(String attribute, T valueStart, T valueEnd) {
 		super();
 		this.attribute = attribute;
 		this.type = Type.BETWEEN;
 		this.value = valueStart;
-		this.valueEnd = valueEnd;
-	}
-
-	public String getAttribute() {
-		return attribute;
-	}
-
-	public void setAttribute(String attribute) {
-		this.attribute = attribute;
-	}
-
-	public Type getType() {
-		return type;
-	}
-
-	public void setType(Type type) {
-		this.type = type;
-	}
-
-	public Object getValue() {
-		return value;
-	}
-
-	public void setValue(Object value) {
-		this.value = value;
-	}
-
-	public Object getValueEnd() {
-		return valueEnd;
-	}
-
-	public void setValueEnd(Object valueEnd) {
 		this.valueEnd = valueEnd;
 	}
 

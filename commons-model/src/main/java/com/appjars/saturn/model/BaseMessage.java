@@ -2,23 +2,28 @@ package com.appjars.saturn.model;
 
 import java.io.Serializable;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * A message representation
  * 
  * @author mlopez
  * 
  */
+@Getter
+@Setter
 public abstract class BaseMessage implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	protected String field;
+	private String field;
 
-	protected String messageKey;
+	private String messageKey;
 
-	protected Serializable[] messageKeyValues;
+	private Serializable[] messageKeyValues;
 
-	protected String defaultMessage;
+	private String defaultMessage;
 
 	public BaseMessage(String messageKey) {
 		this.messageKey = messageKey;
@@ -33,38 +38,6 @@ public abstract class BaseMessage implements Serializable {
 		this.field = field;
 		this.messageKey = messageKey;
 		this.messageKeyValues = messageKeyValues;
-	}
-
-	public String getField() {
-		return field;
-	}
-
-	public void setField(String field) {
-		this.field = field;
-	}
-
-	public String getMessageKey() {
-		return messageKey;
-	}
-
-	public void setMessageKey(String messageKey) {
-		this.messageKey = messageKey;
-	}
-
-	public Object[] getMessageKeyValues() {
-		return messageKeyValues;
-	}
-
-	public void setMessageKeyValues(Serializable[] messageKeyValues) {
-		this.messageKeyValues = messageKeyValues;
-	}
-
-	public String getDefaultMessage() {
-		return defaultMessage;
-	}
-
-	public void setDefaultMessage(String defaultMessage) {
-		this.defaultMessage = defaultMessage;
 	}
 
 	@Override

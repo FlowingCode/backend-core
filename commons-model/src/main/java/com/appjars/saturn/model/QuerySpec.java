@@ -4,18 +4,26 @@ import java.beans.BeanInfo;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class QuerySpec<K extends Serializable> {
 
 	public enum Order {
 		ASC, DESC;
 	}
 
-	private K[] excludeIds;
+	private Collection<K> excludeIds;
 
 	private String[] returnedAttributes;
 
@@ -27,30 +35,6 @@ public class QuerySpec<K extends Serializable> {
 
 	private Set<Constraint> constraints = new HashSet<>();
 
-	public K[] getExcludeIds() {
-		return excludeIds;
-	}
-
-	public void setExcludeIds(K[] excludeIds) {
-		this.excludeIds = excludeIds;
-	}
-
-	public String[] getReturnedAttributes() {
-		return returnedAttributes;
-	}
-
-	public void setReturnedAttributes(String[] returnedAttributes) {
-		this.returnedAttributes = returnedAttributes;
-	}
-
-	public Map<String, Order> getOrders() {
-		return orders;
-	}
-
-	public void setOrders(Map<String, Order> orders) {
-		this.orders = orders;
-	}
-
 	public void addOrder(String property, Order order) {
 		if (this.orders == null) {
 			this.orders = new LinkedHashMap<>();
@@ -61,23 +45,7 @@ public class QuerySpec<K extends Serializable> {
 	public void addOrder(String property) {
 		addOrder(property, Order.ASC);
 	}
-
-	public Integer getFirstResult() {
-		return firstResult;
-	}
-
-	public void setFirstResult(Integer firstResult) {
-		this.firstResult = firstResult;
-	}
-
-	public Integer getMaxResult() {
-		return maxResult;
-	}
-
-	public void setMaxResult(Integer maxResult) {
-		this.maxResult = maxResult;
-	}
-
+	
 	public void addEqualsConstraint(String attribute, Object value) {
 		this.constraints.add(new Constraint(attribute, Constraint.Type.EQUALS, value));
 	}
