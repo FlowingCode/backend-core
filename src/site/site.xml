@@ -3,8 +3,7 @@
 
     <body>
         <menu name="" inherit="top">
-            <item name="Markdown syntax" href="index.html"/>
-            <item name="Headings" href="headings.html"/>
+            <item name="Scope" href="index.html"/>
         </menu>
         <menu ref="reports"/>
     </body>
