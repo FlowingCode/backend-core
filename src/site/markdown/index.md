@@ -219,7 +219,7 @@ This module should expose interfaces that represents the contract that the busin
 technologies used to execute the offered services. As an example: it should not expose 
 as a transitive dependency the persitence layer contracts module.
 
-###### Services Layer Contracts Module #####
+###### Services Layer Implementation Module #####
 This module will contain implementation of the contracts defined in the previous module.
 
 ###### Model Layer Contracts Module #####
@@ -239,8 +239,8 @@ physical connections, like exposing REST APIs.
 This is a less strict approach than the previous one, considering only the typical three 
 layers: persistence layer, services layer and presentation layer.
 Each of the backend layers are made up of contracts and implementations together.
-In this case, imports of persistence technologies are possible in the service layer, 
-but at least not possible in the presentation layer.
+In this case, imports of persistence technologies are possible in both the service layer 
+and the presentation layer, but should not be used in the latter.
 
 ##### Monolithic application #####
 This is the case where all of the code is in the same "code container" like a java web 
