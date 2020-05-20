@@ -198,7 +198,7 @@ and the other implementations that can be used in each layer.
 Having those layer definitions in place, the following approaches should be supported 
 in order of importance:
 
-##### Three layers with contracts #####
+##### Three layers with contracts in separated modules #####
 This approach would make it possible to build an application with the following modules:
 
 ###### Persistence Layer Contracts Module #####
@@ -235,15 +235,18 @@ classes of technologies used in a lower layer is not even possible.
 One special thing to note is that each layer can be "connected" to the other one across 
 physical connections, like exposing REST APIs.
 
-##### Three separated layers #####
+##### Three layers in separated modules #####
 This is a less strict approach than the previous one, considering only the typical three 
-layers: persistence layer, services layer and presentation layer.
-Each of the backend layers are made up of contracts and implementations together.
-In this case, imports of persistence technologies are possible in both the service layer 
-and the presentation layer, but should not be used in the latter.
+layers: persistence layer, services layer and presentation layer, each of those implemented
+in different modules. Each of them are made up of contracts and implementations 
+together.
+In this case, everything can be configured in such a way that imports of persistence 
+technologies are possible in the service layer, but at least not possible in the presentation 
+layer (by excluding transitive dependencies or by making the persistence layer not to be
+transitive).
 
-##### Monolithic application #####
-This is the case where all of the code is in the same "code container" like a java web 
+##### Three layers in the same module #####
+This is the case where all of the code is in the same code module like a java web 
 application (WAR file).
 
 Of course in this case all kinds of imports are permitted, but at least the component 
