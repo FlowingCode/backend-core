@@ -236,6 +236,9 @@ classes of technologies used in a lower layer is not even possible.
 One special thing to note is that each layer can be "connected" to the other one across 
 physical connections, like exposing REST APIs.
 
+![Model_three-layers-with-contracts_PackageDiagram](../../model/Model_three-layers-with-contracts_PackageDiagram.SVG)
+![Model_three-layers-with-contracts_DeploymentDiagram](../../model/Model_three-layers-with-contracts_DeploymentDiagram.SVG)
+
 ##### Three separated layers #####
 This is a less strict approach than the previous one, considering only the typical three 
 layers: persistence layer, services layer and presentation layer.
@@ -243,9 +246,14 @@ Each of the backend layers are made up of contracts and implementations together
 In this case, imports of persistence technologies are possible in both the service layer 
 and the presentation layer, but should not be used in the latter.
 
+![Model_three-layers-separated_PackageDiagram](../../model/Model_three-layers-separated_PackageDiagram.SVG)
+![Model_three-layers-separated_DeploymentDiagram](../../model/Model_three-layers-separated_DeploymentDiagram.SVG)
+
 ##### Monolithic application #####
 This is the case where all of the code is in the same "code container" like a java web 
 application (WAR file).
+![Model_three-layers-one-artifact_PackageDiagram](../../model/Model_three-layers-one-artifact_PackageDiagram.SVG)
+![Model_three-layers-one-artifact_DeploymentDiagram](../../model/Model_three-layers-one-artifact_DeploymentDiagram.SVG)
 
 Of course in this case all kinds of imports are permitted, but at least the component 
 should be able to lower the amount of boiler plate code needed to write enterprise applications 

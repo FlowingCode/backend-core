@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uml:Model xmi:version="20131001" xmlns:xmi="http://www.omg.org/spec/XMI/20131001" xmlns:uml="http://www.eclipse.org/uml2/5.0.0/UML" xmi:id="_3iytkJrLEeqwF-qnJPVz6w" name="site">
+  <packagedElement xmi:type="uml:Model" xmi:id="_8_ma4JrTEeqwF-qnJPVz6w" name="three-layers-with-contracts">
+    <packageImport xmi:type="uml:PackageImport" xmi:id="_wtr0gJtbEeq1K5QdXTu_Zw" importedPackage="_SVl0sJtbEeq1K5QdXTu_Zw"/>
+    <packagedElement xmi:type="uml:Package" xmi:id="__gNqIJtaEeq1K5QdXTu_Zw" name="PresentationClasses">
+      <packageImport xmi:type="uml:PackageImport" xmi:id="_4uELcJtbEeq1K5QdXTu_Zw" importedPackage="_KemDQJtbEeq1K5QdXTu_Zw"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Package" xmi:id="_DPL2QJtbEeq1K5QdXTu_Zw" name="ServiceClasses">
+      <packageImport xmi:type="uml:PackageImport" xmi:id="_tE5v8JtbEeq1K5QdXTu_Zw" importedPackage="_KemDQJtbEeq1K5QdXTu_Zw"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Package" xmi:id="_E1qE0JtbEeq1K5QdXTu_Zw" name="PersistenceClasses">
+      <packageImport xmi:type="uml:PackageImport" xmi:id="_twd1cJtbEeq1K5QdXTu_Zw" importedPackage="_IcaJEJtbEeq1K5QdXTu_Zw"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Package" xmi:id="_IcaJEJtbEeq1K5QdXTu_Zw" name="PersistenceContracts">
+      <packageImport xmi:type="uml:PackageImport" xmi:id="_xooZ0JtbEeq1K5QdXTu_Zw" importedPackage="_SVl0sJtbEeq1K5QdXTu_Zw"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Package" xmi:id="_KemDQJtbEeq1K5QdXTu_Zw" name="ServiceContracts">
+      <packageImport xmi:type="uml:PackageImport" xmi:id="_uw1tUJtbEeq1K5QdXTu_Zw" importedPackage="_IcaJEJtbEeq1K5QdXTu_Zw"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Package" xmi:id="_SVl0sJtbEeq1K5QdXTu_Zw" name="Model"/>
+    <packagedElement xmi:type="uml:Artifact" xmi:id="_ER3vYJtoEeq1K5QdXTu_Zw" name="">
+      <nestedArtifact xmi:type="uml:Artifact" xmi:id="_4xe2YJtcEeq1K5QdXTu_Zw" name="ServiceContracts">
+        <manifestation xmi:type="uml:Manifestation" xmi:id="_IxT84JttEeq1K5QdXTu_Zw" client="_4xe2YJtcEeq1K5QdXTu_Zw" supplier="_KemDQJtbEeq1K5QdXTu_Zw" utilizedElement="_KemDQJtbEeq1K5QdXTu_Zw"/>
+      </nestedArtifact>
+      <nestedArtifact xmi:type="uml:Artifact" xmi:id="_Tj0r8JtnEeq1K5QdXTu_Zw" name="ServiceClasses">
+        <manifestation xmi:type="uml:Manifestation" xmi:id="_GUZOgJttEeq1K5QdXTu_Zw" client="_Tj0r8JtnEeq1K5QdXTu_Zw" supplier="_DPL2QJtbEeq1K5QdXTu_Zw" utilizedElement="_DPL2QJtbEeq1K5QdXTu_Zw"/>
+      </nestedArtifact>
+      <nestedArtifact xmi:type="uml:Artifact" xmi:id="_G9wG0JtoEeq1K5QdXTu_Zw" name="PersistenceContracts">
+        <manifestation xmi:type="uml:Manifestation" xmi:id="_ZW09oJttEeq1K5QdXTu_Zw" client="_G9wG0JtoEeq1K5QdXTu_Zw" supplier="_IcaJEJtbEeq1K5QdXTu_Zw" utilizedElement="_IcaJEJtbEeq1K5QdXTu_Zw"/>
+      </nestedArtifact>
+      <nestedArtifact xmi:type="uml:Artifact" xmi:id="_uaBc4JtoEeq1K5QdXTu_Zw" name="Model">
+        <manifestation xmi:type="uml:Manifestation" xmi:id="_Rbqd4JttEeq1K5QdXTu_Zw" client="_uaBc4JtoEeq1K5QdXTu_Zw" supplier="_SVl0sJtbEeq1K5QdXTu_Zw" utilizedElement="_SVl0sJtbEeq1K5QdXTu_Zw"/>
+      </nestedArtifact>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Artifact" xmi:id="_LsREYJtoEeq1K5QdXTu_Zw" name="">
+      <nestedArtifact xmi:type="uml:Artifact" xmi:id="_0RCKAJtcEeq1K5QdXTu_Zw" name="PersistenceContracts">
+        <manifestation xmi:type="uml:Manifestation" xmi:id="_bKxAcJttEeq1K5QdXTu_Zw" client="_0RCKAJtcEeq1K5QdXTu_Zw" supplier="_IcaJEJtbEeq1K5QdXTu_Zw" utilizedElement="_IcaJEJtbEeq1K5QdXTu_Zw"/>
+      </nestedArtifact>
+      <nestedArtifact xmi:type="uml:Artifact" xmi:id="_AA0x8JtdEeq1K5QdXTu_Zw" name="PersistenceClasses">
+        <manifestation xmi:type="uml:Manifestation" xmi:id="_WgUDgJttEeq1K5QdXTu_Zw" client="_AA0x8JtdEeq1K5QdXTu_Zw" supplier="_E1qE0JtbEeq1K5QdXTu_Zw" utilizedElement="_E1qE0JtbEeq1K5QdXTu_Zw"/>
+      </nestedArtifact>
+      <nestedArtifact xmi:type="uml:Artifact" xmi:id="_vBUGYJtoEeq1K5QdXTu_Zw" name="Model">
+        <manifestation xmi:type="uml:Manifestation" xmi:id="_chvacJttEeq1K5QdXTu_Zw" client="_vBUGYJtoEeq1K5QdXTu_Zw" supplier="_SVl0sJtbEeq1K5QdXTu_Zw" utilizedElement="_SVl0sJtbEeq1K5QdXTu_Zw"/>
+      </nestedArtifact>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Artifact" xmi:id="_oizx4JtoEeq1K5QdXTu_Zw" name="">
+      <nestedArtifact xmi:type="uml:Artifact" xmi:id="_31wN8JtcEeq1K5QdXTu_Zw" name="PresentationClasses">
+        <manifestation xmi:type="uml:Manifestation" xmi:id="_HR4KcJttEeq1K5QdXTu_Zw" client="_31wN8JtcEeq1K5QdXTu_Zw" supplier="__gNqIJtaEeq1K5QdXTu_Zw" utilizedElement="__gNqIJtaEeq1K5QdXTu_Zw"/>
+      </nestedArtifact>
+      <nestedArtifact xmi:type="uml:Artifact" xmi:id="_cZ6i4JtnEeq1K5QdXTu_Zw" name="Model">
+        <manifestation xmi:type="uml:Manifestation" xmi:id="_QyOfUJttEeq1K5QdXTu_Zw" client="_cZ6i4JtnEeq1K5QdXTu_Zw" supplier="_SVl0sJtbEeq1K5QdXTu_Zw" utilizedElement="_SVl0sJtbEeq1K5QdXTu_Zw"/>
+      </nestedArtifact>
+      <nestedArtifact xmi:type="uml:Artifact" xmi:id="_Uxz3IJtpEeq1K5QdXTu_Zw" name="ServiceContracts">
+        <manifestation xmi:type="uml:Manifestation" xmi:id="_icdscJttEeq1K5QdXTu_Zw" client="_Uxz3IJtpEeq1K5QdXTu_Zw" supplier="_KemDQJtbEeq1K5QdXTu_Zw" utilizedElement="_KemDQJtbEeq1K5QdXTu_Zw"/>
+      </nestedArtifact>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Dependency" xmi:id="_XJIT0JtpEeq1K5QdXTu_Zw" client="_31wN8JtcEeq1K5QdXTu_Zw" supplier="_Uxz3IJtpEeq1K5QdXTu_Zw"/>
+    <packagedElement xmi:type="uml:Dependency" xmi:id="_YK_ZcJtpEeq1K5QdXTu_Zw" client="_Uxz3IJtpEeq1K5QdXTu_Zw" supplier="_cZ6i4JtnEeq1K5QdXTu_Zw"/>
+    <packagedElement xmi:type="uml:Dependency" xmi:id="_dKbu8JtpEeq1K5QdXTu_Zw" client="_AA0x8JtdEeq1K5QdXTu_Zw" supplier="_0RCKAJtcEeq1K5QdXTu_Zw"/>
+    <packagedElement xmi:type="uml:Dependency" xmi:id="_ewDo8JtpEeq1K5QdXTu_Zw" client="_0RCKAJtcEeq1K5QdXTu_Zw" supplier="_vBUGYJtoEeq1K5QdXTu_Zw"/>
+    <packagedElement xmi:type="uml:Dependency" xmi:id="_hmXHsJtpEeq1K5QdXTu_Zw" client="_Tj0r8JtnEeq1K5QdXTu_Zw" supplier="_4xe2YJtcEeq1K5QdXTu_Zw"/>
+    <packagedElement xmi:type="uml:Dependency" xmi:id="_ipIzUJtpEeq1K5QdXTu_Zw" client="_4xe2YJtcEeq1K5QdXTu_Zw" supplier="_uaBc4JtoEeq1K5QdXTu_Zw"/>
+    <packagedElement xmi:type="uml:Dependency" xmi:id="_qdan8JtpEeq1K5QdXTu_Zw" client="_G9wG0JtoEeq1K5QdXTu_Zw" supplier="_uaBc4JtoEeq1K5QdXTu_Zw"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Model" xmi:id="_iK8lQJrWEeqwF-qnJPVz6w" name="three-layers-separated">
+    <packagedElement xmi:type="uml:Artifact" xmi:id="_32z0wJrWEeqwF-qnJPVz6w" name="WAR" fileName="">
+      <nestedArtifact xmi:type="uml:Artifact" xmi:id="_4iMUEJrWEeqwF-qnJPVz6w" name="Presentation"/>
+      <nestedArtifact xmi:type="uml:Artifact" xmi:id="_7WH0QJrWEeqwF-qnJPVz6w" name="Services"/>
+      <nestedArtifact xmi:type="uml:Artifact" xmi:id="_-5d_MJrWEeqwF-qnJPVz6w" name="Persistence"/>
+      <nestedArtifact xmi:type="uml:Artifact" xmi:id="_Nd5W4JtkEeq1K5QdXTu_Zw" name="Model" fileName=""/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Dependency" xmi:id="_UsVHMJraEeqwF-qnJPVz6w" client="_4iMUEJrWEeqwF-qnJPVz6w" supplier="_7WH0QJrWEeqwF-qnJPVz6w"/>
+    <packagedElement xmi:type="uml:Dependency" xmi:id="_VZDDQJraEeqwF-qnJPVz6w" client="_7WH0QJrWEeqwF-qnJPVz6w" supplier="_-5d_MJrWEeqwF-qnJPVz6w"/>
+    <packagedElement xmi:type="uml:Package" xmi:id="_KCDGEJrrEeq1K5QdXTu_Zw" name="Persistence">
+      <packageImport xmi:type="uml:PackageImport" xmi:id="_6bmKoJtjEeq1K5QdXTu_Zw" importedPackage="_zq8WMJtjEeq1K5QdXTu_Zw"/>
+      <packagedElement xmi:type="uml:Manifestation" xmi:id="_TioEcJrrEeq1K5QdXTu_Zw" client="_KCDGEJrrEeq1K5QdXTu_Zw" supplier="_-5d_MJrWEeqwF-qnJPVz6w" utilizedElement="_-5d_MJrWEeqwF-qnJPVz6w"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Package" xmi:id="_Lu7eoJrrEeq1K5QdXTu_Zw" name="Presentation">
+      <packageImport xmi:type="uml:PackageImport" xmi:id="_QbPx4JrtEeq1K5QdXTu_Zw" importedPackage="_NcGLEJrrEeq1K5QdXTu_Zw" visibility="private"/>
+      <packageImport xmi:type="uml:PackageImport" xmi:id="_3b0m0JtjEeq1K5QdXTu_Zw" importedPackage="_zq8WMJtjEeq1K5QdXTu_Zw"/>
+      <packagedElement xmi:type="uml:Manifestation" xmi:id="_VEI6gJrrEeq1K5QdXTu_Zw" client="_Lu7eoJrrEeq1K5QdXTu_Zw" supplier="_4iMUEJrWEeqwF-qnJPVz6w" utilizedElement="_4iMUEJrWEeqwF-qnJPVz6w"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Package" xmi:id="_NcGLEJrrEeq1K5QdXTu_Zw" name="Services">
+      <packageImport xmi:type="uml:PackageImport" xmi:id="_mKr50JrtEeq1K5QdXTu_Zw" importedPackage="_KCDGEJrrEeq1K5QdXTu_Zw" visibility="private"/>
+      <packageImport xmi:type="uml:PackageImport" xmi:id="_5qHqYJtjEeq1K5QdXTu_Zw" importedPackage="_zq8WMJtjEeq1K5QdXTu_Zw"/>
+      <packagedElement xmi:type="uml:Manifestation" xmi:id="_UcBxoJrrEeq1K5QdXTu_Zw" client="_NcGLEJrrEeq1K5QdXTu_Zw" supplier="_7WH0QJrWEeqwF-qnJPVz6w" utilizedElement="_7WH0QJrWEeqwF-qnJPVz6w"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Package" xmi:id="_zq8WMJtjEeq1K5QdXTu_Zw" name="Model"/>
+    <packagedElement xmi:type="uml:Dependency" xmi:id="_UUdmEJtkEeq1K5QdXTu_Zw" client="_4iMUEJrWEeqwF-qnJPVz6w" supplier="_Nd5W4JtkEeq1K5QdXTu_Zw"/>
+    <packagedElement xmi:type="uml:Dependency" xmi:id="_WHaKYJtkEeq1K5QdXTu_Zw" client="_-5d_MJrWEeqwF-qnJPVz6w" supplier="_Nd5W4JtkEeq1K5QdXTu_Zw"/>
+    <packagedElement xmi:type="uml:Dependency" xmi:id="_zDh7cJtkEeq1K5QdXTu_Zw" client="_7WH0QJrWEeqwF-qnJPVz6w" supplier="_Nd5W4JtkEeq1K5QdXTu_Zw"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Model" xmi:id="_6jpQoJrlEeqnaN2_YBH_4w" name="three-layers-one-artifact">
+    <packagedElement xmi:type="uml:Package" xmi:id="_nT2b8JraEeqwF-qnJPVz6w" name="Persistence">
+      <packageImport xmi:type="uml:PackageImport" xmi:id="_fyO70JtiEeq1K5QdXTu_Zw" importedPackage="_L8QpMJtdEeq1K5QdXTu_Zw"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Package" xmi:id="_iC9xIJraEeqwF-qnJPVz6w" name="Presentation">
+      <packageImport xmi:type="uml:PackageImport" xmi:id="_pWPKcJraEeqwF-qnJPVz6w" importedPackage="_lZ7s8JraEeqwF-qnJPVz6w"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Package" xmi:id="_lZ7s8JraEeqwF-qnJPVz6w" name="Services">
+      <packageImport xmi:type="uml:PackageImport" xmi:id="_yZhYwJruEeq1K5QdXTu_Zw" importedPackage="_nT2b8JraEeqwF-qnJPVz6w"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Artifact" xmi:id="_MpRecJrUEeqwF-qnJPVz6w" name="WAR" fileName="">
+      <manifestation xmi:type="uml:Manifestation" xmi:id="_0aKFQJtmEeq1K5QdXTu_Zw" client="_MpRecJrUEeqwF-qnJPVz6w" supplier="_lZ7s8JraEeqwF-qnJPVz6w" utilizedElement="_lZ7s8JraEeqwF-qnJPVz6w"/>
+      <manifestation xmi:type="uml:Manifestation" xmi:id="_CCimgJtnEeq1K5QdXTu_Zw" client="_MpRecJrUEeqwF-qnJPVz6w" supplier="_nT2b8JraEeqwF-qnJPVz6w" utilizedElement="_nT2b8JraEeqwF-qnJPVz6w"/>
+      <manifestation xmi:type="uml:Manifestation" xmi:id="_Cry-4JtnEeq1K5QdXTu_Zw" client="_MpRecJrUEeqwF-qnJPVz6w" supplier="_L8QpMJtdEeq1K5QdXTu_Zw" utilizedElement="_L8QpMJtdEeq1K5QdXTu_Zw"/>
+      <manifestation xmi:type="uml:Manifestation" xmi:id="_D6090JtnEeq1K5QdXTu_Zw" client="_MpRecJrUEeqwF-qnJPVz6w" supplier="_iC9xIJraEeqwF-qnJPVz6w" utilizedElement="_iC9xIJraEeqwF-qnJPVz6w"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Package" xmi:id="_L8QpMJtdEeq1K5QdXTu_Zw" name="Model"/>
+  </packagedElement>
+</uml:Model>
