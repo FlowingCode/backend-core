@@ -228,3 +228,29 @@ that it should not contain any specific technology, it can offer DTOs definition
 be used by presentation and services layer. For not having issues when persistent entities 
 are returned, always interfaces should be used for referencing them.
 
+When we refer to modules in this approach, we are talking about separated code containers 
+like Maven modules. The idea is to have a strict separation in such a way that importing 
+classes of technologies used in a lower layer is not even possible.
+
+One special thing to note is that each layer can be "connected" to the other one across 
+physical connections, like exposing REST APIs.
+
+##### Three separated layers #####
+This is a less strict approach than the previous one, considering only the typical three 
+layers: persistence layer, services layer and presentation layer.
+Each of the backend layers are made up of contracts and implementations together.
+In this case, imports of persistence technologies are possible in the service layer, 
+but at least not possible in the presentation layer.
+
+##### Monolithic application #####
+This is the case where all of the code is in the same "code container" like a java web 
+application (WAR file).
+
+Of course in this case all kinds of imports are permitted, but at least the component 
+should be able to lower the amount of boiler plate code needed to write enterprise applications 
+that need to organize the code in three layers
+
+##### Hexagonal architecture / DDD #####
+Given that the strict separation of layers is something that is needed and can be used 
+in these kind of architectural design, a special effort should be made to support this 
+scenarios. 
