@@ -101,11 +101,12 @@ to support the following:
   middle layer (business logic) code.
 * No business logic specific framework and libraries should be needed to import in order 
   to call exposed business logic services from presentation layer.
+
+![Model_commons-backend_Class_Diagram](../../model/Model_commons-backend_Class_Diagram.SVG)
   
 The component should provide interfaces to be used as a foundation to build contracts 
-that will allow to implement the strict separation in case it's needed.
-
-Of course it should be possible to build applications that do not need this strict separation 
+that will allow to implement the strict separation in case it's needed. Of course it
+should be possible to build applications that do not need this strict separation 
 as well.
 
 Given that this stricticity is a good fit to other architecture design patterns such 
