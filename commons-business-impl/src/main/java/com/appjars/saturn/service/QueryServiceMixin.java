@@ -9,7 +9,6 @@ import javax.transaction.Transactional.TxType;
 
 import com.appjars.saturn.dao.QueryDao;
 import com.appjars.saturn.model.QuerySpec;
-import com.appjars.saturn.model.Identifiable;
 
 /**
  * A special kind of service that allows entities querying
@@ -19,7 +18,7 @@ import com.appjars.saturn.model.Identifiable;
  * @param <T>
  * @param <K>
  */
-public interface QueryServiceMixin<T extends Identifiable<K>, K extends Serializable> extends QueryService<T, K> {
+public interface QueryServiceMixin<T extends Serializable, K extends Serializable> extends QueryService<T, K> {
 
 	QueryDao<T, K> getQueryDao();
 

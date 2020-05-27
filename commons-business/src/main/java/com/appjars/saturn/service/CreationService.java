@@ -3,7 +3,6 @@ package com.appjars.saturn.service;
 import java.io.Serializable;
 
 import com.appjars.saturn.model.Errors;
-import com.appjars.saturn.model.Identifiable;
 
 /**
  * A special kind of service that allows entities creation
@@ -13,7 +12,7 @@ import com.appjars.saturn.model.Identifiable;
  * @param <T>
  * @param <K>
  */
-public interface CreationService<T extends Identifiable<K>, K extends Serializable> {
+public interface CreationService<T extends Serializable, K extends Serializable> {
 
 	K save(T entity, Errors errors);
 

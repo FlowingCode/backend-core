@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
@@ -64,7 +65,7 @@ class JpaDaoSupportTest {
 	@Test
 	void testFilter() {
 		PersonFilter pf = new PersonFilter();
-		pf.setExcludeIds(new Integer[] { persistedPerson.getId() });
+		pf.setExcludeIds(Arrays.asList(new Integer[] { persistedPerson.getId() }));
 		long allMinusFirst = dao.count(pf);
 		assertEquals(10, allMinusFirst);
 	}
@@ -72,7 +73,7 @@ class JpaDaoSupportTest {
 	@Test
 	void testCount() {
 		PersonFilter pf = new PersonFilter();
-		pf.setExcludeIds(new Integer[] { persistedPerson.getId() });
+		pf.setExcludeIds(Arrays.asList(new Integer[] { persistedPerson.getId() }));
 		long allMinusFirst = dao.count(pf);
 		assertEquals(10, allMinusFirst);
 	}

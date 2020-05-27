@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
@@ -14,11 +15,12 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-import com.appjars.saturn.dao.CrudDao;
+import com.appjars.saturn.dao.ConversionCrudDaoMixin;
 import com.appjars.saturn.model.Identifiable;
 import com.appjars.saturn.model.QuerySpec;
 
-public interface JpaDaoSupport<T extends Identifiable<K>, K extends Serializable> extends CrudDao<T, K> {
+public interface JpaDaoSupport<S extends Serializable, T extends Identifiable<K>, K extends Serializable>
+		extends ConversionCrudDaoMixin<S, T, K> {
 
 	EntityManager getEntityManager();
 
@@ -35,29 +37,34 @@ public interface JpaDaoSupport<T extends Identifiable<K>, K extends Serializable
 				+ " is not being implemented, try overriding this method");
 	}
 
-	default K save(T entity) {
-		getEntityManager().persist(entity);
-		return entity.getId();
+	@Override
+	default K save(S entity) {
+		T persistentEntity = convertTo(entity);
+		getEntityManager().persist(persistentEntity);
+		return persistentEntity.getId();
 	}
 
 	@Override
-	default void saveOrUpdate(T entity) {
-		getEntityManager().persist(entity);
+	default void saveOrUpdate(S entity) {
+		T persistentEntity = convertTo(entity);
+		getEntityManager().persist(persistentEntity);
 	}
 
 	@Override
-	default void delete(T entity) {
-		getEntityManager().remove(entity);
+	default void delete(S entity) {
+		T persistentEntity = convertTo(entity);
+		getEntityManager().remove(persistentEntity);
 	}
 
 	@Override
-	default Optional<T> findById(K id) {
-		return FilterProcesor.<T, K>of(getEntityManager(), getPersistentClass()).findById(id);
+	default Optional<S> findById(K id) {
+		return FilterProcesor.<T, K>of(getEntityManager(), getPersistentClass()).findById(id).map(this::convertFrom);
 	}
 
 	@Override
-	default List<T> findAll() {
-		return FilterProcesor.<T, K>of(getEntityManager(), getPersistentClass()).findAll();
+	default List<S> findAll() {
+		return FilterProcesor.<T, K>of(getEntityManager(), getPersistentClass()).findAll().stream()
+				.map(this::convertFrom).collect(Collectors.toList());
 	}
 
 	@Override
@@ -66,8 +73,9 @@ public interface JpaDaoSupport<T extends Identifiable<K>, K extends Serializable
 	}
 
 	@Override
-	default List<T> filter(QuerySpec<K> filter) {
-		return FilterProcesor.<T, K>of(getEntityManager(), getPersistentClass()).filter(filter);
+	default List<S> filter(QuerySpec<K> filter) {
+		return FilterProcesor.<T, K>of(getEntityManager(), getPersistentClass()).filter(filter).stream()
+				.map(this::convertFrom).collect(Collectors.toList());
 	}
 
 	static class FilterProcesor<T extends Identifiable<K>, K extends Serializable> {
@@ -148,7 +156,7 @@ public interface JpaDaoSupport<T extends Identifiable<K>, K extends Serializable
 		private <U> CriteriaQuery<U> addWhere(final QuerySpec<K> baseFilter, CriteriaBuilder cb, CriteriaQuery<U> cq,
 				Root<T> root) {
 
-			if (baseFilter.getExcludeIds() != null && baseFilter.getExcludeIds().length > 0) {
+			if (baseFilter.getExcludeIds() != null && baseFilter.getExcludeIds().size() > 0) {
 				cq.where(cb.not(root.get("id").in(Arrays.asList(baseFilter.getExcludeIds()))));
 			}
 			return cq;

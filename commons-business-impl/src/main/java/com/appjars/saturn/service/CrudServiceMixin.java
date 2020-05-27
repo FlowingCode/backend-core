@@ -15,11 +15,10 @@ import com.appjars.saturn.dao.DeletionDao;
 import com.appjars.saturn.dao.QueryDao;
 import com.appjars.saturn.dao.UpdateDao;
 import com.appjars.saturn.model.Errors;
-import com.appjars.saturn.model.Identifiable;
 import com.appjars.saturn.service.validation.DeletionValidator;
-import com.appjars.saturn.service.validation.ValidationException;
-import com.appjars.saturn.service.validation.ValidationSupport;
-import com.appjars.saturn.service.validation.Validator;
+import com.appjars.saturn.validation.ValidationException;
+import com.appjars.saturn.validation.ValidationSupport;
+import com.appjars.saturn.validation.Validator;
 
 /**
  * A special kind of service that allows entities CRUD operations
@@ -29,18 +28,18 @@ import com.appjars.saturn.service.validation.Validator;
  * @param <T>
  * @param <K>
  */
-public interface CrudServiceMixin<T extends Identifiable<K>, K extends Serializable> extends CreationServiceMixin<T, K>,
-		UpdateServiceMixin<T, K>, DeletionServiceMixin<T, K>, QueryServiceMixin<T, K>, CrudService<T, K> {
+public interface CrudServiceMixin<T extends Serializable, K extends Serializable> extends CreationServiceMixin<T, K>,
+		UpdateServiceMixin<T, K>, DeletionServiceMixin<T>, QueryServiceMixin<T, K>, CrudService<T, K> {
 
 	default CreationDao<T, K> getCreationDao() {
 		return getCrudDao();
 	}
 
-	default UpdateDao<T, K> getUpdateDao() {
+	default UpdateDao<T> getUpdateDao() {
 		return getCrudDao();
 	}
 
-	default DeletionDao<T, K> getDeletionDao() {
+	default DeletionDao<T> getDeletionDao() {
 		return getCrudDao();
 	}
 
@@ -50,6 +49,7 @@ public interface CrudServiceMixin<T extends Identifiable<K>, K extends Serializa
 
 	CrudDao<T, K> getCrudDao();
 
+	@SuppressWarnings("unchecked")
 	@Transactional(value = TxType.REQUIRED, rollbackOn = Exception.class)
 	@Override
 	default void deleteById(K id, Errors errors) {

@@ -1,4 +1,4 @@
-package com.appjars.saturn.service.validation;
+package com.appjars.saturn.validation;
 
 import java.io.Serializable;
 import java.util.Collections;

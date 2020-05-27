@@ -10,11 +10,10 @@ import javax.transaction.Transactional.TxType;
 
 import com.appjars.saturn.dao.DeletionDao;
 import com.appjars.saturn.model.Errors;
-import com.appjars.saturn.model.Identifiable;
 import com.appjars.saturn.service.validation.DeletionValidator;
-import com.appjars.saturn.service.validation.ValidationException;
-import com.appjars.saturn.service.validation.ValidationSupport;
-import com.appjars.saturn.service.validation.Validator;
+import com.appjars.saturn.validation.ValidationException;
+import com.appjars.saturn.validation.ValidationSupport;
+import com.appjars.saturn.validation.Validator;
 
 /**
  * A special kind of service that allows entities deletion
@@ -24,9 +23,9 @@ import com.appjars.saturn.service.validation.Validator;
  * @param <T>
  * @param <K>
  */
-public interface DeletionServiceMixin<T extends Identifiable<K>, K extends Serializable> extends DeletionService<T, K> {
+public interface DeletionServiceMixin<T extends Serializable> extends DeletionService<T> {
 
-	DeletionDao<T, K> getDeletionDao();
+	DeletionDao<T> getDeletionDao();
 
 	@SuppressWarnings("unchecked")
 	@Transactional(value = TxType.REQUIRED, rollbackOn = { Exception.class, ValidationException.class })

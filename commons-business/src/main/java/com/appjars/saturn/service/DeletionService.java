@@ -3,7 +3,6 @@ package com.appjars.saturn.service;
 import java.io.Serializable;
 
 import com.appjars.saturn.model.Errors;
-import com.appjars.saturn.model.Identifiable;
 
 /**
  * A special kind of service that allows entities deletion
@@ -13,7 +12,7 @@ import com.appjars.saturn.model.Identifiable;
  * @param <T>
  * @param <K>
  */
-public interface DeletionService<T extends Identifiable<K>, K extends Serializable> {
+public interface DeletionService<T extends Serializable> {
 
 	void delete(T entity, Errors errors);
 

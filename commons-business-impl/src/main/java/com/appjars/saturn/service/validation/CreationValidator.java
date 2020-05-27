@@ -5,6 +5,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 
 import com.appjars.saturn.model.Errors;
+import com.appjars.saturn.validation.Validator;
 
 public interface CreationValidator<T extends Serializable> extends Validator<T> {
 

@@ -5,6 +5,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 
 import com.appjars.saturn.model.Errors;
+import com.appjars.saturn.validation.Validator;
 
 public interface UpdateValidator<T extends Serializable> extends Validator<T> {
 
@@ -16,8 +17,7 @@ public interface UpdateValidator<T extends Serializable> extends Validator<T> {
 		return (t, errors) -> this.validate(t, errors) && then.validate(t, errors);
 	}
 
-	static <T extends Serializable> UpdateValidator<T> of(Predicate<T> predicate,
-			BiConsumer<T, Errors> errorHandler) {
+	static <T extends Serializable> UpdateValidator<T> of(Predicate<T> predicate, BiConsumer<T, Errors> errorHandler) {
 		return (t, errors) -> {
 			if (predicate.test(t))
 				return true;

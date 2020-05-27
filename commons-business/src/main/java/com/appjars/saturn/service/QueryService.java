@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Optional;
 
 import com.appjars.saturn.model.QuerySpec;
-import com.appjars.saturn.model.Identifiable;
 
 /**
  * A special kind of service that allows entities querying
@@ -15,7 +14,7 @@ import com.appjars.saturn.model.Identifiable;
  * @param <T>
  * @param <K>
  */
-public interface QueryService<T extends Identifiable<K>, K extends Serializable> {
+public interface QueryService<T extends Serializable, K extends Serializable> {
 
 	Optional<T> findById(K id);
 

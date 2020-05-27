@@ -1,4 +1,4 @@
-package com.appjars.saturn.service.validation;
+package com.appjars.saturn.validation;
 
 import com.appjars.saturn.exception.BaseException;
 import com.appjars.saturn.model.ErrorDescription;
