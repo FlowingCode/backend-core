@@ -1,5 +1,3 @@
-[![Build Status](https://jenkins.flowingcode.com/view/AppJars/job/aj-sat-commons-backend/badge/icon)](https://jenkins.flowingcode.com/view/AppJars/job/aj-sat-commons-backend/)
-
 # Commons Backend
 
 Commons utilities for back-end enterprise application development
@@ -9,6 +7,8 @@ Commons utilities for back-end enterprise application development
 It's a set of common interfaces and implementations that allows to implement some of the principles of a clean architectural design for enterprise applications.
 
 For more info, please refer to [Documentation](src/site/markdown/index.md)
+
+Snapshots are available [here](https://maven.appjars.com/saturn/snapshots). 
 
 ## Download release
 
