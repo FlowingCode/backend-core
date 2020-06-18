@@ -47,9 +47,11 @@ public interface JpaDaoSupport<S extends Serializable, T extends Identifiable<K>
 	default Class<T> getPersistentClass() {
 		Type[] interfaces = getClass().getGenericInterfaces();
 		for (Type type : interfaces) {
-			ParameterizedType ptype = (ParameterizedType) type;
-			if (ptype.getRawType().equals(JpaDaoSupport.class)) {
-				return (Class<T>) ptype.getActualTypeArguments()[0];
+			if (type instanceof ParameterizedType) {
+				ParameterizedType ptype = (ParameterizedType) type;
+				if (ptype.getRawType().equals(JpaDaoSupport.class)) {
+					return (Class<T>) ptype.getActualTypeArguments()[0];
+				}
 			}
 		}
 		throw new UnsupportedOperationException("Couldn't find entity type, probably " + JpaDaoSupport.class
