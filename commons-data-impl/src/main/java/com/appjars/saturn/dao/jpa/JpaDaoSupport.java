@@ -50,7 +50,7 @@ public interface JpaDaoSupport<S extends Serializable, T extends Identifiable<K>
 			if (type instanceof ParameterizedType) {
 				ParameterizedType ptype = (ParameterizedType) type;
 				if (ptype.getRawType().equals(JpaDaoSupport.class)) {
-					return (Class<T>) ptype.getActualTypeArguments()[0];
+					return (Class<T>) ptype.getActualTypeArguments()[1];
 				}
 			}
 		}
