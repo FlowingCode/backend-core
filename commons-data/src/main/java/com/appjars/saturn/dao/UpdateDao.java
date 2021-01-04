@@ -19,9 +19,7 @@
  */
 package com.appjars.saturn.dao;
 
-import java.io.Serializable;
-
-public interface UpdateDao<T extends Serializable> {
+public interface UpdateDao<T> {
 
 	void saveOrUpdate(T entity);
 

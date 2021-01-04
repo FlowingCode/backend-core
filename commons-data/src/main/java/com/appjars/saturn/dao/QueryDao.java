@@ -25,7 +25,7 @@ import java.util.Optional;
 
 import com.appjars.saturn.model.QuerySpec;
 
-public interface QueryDao<T extends Serializable, K extends Serializable> {
+public interface QueryDao<T, K extends Serializable> {
 
 	Optional<T> findById(K id);
 
