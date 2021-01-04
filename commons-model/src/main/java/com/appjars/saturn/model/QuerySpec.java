@@ -23,14 +23,17 @@ import java.beans.BeanInfo;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Set;
+import java.util.stream.Collectors;
 
-import lombok.Builder;
+import com.appjars.saturn.model.constraints.AttributeBetweenConstraint;
+import com.appjars.saturn.model.constraints.AttributeInConstraint;
+import com.appjars.saturn.model.constraints.AttributeLikeConstraint;
+import com.appjars.saturn.model.constraints.AttributeRelationalConstraint;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -42,8 +45,6 @@ public class QuerySpec<K extends Serializable> {
 		ASC, DESC;
 	}
 
-	private Collection<K> excludeIds;
-
 	private String[] returnedAttributes;
 
 	private Map<String, Order> orders;
@@ -52,7 +53,7 @@ public class QuerySpec<K extends Serializable> {
 
 	private Integer maxResult;
 
-	private Set<Constraint> constraints = new HashSet<>();
+	private final Collection<Constraint> constraints = new ArrayList<>();
 
 	public void addOrder(String property, Order order) {
 		if (this.orders == null) {
@@ -65,22 +66,30 @@ public class QuerySpec<K extends Serializable> {
 		addOrder(property, Order.ASC);
 	}
 	
+	public void addConstraint(Constraint constraint) {
+		this.constraints.add(constraint);
+	}
+	
+	@Deprecated
 	public void addEqualsConstraint(String attribute, Object value) {
-		this.constraints.add(new Constraint(attribute, Constraint.Type.EQUALS, value));
+		addConstraint(ConstraintBuilder.equal(attribute, value));
 	}
 
+	@Deprecated
 	public void addNotEqualsConstraint(String attribute, Object value) {
-		this.constraints.add(new Constraint(attribute, Constraint.Type.EQUALS, value));
+		addConstraint(ConstraintBuilder.notEqual(attribute, value));
 	}
+	@Deprecated
 
 	public void addLikeConstraint(String attribute, String value) {
-		this.constraints.add(new Constraint(attribute, Constraint.Type.LIKE, value));
+		addConstraint(ConstraintBuilder.like(attribute, value));
 	}
 
-	public void addBetweenConstraint(String attribute, Object valueStart, Object valueEnd) {
-		this.constraints.add(new Constraint(attribute, valueStart, valueEnd));
+	@Deprecated
+	public <T extends Comparable<T>> void addBetweenConstraint(String attribute, T valueStart, T valueEnd) {
+		addConstraint(ConstraintBuilder.between(attribute, valueStart, valueEnd));
 	}
-
+	
 	@Override
 	public String toString() {
 		StringBuilder buffer = new StringBuilder(getClass().getName());
@@ -98,4 +107,17 @@ public class QuerySpec<K extends Serializable> {
 		return buffer.toString();
 	}
 
+	@Deprecated
+	public <K> void setExcludeIds(Collection<K> ids) {
+		constraints.removeIf(c->c instanceof AttributeInConstraint && ((AttributeInConstraint)c).getAttribute().equals("id"));
+		if (ids!=null) {			
+			addConstraint(ConstraintBuilder.not(ConstraintBuilder.in("id", ids)));
+		}
+	}
+	
+	@Deprecated
+	public Collection<?> getExcludeIds() {
+		return constraints.stream().filter(c->c instanceof AttributeInConstraint && ((AttributeInConstraint)c).getAttribute().equals("id"))
+			.flatMap(c->((AttributeInConstraint)c).getValues().stream()).collect(Collectors.toList());
+	}
 }
