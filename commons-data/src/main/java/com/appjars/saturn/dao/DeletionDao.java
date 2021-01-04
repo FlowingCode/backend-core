@@ -19,9 +19,7 @@
  */
 package com.appjars.saturn.dao;
 
-import java.io.Serializable;
-
-public interface DeletionDao<T extends Serializable> {
+public interface DeletionDao<T> {
 
 	void delete(T entity);
 
