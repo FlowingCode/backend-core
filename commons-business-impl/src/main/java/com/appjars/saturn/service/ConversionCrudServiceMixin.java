@@ -22,7 +22,6 @@ package com.appjars.saturn.service;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
@@ -45,48 +44,53 @@ import com.appjars.saturn.validation.Validator;
  * @author mlopez
  * @author jgodoy
  *
- * @param <T>
- * @param <K>
+ * @param <B> The type of the business layer entity
+ * @param <P> The type of the persistence layer entity
+ * @param <K> The type of the entity identifier 
  */
-public interface CrudServiceMixin<T extends Serializable, K extends Serializable> extends CreationServiceMixin<T, K>,
-		UpdateServiceMixin<T, K>, DeletionServiceMixin<T>, QueryServiceMixin<T, K>, CrudService<T, K> {
+public interface ConversionCrudServiceMixin<B extends Serializable, P, K extends Serializable> 
+	extends ConversionCreationServiceMixin<B, P, K>,
+		ConversionUpdateServiceMixin<B, P, K>, 
+		ConversionDeletionServiceMixin<B, P>, 
+		ConversionQueryServiceMixin<B, P, K>,
+		BusinessConversionSupport<B, P>, 
+		CrudService<B, K> {
 
-	default CreationDao<T, K> getCreationDao() {
+	default CreationDao<P, K> getCreationDao() {
 		return getCrudDao();
 	}
 
-	default UpdateDao<T> getUpdateDao() {
+	default UpdateDao<P> getUpdateDao() {
 		return getCrudDao();
 	}
 
-	default DeletionDao<T> getDeletionDao() {
+	default DeletionDao<P> getDeletionDao() {
 		return getCrudDao();
 	}
 
-	default QueryDao<T, K> getQueryDao() {
+	default QueryDao<P, K> getQueryDao() {
 		return getCrudDao();
 	}
 
-	CrudDao<T, K> getCrudDao();
+	CrudDao<P, K> getCrudDao();
 
 	@SuppressWarnings("unchecked")
 	@Transactional(value = TxType.REQUIRED, rollbackOn = Exception.class)
 	@Override
 	default void deleteById(K id, Errors errors) {
 		Objects.requireNonNull(errors, "errors cannot be null");
-		Optional<T> entity = getQueryDao().findById(id);
+		P persistentEntity = getQueryDao().findById(id).orElse(null);
 
-		entity.ifPresent(ent -> {
-			if (this instanceof ValidationSupport) {
-				List<Validator<T>> validators = ((ValidationSupport<T>) this).getValidators().stream()
-						.filter(item -> (item instanceof DeletionValidator)).collect(Collectors.toList());
-				validators.stream().forEach(validator -> validator.validate(ent, errors));
-				if (errors.hasErrors()) {
-					throw new ValidationException(errors);
-				}
+		if (persistentEntity!=null && this instanceof ValidationSupport) {
+			B businessEntity = convertToBusiness(persistentEntity); 
+			List<Validator<B>> validators = ((ValidationSupport<B>) this).getValidators().stream()
+				.filter(item -> (item instanceof DeletionValidator)).collect(Collectors.toList());
+			validators.stream().forEach(validator -> validator.validate(businessEntity, errors));
+			if (errors.hasErrors()) {
+				throw new ValidationException(errors);
 			}
-			getDeletionDao().delete(ent);
-		});
+			getDeletionDao().delete(persistentEntity);
+		}
 	}
 
 }
