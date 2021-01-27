@@ -47,7 +47,7 @@ public interface ConversionQueryServiceMixin<B extends Serializable, P, K extend
 	@Transactional(value = TxType.REQUIRED, rollbackOn = Exception.class)
 	@Override
 	default Optional<B> findById(K id) {
-		return getQueryDao().findById(id).map(this::convertToBusiness);
+		return Optional.ofNullable(id).flatMap(getQueryDao()::findById).map(this::convertToBusiness);
 	}
 
 	@Transactional(value = TxType.REQUIRED, rollbackOn = Exception.class)
