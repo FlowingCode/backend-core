@@ -20,6 +20,7 @@
 package com.appjars.saturn.model;
 
 import java.io.Serializable;
+import java.util.Optional;
 
 /**
  * Base class for entities
@@ -63,6 +64,16 @@ public abstract class BaseEntity<K extends Serializable> implements Identifiable
 			return false;
 		}
 		return true;
+	}
+	
+	@Override
+	public String toString() {
+		K id = getId();
+		if (id!=null) {
+			return this.getClass().getName()+"@"+id;
+		} else {
+			return this.getClass().getName()+"@transient:"+Integer.toHexString(System.identityHashCode(this));
+		}
 	}
 
 }
