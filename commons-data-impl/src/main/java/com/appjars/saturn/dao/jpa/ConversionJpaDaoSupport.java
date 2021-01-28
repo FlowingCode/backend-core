@@ -20,6 +20,8 @@
 package com.appjars.saturn.dao.jpa;
 
 import java.io.Serializable;
+import java.lang.reflect.Field;
+import java.lang.reflect.Member;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Arrays;
@@ -29,10 +31,12 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityNotFoundException;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import javax.persistence.metamodel.EntityType;
 
 import com.appjars.saturn.dao.CrudDao;
 import com.appjars.saturn.model.Identifiable;
@@ -46,7 +50,7 @@ public interface ConversionJpaDaoSupport<S, T extends Identifiable<K>, K extends
 	T convertTo(S source);
 
 	S convertFrom(T source);
-	
+		
 	@SuppressWarnings("unchecked")
 	default Class<T> getPersistentClass() {
 		Type[] interfaces = getClass().getGenericInterfaces();
@@ -72,13 +76,31 @@ public interface ConversionJpaDaoSupport<S, T extends Identifiable<K>, K extends
 	@Override
 	default void saveOrUpdate(S entity) {
 		T persistentEntity = convertTo(entity);
-		getEntityManager().persist(persistentEntity);
+
+		/*
+		 Entity is the entity class and has a public id field that is a @GeneratedValue primary key. 
+		 (It also assumes that the row with this ID hasn't been removed from the database table by an
+		 external process in the time after the entity was detached.
+		 */
+		
+		//https://stackoverflow.com/a/40524287/1297272
+		EntityManager em = getEntityManager();
+		
+		if (persistentEntity.getId() != null // must not be transient
+		&& !em.contains(persistentEntity) // must not be managed now
+		&& em.find(getPersistentClass(), persistentEntity.getId()) != null) { // must not have been removed
+			persistentEntity = em.merge(persistentEntity);
+		}
+				
+		em.persist(persistentEntity);
 	}
 
 	@Override
 	default void delete(S entity) {
 		T persistentEntity = convertTo(entity);
-		getEntityManager().remove(persistentEntity);
+		EntityManager em = getEntityManager();
+		persistentEntity = em.getReference(getPersistentClass(), persistentEntity.getId());
+		em.remove(persistentEntity);
 	}
 
 	@Override
