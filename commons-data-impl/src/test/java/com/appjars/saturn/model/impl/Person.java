@@ -33,6 +33,8 @@ import com.appjars.saturn.model.BaseEntity;
 @Entity
 public class Person extends BaseEntity<Integer> {
 
+	private Integer id;
+	
 	@Column
 	private String name;
 	@Column
@@ -69,6 +71,11 @@ public class Person extends BaseEntity<Integer> {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	public Integer getId() {
 		return id;
+	}
+	
+	@Override
+	public void setId(Integer id) {
+		this.id = id;		
 	}
 
 }
