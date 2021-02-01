@@ -24,6 +24,7 @@ import java.util.Date;
 @SuppressWarnings("serial")
 public class Person extends BaseEntity<Integer> {
 
+	private Integer id;
 	private String name;
 	private String lastName;
 	private Date birthDay;
@@ -55,6 +56,11 @@ public class Person extends BaseEntity<Integer> {
 	@Override
 	public Integer getId() {
 		return id;
+	}
+	
+	@Override
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
 }

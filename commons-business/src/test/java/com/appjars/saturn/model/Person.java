@@ -24,6 +24,7 @@ import java.time.LocalDate;
 @SuppressWarnings("serial")
 public class Person extends BaseEntity<Integer> {
 
+	private Integer id;
 	private String name;
 	private String lastName;
 	private LocalDate birthDay;
@@ -52,4 +53,8 @@ public class Person extends BaseEntity<Integer> {
 		return id;
 	}
 	
+	@Override
+	public void setId(Integer id) {
+		this.id = id;		
+	}
 }
