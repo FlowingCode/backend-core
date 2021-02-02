@@ -103,7 +103,7 @@ class JpaDaoSupportTest {
 	}
 
 	@Test
-	void testSaveOrUpdate() {
+	void testUpdate() {
 		fail("Not yet implemented");
 	}
 

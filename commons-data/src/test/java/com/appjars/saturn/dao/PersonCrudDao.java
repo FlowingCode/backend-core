@@ -52,9 +52,8 @@ public class PersonCrudDao implements CrudDao<Person, Integer> {
 	}
 
 	@Override
-	public void saveOrUpdate(Person entity) {
+	public void update(Person entity) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
