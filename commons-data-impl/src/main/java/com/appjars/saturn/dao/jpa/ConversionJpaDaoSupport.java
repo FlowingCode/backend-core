@@ -20,23 +20,20 @@
 package com.appjars.saturn.dao.jpa;
 
 import java.io.Serializable;
-import java.lang.reflect.Field;
-import java.lang.reflect.Member;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityNotFoundException;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import javax.persistence.metamodel.EntityType;
 
 import com.appjars.saturn.dao.CrudDao;
 import com.appjars.saturn.model.Identifiable;
@@ -69,30 +66,16 @@ public interface ConversionJpaDaoSupport<S, T extends Identifiable<K>, K extends
 	@Override
 	default K save(S entity) {
 		T persistentEntity = convertTo(entity);
-		getEntityManager().persist(persistentEntity);
-		return persistentEntity.getId();
+		persistentEntity = getEntityManager().merge(persistentEntity);
+		K id = persistentEntity.getId();
+		return Objects.requireNonNull(id, "id");
 	}
 
 	@Override
 	default void saveOrUpdate(S entity) {
 		T persistentEntity = convertTo(entity);
-
-		/*
-		 Entity is the entity class and has a public id field that is a @GeneratedValue primary key. 
-		 (It also assumes that the row with this ID hasn't been removed from the database table by an
-		 external process in the time after the entity was detached.
-		 */
-		
-		//https://stackoverflow.com/a/40524287/1297272
-		EntityManager em = getEntityManager();
-		
-		if (persistentEntity.getId() != null // must not be transient
-		&& !em.contains(persistentEntity) // must not be managed now
-		&& em.find(getPersistentClass(), persistentEntity.getId()) != null) { // must not have been removed
-			persistentEntity = em.merge(persistentEntity);
-		}
-				
-		em.persist(persistentEntity);
+		Objects.requireNonNull(persistentEntity.getId(), "id");
+		getEntityManager().merge(persistentEntity);
 	}
 
 	@Override
