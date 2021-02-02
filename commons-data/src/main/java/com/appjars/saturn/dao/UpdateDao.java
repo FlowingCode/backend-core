@@ -21,6 +21,6 @@ package com.appjars.saturn.dao;
 
 public interface UpdateDao<T> {
 
-	void saveOrUpdate(T entity);
+	void update(T entity);
 
 }

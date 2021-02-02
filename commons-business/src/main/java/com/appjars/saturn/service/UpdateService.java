@@ -33,6 +33,6 @@ import com.appjars.saturn.model.Errors;
  */
 public interface UpdateService<T extends Serializable, K extends Serializable> {
 
-	void saveOrUpdate(T entity, Errors errors);
+	void update(T entity, Errors errors);
 
 }

@@ -72,7 +72,7 @@ public interface ConversionJpaDaoSupport<S, T extends Identifiable<K>, K extends
 	}
 
 	@Override
-	default void saveOrUpdate(S entity) {
+	default void update(S entity) {
 		T persistentEntity = convertTo(entity);
 		Objects.requireNonNull(persistentEntity.getId(), "id");
 		getEntityManager().merge(persistentEntity);

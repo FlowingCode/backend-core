@@ -51,7 +51,7 @@ public interface ConversionUpdateServiceMixin<B extends Serializable, P, K exten
 	@SuppressWarnings("unchecked")
 	@Transactional(value = TxType.REQUIRED, rollbackOn = { Exception.class, ValidationException.class })
 	@Override
-	default void saveOrUpdate(B entity, Errors errors) {
+	default void update(B entity, Errors errors) {
 		Objects.requireNonNull(errors, "Errors cannot be null");
 		if (this instanceof ValidationSupport) {
 			List<Validator<B>> validators = ((ValidationSupport<B>) this).getValidators().stream()
@@ -61,7 +61,7 @@ public interface ConversionUpdateServiceMixin<B extends Serializable, P, K exten
 				throw new ValidationException(errors);
 			}
 		}
-		getUpdateDao().saveOrUpdate(convertToPersistence(entity));
+		getUpdateDao().update(convertToPersistence(entity));
 	}
 
 }
