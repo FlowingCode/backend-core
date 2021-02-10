@@ -21,8 +21,6 @@ package com.appjars.saturn.service.validation;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.function.BiConsumer;
-import java.util.function.Predicate;
 
 import com.appjars.saturn.model.ErrorDescription;
 import com.appjars.saturn.validation.Validator;

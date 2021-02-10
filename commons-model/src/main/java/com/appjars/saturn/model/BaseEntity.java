@@ -21,7 +21,6 @@ package com.appjars.saturn.model;
 
 import java.io.Serializable;
 import java.util.Objects;
-import java.util.Optional;
 
 /**
  * Base class for entities

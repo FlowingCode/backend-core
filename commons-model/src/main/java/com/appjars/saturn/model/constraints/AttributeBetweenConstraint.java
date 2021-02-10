@@ -2,8 +2,6 @@ package com.appjars.saturn.model.constraints;
 
 import java.util.Objects;
 
-import com.appjars.saturn.model.Constraint;
-
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;

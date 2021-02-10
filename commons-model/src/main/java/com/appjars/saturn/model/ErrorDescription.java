@@ -20,7 +20,6 @@
 package com.appjars.saturn.model;
 
 import java.io.Serializable;
-import java.util.Objects;
 
 /**
  * Description of a given error
