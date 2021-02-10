@@ -19,9 +19,10 @@
  */
 package com.appjars.saturn.validation;
 
+import java.util.List;
+
 import com.appjars.saturn.exception.BaseException;
 import com.appjars.saturn.model.ErrorDescription;
-import com.appjars.saturn.model.Errors;
 
 /**
  * Exception representing business rules validations fails
@@ -37,7 +38,7 @@ public class ValidationException extends BaseException {
 		super();
 	}
 
-	public ValidationException(Errors errors) {
+	public ValidationException(List<ErrorDescription> errors) {
 		super(errors);
 	}
 
@@ -49,7 +50,7 @@ public class ValidationException extends BaseException {
 		super(messageKey);
 	}
 
-	public ValidationException(Throwable cause, Errors errors) {
+	public ValidationException(Throwable cause, List<ErrorDescription> errors) {
 		super(cause, errors);
 	}
 

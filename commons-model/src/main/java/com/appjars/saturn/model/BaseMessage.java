@@ -20,6 +20,7 @@
 package com.appjars.saturn.model;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -34,6 +35,10 @@ import lombok.Setter;
 @Setter
 public abstract class BaseMessage implements Serializable {
 
+	protected static final String FIELD_CANNOT_BE_NULL = "field cannot be null";
+
+	protected static final String MESSAGE_KEY_CANNOT_BE_NULL = "messageKey cannot be null";
+
 	private static final long serialVersionUID = 1L;
 
 	private String field;
@@ -44,16 +49,20 @@ public abstract class BaseMessage implements Serializable {
 
 	private String defaultMessage;
 
-	public BaseMessage(String messageKey) {
+	protected BaseMessage(String messageKey) {
+		Objects.requireNonNull(messageKey, MESSAGE_KEY_CANNOT_BE_NULL);
 		this.messageKey = messageKey;
 	}
 
-	public BaseMessage(String messageKey, Serializable[] messageKeyValues) {
+	protected BaseMessage(String messageKey, Serializable[] messageKeyValues) {
+		Objects.requireNonNull(messageKey, MESSAGE_KEY_CANNOT_BE_NULL);
 		this.messageKey = messageKey;
 		this.messageKeyValues = messageKeyValues;
 	}
 
-	public BaseMessage(String field, String messageKey, Serializable... messageKeyValues) {
+	protected BaseMessage(String field, String messageKey, Serializable... messageKeyValues) {
+		Objects.requireNonNull(field, FIELD_CANNOT_BE_NULL);
+		Objects.requireNonNull(messageKey, MESSAGE_KEY_CANNOT_BE_NULL);
 		this.field = field;
 		this.messageKey = messageKey;
 		this.messageKeyValues = messageKeyValues;

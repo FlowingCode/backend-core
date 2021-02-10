@@ -32,7 +32,7 @@ import com.appjars.saturn.dao.CrudDao;
 import com.appjars.saturn.dao.DeletionDao;
 import com.appjars.saturn.dao.QueryDao;
 import com.appjars.saturn.dao.UpdateDao;
-import com.appjars.saturn.model.Errors;
+import com.appjars.saturn.model.ErrorDescription;
 import com.appjars.saturn.service.validation.DeletionValidator;
 import com.appjars.saturn.validation.ValidationException;
 import com.appjars.saturn.validation.ValidationSupport;
@@ -77,16 +77,14 @@ public interface ConversionCrudServiceMixin<B extends Serializable, P, K extends
 	@SuppressWarnings("unchecked")
 	@Transactional(value = TxType.REQUIRED, rollbackOn = Exception.class)
 	@Override
-	default void deleteById(K id, Errors errors) {
-		Objects.requireNonNull(errors, "errors cannot be null");
+	default void deleteById(K id) {
 		P persistentEntity = getQueryDao().findById(id).orElse(null);
-
 		if (persistentEntity!=null && this instanceof ValidationSupport) {
-			B businessEntity = convertToBusiness(persistentEntity); 
+			B entity = convertToBusiness(persistentEntity); 
 			List<Validator<B>> validators = ((ValidationSupport<B>) this).getValidators().stream()
 				.filter(item -> (item instanceof DeletionValidator)).collect(Collectors.toList());
-			validators.stream().forEach(validator -> validator.validate(businessEntity, errors));
-			if (errors.hasErrors()) {
+			List<ErrorDescription> errors = validators.stream().flatMap(val->val.validate(entity).stream()).collect(Collectors.toList());
+			if (!errors.isEmpty()) {
 				throw new ValidationException(errors);
 			}
 			getDeletionDao().delete(persistentEntity);

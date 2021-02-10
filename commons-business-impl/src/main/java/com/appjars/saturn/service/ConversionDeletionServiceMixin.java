@@ -28,7 +28,7 @@ import javax.transaction.Transactional;
 import javax.transaction.Transactional.TxType;
 
 import com.appjars.saturn.dao.DeletionDao;
-import com.appjars.saturn.model.Errors;
+import com.appjars.saturn.model.ErrorDescription;
 import com.appjars.saturn.service.validation.DeletionValidator;
 import com.appjars.saturn.validation.ValidationException;
 import com.appjars.saturn.validation.ValidationSupport;
@@ -50,13 +50,12 @@ public interface ConversionDeletionServiceMixin<B extends Serializable, P> exten
 	@SuppressWarnings("unchecked")
 	@Transactional(value = TxType.REQUIRED, rollbackOn = { Exception.class, ValidationException.class })
 	@Override
-	default void delete(B entity, Errors errors) {
-		Objects.requireNonNull(errors, "errors cannot be null");
+	default void delete(B entity) {
 		if (this instanceof ValidationSupport) {
 			List<Validator<B>> validators = ((ValidationSupport<B>) this).getValidators().stream()
 					.filter(item -> (item instanceof DeletionValidator)).collect(Collectors.toList());
-			validators.stream().forEach(validator -> validator.validate(entity, errors));
-			if (errors.hasErrors()) {
+			List<ErrorDescription> errors = validators.stream().flatMap(val->val.validate(entity).stream()).collect(Collectors.toList());
+			if (!errors.isEmpty()) {
 				throw new ValidationException(errors);
 			}
 		}

@@ -33,7 +33,7 @@ import com.appjars.saturn.dao.CrudDao;
 import com.appjars.saturn.dao.DeletionDao;
 import com.appjars.saturn.dao.QueryDao;
 import com.appjars.saturn.dao.UpdateDao;
-import com.appjars.saturn.model.Errors;
+import com.appjars.saturn.model.ErrorDescription;
 import com.appjars.saturn.service.validation.DeletionValidator;
 import com.appjars.saturn.validation.ValidationException;
 import com.appjars.saturn.validation.ValidationSupport;
@@ -72,20 +72,17 @@ public interface CrudServiceMixin<T extends Serializable, K extends Serializable
 	@SuppressWarnings("unchecked")
 	@Transactional(value = TxType.REQUIRED, rollbackOn = Exception.class)
 	@Override
-	default void deleteById(K id, Errors errors) {
-		Objects.requireNonNull(errors, "errors cannot be null");
-		Optional<T> entity = getQueryDao().findById(id);
-
-		entity.ifPresent(ent -> {
+	default void deleteById(K id) {
+		getQueryDao().findById(id).ifPresent(entity -> {
 			if (this instanceof ValidationSupport) {
 				List<Validator<T>> validators = ((ValidationSupport<T>) this).getValidators().stream()
 						.filter(item -> (item instanceof DeletionValidator)).collect(Collectors.toList());
-				validators.stream().forEach(validator -> validator.validate(ent, errors));
-				if (errors.hasErrors()) {
+				List<ErrorDescription> errors = validators.stream().flatMap(val->val.validate(entity).stream()).collect(Collectors.toList());
+				if (!errors.isEmpty()) {
 					throw new ValidationException(errors);
 				}
 			}
-			getDeletionDao().delete(ent);
+			getDeletionDao().delete(entity);
 		});
 	}
 
