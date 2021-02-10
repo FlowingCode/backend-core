@@ -21,7 +21,6 @@ package com.appjars.saturn.service;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
@@ -53,7 +52,6 @@ public interface ConversionCrudServiceMixin<B extends Serializable, P, K extends
 		ConversionUpdateServiceMixin<B, P, K>, 
 		ConversionDeletionServiceMixin<B, P>, 
 		ConversionQueryServiceMixin<B, P, K>,
-		BusinessConversionSupport<B, P>, 
 		CrudService<B, K> {
 
 	default CreationDao<P, K> getCreationDao() {

@@ -29,10 +29,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.appjars.saturn.model.constraints.AttributeBetweenConstraint;
 import com.appjars.saturn.model.constraints.AttributeInConstraint;
-import com.appjars.saturn.model.constraints.AttributeLikeConstraint;
-import com.appjars.saturn.model.constraints.AttributeRelationalConstraint;
 
 import lombok.Getter;
 import lombok.Setter;
