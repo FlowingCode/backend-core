@@ -21,8 +21,6 @@ package com.appjars.saturn.service;
 
 import java.io.Serializable;
 
-import com.appjars.saturn.model.Errors;
-
 /**
  * A special kind of service that allows entities deletion
  * 
@@ -33,6 +31,6 @@ import com.appjars.saturn.model.Errors;
  */
 public interface DeletionService<T extends Serializable> {
 
-	void delete(T entity, Errors errors);
+	void delete(T entity);
 
 }

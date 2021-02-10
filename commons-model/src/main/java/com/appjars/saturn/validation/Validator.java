@@ -20,8 +20,10 @@
 package com.appjars.saturn.validation;
 
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.List;
 
-import com.appjars.saturn.model.Errors;
+import com.appjars.saturn.model.ErrorDescription;
 
 /**
  * 
@@ -34,6 +36,10 @@ import com.appjars.saturn.model.Errors;
 @FunctionalInterface
 public interface Validator<T extends Serializable> {
 
-	public boolean validate(T target, Errors errors);
+	public static List<ErrorDescription> success() {
+		return Collections.emptyList();
+	}
+	
+	public List<ErrorDescription> validate(T target);
 
 }

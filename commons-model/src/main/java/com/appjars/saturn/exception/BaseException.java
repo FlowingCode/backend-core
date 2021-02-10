@@ -19,8 +19,10 @@
  */
 package com.appjars.saturn.exception;
 
+import java.io.Serializable;
+import java.util.List;
+
 import com.appjars.saturn.model.ErrorDescription;
-import com.appjars.saturn.model.Errors;
 
 /**
  * Base Exception with support for I18N
@@ -36,9 +38,9 @@ public abstract class BaseException extends RuntimeException {
 
 	private final String messageKey;
 
-	private final Object[] messageKeyValues;
+	private final Serializable[] messageKeyValues;
 
-	private Errors errors;
+	private List<ErrorDescription> errors;
 
 	public BaseException() {
 		super();
@@ -58,13 +60,13 @@ public abstract class BaseException extends RuntimeException {
 		messageKeyValues = null;
 	}
 
-	public BaseException(Throwable cause, String messageKey, Object... messageKeyValues) {
+	public BaseException(Throwable cause, String messageKey, Serializable... messageKeyValues) {
 		super(cause);
 		this.messageKey = messageKey;
 		this.messageKeyValues = messageKeyValues;
 	}
 
-	public BaseException(String messageKey, Object... messageKeyValues) {
+	public BaseException(String messageKey, Serializable... messageKeyValues) {
 		super();
 		this.messageKey = messageKey;
 		this.messageKeyValues = messageKeyValues;
@@ -76,14 +78,14 @@ public abstract class BaseException extends RuntimeException {
 		this.messageKeyValues = error.getMessageKeyValues();
 	}
 
-	public BaseException(Throwable cause, Errors errors) {
+	public BaseException(Throwable cause, List<ErrorDescription> errors) {
 		super(cause);
 		this.errors = errors;
 		messageKey = DEFAULT_MESSAGE_KEY;
 		messageKeyValues = null;
 	}
 
-	public BaseException(Errors errors) {
+	public BaseException(List<ErrorDescription> errors) {
 		super();
 		this.errors = errors;
 		messageKey = DEFAULT_MESSAGE_KEY;
@@ -98,13 +100,13 @@ public abstract class BaseException extends RuntimeException {
 		return messageKey;
 	}
 
-	public Errors getErrors() {
+	public List<ErrorDescription> getErrors() {
 		return errors;
 	}
 
 	public <T extends ErrorDescription> void addError(T error) {
 		if (error != null) {
-			this.errors.addError(error);
+			this.errors.add(error);
 		}
 	}
 }

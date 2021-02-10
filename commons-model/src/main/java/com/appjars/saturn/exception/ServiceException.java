@@ -19,8 +19,9 @@
  */
 package com.appjars.saturn.exception;
 
+import java.util.List;
+
 import com.appjars.saturn.model.ErrorDescription;
-import com.appjars.saturn.model.Errors;
 
 /**
  * Exception thrown at Service Layer
@@ -36,7 +37,7 @@ public class ServiceException extends BaseException {
 		super();
 	}
 
-	public ServiceException(Errors errors) {
+	public ServiceException(List<ErrorDescription> errors) {
 		super(errors);
 	}
 
@@ -48,7 +49,7 @@ public class ServiceException extends BaseException {
 		super(messageKey);
 	}
 
-	public ServiceException(Throwable cause, Errors errors) {
+	public ServiceException(Throwable cause, List<ErrorDescription> errors) {
 		super(cause, errors);
 }
 
