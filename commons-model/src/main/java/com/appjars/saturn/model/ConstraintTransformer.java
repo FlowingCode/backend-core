@@ -10,51 +10,51 @@ import com.appjars.saturn.model.constraints.NegatedConstraint;
  * @author Javier Godoy / Flowing Code
  * @param <T>
  */
-public abstract class ConstraintHandler<T> {
+public abstract class ConstraintTransformer<T> {
 
 
-	public T handle(Constraint c) {
+	public T transform(Constraint c) {
 
 		if (c instanceof AttributeBetweenConstraint) {
-			return handleBetweenConstraint((AttributeBetweenConstraint) c);
+			return transformBetweenConstraint((AttributeBetweenConstraint) c);
 		}
 
 		if (c instanceof AttributeLikeConstraint) {
-			return handleLikeConstraint((AttributeLikeConstraint) c);
+			return transformLikeConstraint((AttributeLikeConstraint) c);
 		}
 
 		if (c instanceof AttributeRelationalConstraint) {
-			return handleRelationalConstraint((AttributeRelationalConstraint) c);
+			return transformRelationalConstraint((AttributeRelationalConstraint) c);
 		}
 		
 		if (c instanceof AttributeInConstraint) {
-			return handleInConstraint((AttributeInConstraint) c);
+			return transformInConstraint((AttributeInConstraint) c);
 		}
 		
 		if (c instanceof NegatedConstraint) {
-			return handleNegatedConstraint((NegatedConstraint) c);
+			return transformNegatedConstraint((NegatedConstraint) c);
 		}
 
 		return null;
 	}
 
-	protected T handleRelationalConstraint(AttributeRelationalConstraint c) {
+	protected T transformRelationalConstraint(AttributeRelationalConstraint c) {
 		return null;
 	}
 
-	protected T handleLikeConstraint(AttributeLikeConstraint c) {
+	protected T transformLikeConstraint(AttributeLikeConstraint c) {
 		return null;
 	}
 
-	protected T handleBetweenConstraint(AttributeBetweenConstraint c) {
+	protected T transformBetweenConstraint(AttributeBetweenConstraint c) {
 		return null;
 	}
 	
-	protected T handleInConstraint(AttributeInConstraint c) {
+	protected T transformInConstraint(AttributeInConstraint c) {
 		return null;
 	}
 
-	protected T handleNegatedConstraint(NegatedConstraint c) {
+	protected T transformNegatedConstraint(NegatedConstraint c) {
 		return null;
 	}
 	
