@@ -69,12 +69,12 @@ public class QuerySpec<K extends Serializable> {
 	
 	@Deprecated
 	public void addEqualsConstraint(String attribute, Object value) {
-		addConstraint(ConstraintBuilder.equal(attribute, value));
+		addConstraint(ConstraintBuilder.equal(attribute, (Comparable<?>)value));
 	}
 
 	@Deprecated
 	public void addNotEqualsConstraint(String attribute, Object value) {
-		addConstraint(ConstraintBuilder.notEqual(attribute, value));
+		addConstraint(ConstraintBuilder.notEqual(attribute, (Comparable<?>)value));
 	}
 	@Deprecated
 
