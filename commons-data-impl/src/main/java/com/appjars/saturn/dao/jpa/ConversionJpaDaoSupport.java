@@ -58,6 +58,9 @@ public interface ConversionJpaDaoSupport<S, T extends Identifiable<K>, K extends
 				if (ptype.getRawType().equals(ConversionJpaDaoSupport.class)) {
 					return (Class<T>) ptype.getActualTypeArguments()[1];
 				}
+				if (ptype.getRawType().equals(JpaDaoSupport.class)) {
+					return (Class<T>) ptype.getActualTypeArguments()[0];
+				}
 			}
 		}
 		throw new UnsupportedOperationException("Couldn't find entity type, probably " + ConversionJpaDaoSupport.class

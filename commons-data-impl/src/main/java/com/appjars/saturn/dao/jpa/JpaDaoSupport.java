@@ -23,7 +23,7 @@ import java.io.Serializable;
 
 import com.appjars.saturn.model.Identifiable;
 
-public interface JpaDaoSupport<S extends Serializable, T extends Identifiable<K>, K extends Serializable>
+public interface JpaDaoSupport<T extends Identifiable<K>, K extends Serializable>
 		extends ConversionJpaDaoSupport<T, T, K> {
 
 	@Override
