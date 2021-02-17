@@ -32,6 +32,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import com.appjars.saturn.dao.PersonCrudDaoImpl;
@@ -98,16 +99,19 @@ class JpaDaoSupportTest {
 	}
 
 	@Test
+	@Disabled
 	void testDelete() {
 		fail("Not yet implemented");
 	}
 
 	@Test
+	@Disabled
 	void testUpdate() {
 		fail("Not yet implemented");
 	}
 
 	@Test
+	@Disabled
 	void testSave() {
 		fail("Not yet implemented");
 	}
