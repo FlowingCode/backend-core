@@ -12,6 +12,6 @@ import lombok.experimental.FieldDefaults;
 public class AttributeLikeConstraint implements AttributeConstraint {
 
 	@NonNull String attribute;
-	@NonNull String value;
+	@NonNull String pattern;
 		
 }

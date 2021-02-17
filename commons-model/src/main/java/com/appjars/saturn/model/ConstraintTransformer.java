@@ -1,5 +1,8 @@
 package com.appjars.saturn.model;
 
+import java.util.Optional;
+import java.util.function.Function;
+
 import com.appjars.saturn.model.constraints.AttributeBetweenConstraint;
 import com.appjars.saturn.model.constraints.AttributeInConstraint;
 import com.appjars.saturn.model.constraints.AttributeLikeConstraint;
@@ -7,13 +10,20 @@ import com.appjars.saturn.model.constraints.AttributeRelationalConstraint;
 import com.appjars.saturn.model.constraints.NegatedConstraint;
 
 /**
- * @author Javier Godoy / Flowing Code
- * @param <T>
+ * @author Javier Godoy / Flowing Code 
  */
-public abstract class ConstraintTransformer<T> {
+public abstract class ConstraintTransformer<T> implements Function<Constraint, T> {
+	
+	/**Return an implementation-specific representation of the constraint. 
+	 * 
+	 * @throws ConstraintTransformerException if the {@code Constraint} is not supported by this implementation.
+	 */
+	public final T apply(Constraint c) {
+		return Optional.ofNullable(transform(c)).orElseThrow(() -> new ConstraintTransformerException("Unsupported constraint: " + c));
+	}
+	
 
-
-	public T transform(Constraint c) {
+	protected T transform(Constraint c) {
 
 		if (c instanceof AttributeBetweenConstraint) {
 			return transformBetweenConstraint((AttributeBetweenConstraint) c);
@@ -57,5 +67,5 @@ public abstract class ConstraintTransformer<T> {
 	protected T transformNegatedConstraint(NegatedConstraint c) {
 		return null;
 	}
-	
+
 }

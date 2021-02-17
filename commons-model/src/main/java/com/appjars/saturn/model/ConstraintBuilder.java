@@ -18,11 +18,11 @@ public class ConstraintBuilder {
 		return new NegatedConstraint(c);	
 	}
 	
-	public Constraint equal(String attribute, Object value) {
+	public Constraint equal(String attribute, Comparable<?> value) {
 		return new AttributeRelationalConstraint(attribute, value, RelationalConstraint.EQ);	
 	}
 	
-	public Constraint notEqual(String attribute, Object value) {
+	public Constraint notEqual(String attribute, Comparable<?> value) {
 		return new AttributeRelationalConstraint(attribute, value, RelationalConstraint.NE);	
 	}
 	
@@ -30,8 +30,8 @@ public class ConstraintBuilder {
 		return new AttributeBetweenConstraint(attribute, lower, upper);	
 	}
 	
-	public Constraint like(String attribute, String value) {
-		return new AttributeLikeConstraint(attribute, value);	
+	public Constraint like(String attribute, String pattern) {
+		return new AttributeLikeConstraint(attribute, pattern);	
 	}
 	
 	public Constraint in(String attribute, Collection<?> values) {
