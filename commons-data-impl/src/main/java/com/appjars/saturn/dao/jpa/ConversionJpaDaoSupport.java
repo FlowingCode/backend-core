@@ -33,6 +33,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import com.appjars.saturn.dao.CrudDao;
@@ -183,13 +184,14 @@ public interface ConversionJpaDaoSupport<S, T extends Identifiable<K>, K extends
 			return crit;
 		}
 
-		private <U> CriteriaQuery<U> addWhere(final QuerySpec<K> baseFilter, CriteriaBuilder cb, CriteriaQuery<U> cq,
-				Root<T> root) {
-
-			if (baseFilter.getExcludeIds() != null && baseFilter.getExcludeIds().size() > 0) {
-				cq.where(cb.not(root.get("id").in(Arrays.asList(baseFilter.getExcludeIds()))));
+		private <U> CriteriaQuery<U> addWhere(final QuerySpec<K> baseFilter, CriteriaBuilder cb, CriteriaQuery<U> cq, Root<T> root) {			
+			if (!baseFilter.getConstraints().isEmpty()) {
+				return cq.where(baseFilter.getConstraints().stream()
+						.map(new ConstraintTransformerImpl(entityManager, root))
+						.toArray(Predicate[]::new));				
+			} else {
+				return cq;
 			}
-			return cq;
 		}
 
 		protected List<T> filterFullData(QuerySpec<K> filter) {
