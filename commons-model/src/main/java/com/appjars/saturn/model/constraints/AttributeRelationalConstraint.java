@@ -31,7 +31,7 @@ import lombok.experimental.FieldDefaults;
 public class AttributeRelationalConstraint implements AttributeConstraint, RelationalConstraint {
 	
 	@NonNull String attribute;
-	@NonNull Comparable<?> value;
+	@NonNull Object value;
 	@NonNull String operator;
 		
 }

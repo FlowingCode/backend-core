@@ -77,15 +77,33 @@ public class ConstraintTransformerJpaImpl extends ConstraintTransformer<Predicat
 	}
 
 	@Override
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	protected Predicate transformRelationalConstraint(AttributeRelationalConstraint c) {
-		c.getAttribute();
-		Expression<Comparable> x = getExpression(c, Comparable.class);
-		Comparable y = c.getValue();
+		switch (c.getOperator()) {
+			case RelationalConstraint.EQ: 
+			case RelationalConstraint.NE: 
+				return transformEqualityConstraint(c);
+			default: 
+				return transformComparisonConstraint(c);
+		}
+	}
+	
+	private Predicate transformEqualityConstraint(AttributeRelationalConstraint c) {
+		Expression<?> x = getExpression(c);
+		Object y = (Comparable<?>) c.getValue();
 		
 		switch (c.getOperator()) {
 			case RelationalConstraint.EQ: return criteriaBuilder.equal(x, y);
 			case RelationalConstraint.NE: return criteriaBuilder.notEqual(x, y);
+			default: return null;
+		}
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private Predicate transformComparisonConstraint(AttributeRelationalConstraint c) {
+		Expression<Comparable> x = getExpression(c, Comparable.class);
+		Comparable y = (Comparable<?>) c.getValue();
+		
+		switch (c.getOperator()) {
 			case RelationalConstraint.LE: return criteriaBuilder.lessThanOrEqualTo(x, y);
 			case RelationalConstraint.LT: return criteriaBuilder.lessThan(x, y);
 			case RelationalConstraint.GE: return criteriaBuilder.greaterThan(x, y);
@@ -93,7 +111,7 @@ public class ConstraintTransformerJpaImpl extends ConstraintTransformer<Predicat
 			default: return null;
 		}
 	}
-
+	
 	@Override
 	protected Predicate transformLikeConstraint(AttributeLikeConstraint c) {
 		return criteriaBuilder.like(getExpression(c, String.class), c.getPattern());
