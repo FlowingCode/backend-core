@@ -190,7 +190,7 @@ public interface ConversionJpaDaoSupport<S, T extends Identifiable<K>, K extends
 		private <U> CriteriaQuery<U> addWhere(final QuerySpec<K> baseFilter, CriteriaBuilder cb, CriteriaQuery<U> cq, Root<T> root) {			
 			if (!baseFilter.getConstraints().isEmpty()) {
 				return cq.where(baseFilter.getConstraints().stream()
-						.map(new ConstraintTransformerImpl(entityManager, root))
+						.map(new ConstraintTransformerJpaImpl(entityManager, root))
 						.toArray(Predicate[]::new));				
 			} else {
 				return cq;
