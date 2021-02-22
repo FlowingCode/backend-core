@@ -53,10 +53,24 @@ public class ConstraintTransformerJpaImpl extends ConstraintTransformer<Predicat
 	@SuppressWarnings("unchecked")
 	private <T> Expression<T> getExpression(AttributeConstraint c, Class<T> type) {
 		Expression<?> expression = root.get(c.getAttribute());
-		expression.getJavaType().asSubclass(type);
+		boxed(expression.getJavaType()).asSubclass(type);
 		return (Expression<T>) expression;
 	}
-		
+			
+	private static Class<?> boxed(Class<?> type) {
+		if (type.isPrimitive()) {
+			if (type==boolean.class) return Boolean.class;
+			if (type==int.class) return Integer.class;
+			if (type==long.class) return Long.class;
+			if (type==byte.class) return Byte.class;
+			if (type==short.class) return Short.class;
+			if (type==char.class) return Character.class;
+			if (type==float.class) return Float.class;
+			if (type==double.class) return Double.class;
+		}
+		return type;
+	}
+	
 	@Override
 	protected Predicate transformNegatedConstraint(NegatedConstraint c) {		
 		return criteriaBuilder.not(transform(c.getConstraint()));
