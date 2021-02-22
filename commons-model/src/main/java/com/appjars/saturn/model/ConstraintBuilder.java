@@ -37,11 +37,11 @@ public class ConstraintBuilder {
 		return new NegatedConstraint(c);	
 	}
 	
-	public Constraint equal(String attribute, Comparable<?> value) {
+	public Constraint equal(String attribute, Object value) {
 		return new AttributeRelationalConstraint(attribute, value, RelationalConstraint.EQ);	
 	}
 	
-	public Constraint notEqual(String attribute, Comparable<?> value) {
+	public Constraint notEqual(String attribute, Object value) {
 		return new AttributeRelationalConstraint(attribute, value, RelationalConstraint.NE);	
 	}
 	
