@@ -36,12 +36,12 @@ import com.appjars.saturn.model.constraints.AttributeRelationalConstraint;
 import com.appjars.saturn.model.constraints.NegatedConstraint;
 import com.appjars.saturn.model.constraints.RelationalConstraint;
 
-public class ConstraintTransformerImpl extends ConstraintTransformer<Predicate> {
+public class ConstraintTransformerJpaImpl extends ConstraintTransformer<Predicate> {
 
 	private final CriteriaBuilder criteriaBuilder;
 	private Root<?> root;
 	
-	public ConstraintTransformerImpl(EntityManager em, Root<?> root) {
+	public ConstraintTransformerJpaImpl(EntityManager em, Root<?> root) {
 		this.criteriaBuilder = em.getCriteriaBuilder();
 		this.root = Objects.requireNonNull(root);
 	}
