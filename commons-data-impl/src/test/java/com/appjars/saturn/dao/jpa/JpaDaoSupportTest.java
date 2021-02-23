@@ -36,6 +36,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import com.appjars.saturn.dao.PersonCrudDaoImpl;
+import com.appjars.saturn.model.ConstraintBuilder;
 import com.appjars.saturn.model.QuerySpec;
 import com.appjars.saturn.model.impl.Person;
 import com.github.javafaker.Faker;
@@ -81,19 +82,19 @@ class JpaDaoSupportTest {
 		long all = dao.findAll().size();
 		assertEquals(11, all);
 	}
-
+	
 	@Test
 	void testFilter() {
 		PersonFilter pf = new PersonFilter();
-		pf.setExcludeIds(Arrays.asList(new Integer[] { persistedPerson.getId() }));
-		long allMinusFirst = dao.count(pf);
+		pf.addConstraint(ConstraintBuilder.not(ConstraintBuilder.in("id", Arrays.asList(new Integer[] { persistedPerson.getId() }))));
+		long allMinusFirst = dao.filter(pf).size();
 		assertEquals(10, allMinusFirst);
 	}
-
+	
 	@Test
 	void testCount() {
 		PersonFilter pf = new PersonFilter();
-		pf.setExcludeIds(Arrays.asList(new Integer[] { persistedPerson.getId() }));
+		pf.addConstraint(ConstraintBuilder.not(ConstraintBuilder.in("id", Arrays.asList(new Integer[] { persistedPerson.getId() }))));
 		long allMinusFirst = dao.count(pf);
 		assertEquals(10, allMinusFirst);
 	}
