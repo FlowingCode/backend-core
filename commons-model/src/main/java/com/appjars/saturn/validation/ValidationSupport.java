@@ -25,8 +25,6 @@ import java.util.List;
 
 public interface ValidationSupport<T extends Serializable> {
 
-	default List<Validator<T>> getValidators() {
-		return Collections.emptyList();
-	};
+	List<Validator<T>> getValidators();
 
 }
