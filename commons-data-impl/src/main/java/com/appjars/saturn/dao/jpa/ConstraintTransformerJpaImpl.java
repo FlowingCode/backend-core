@@ -19,11 +19,16 @@
  */
 package com.appjars.saturn.dao.jpa;
 
+import java.util.Arrays;
 import java.util.Objects;
+import java.util.Optional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.From;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
@@ -47,16 +52,32 @@ public class ConstraintTransformerJpaImpl extends ConstraintTransformer<Predicat
 	}
 
 	private Expression<?> getExpression(AttributeConstraint c) {
-		return root.get(c.getAttribute());
+		return getExpression(c, Object.class);
 	}
 	
 	@SuppressWarnings("unchecked")
 	private <T> Expression<T> getExpression(AttributeConstraint c, Class<T> type) {
-		Expression<?> expression = root.get(c.getAttribute());
+		String path[] = c.getAttribute().split("\\.");
+		String attributeName = path[path.length-1];
+		path = Arrays.copyOf(path, path.length-1);
+		Expression<?> expression = join(root,path).get(attributeName);
 		boxed(expression.getJavaType()).asSubclass(type);
 		return (Expression<T>) expression;
 	}
-			
+		
+	private From<?,?> join(Root<?> root, String[] path) {
+		From<?,?> from = root;
+		for (String attributeName : path) {
+			from = join(from, attributeName);
+		}
+		return from;
+	}
+	
+	private From<?,?> join(From<?,?> source, String attributeName) {
+		Optional<Join> existingJoin = source.getJoins().stream().filter(join->join.getAttribute().getName().equals(attributeName)).map(join->(Join)join).findFirst();
+		return existingJoin.orElseGet(()->source.join(attributeName, JoinType.INNER));
+	}
+	
 	private static Class<?> boxed(Class<?> type) {
 		if (type.isPrimitive()) {
 			if (type==boolean.class) return Boolean.class;

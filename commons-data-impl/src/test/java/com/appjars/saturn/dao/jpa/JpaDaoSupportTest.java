@@ -24,7 +24,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import javax.persistence.EntityManager;
@@ -36,38 +38,56 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import com.appjars.saturn.dao.PersonCrudDaoImpl;
+import com.appjars.saturn.model.ConstraintBuilder;
 import com.appjars.saturn.model.QuerySpec;
+import com.appjars.saturn.model.impl.City;
 import com.appjars.saturn.model.impl.Person;
+import com.appjars.saturn.model.impl.State;
 import com.github.javafaker.Faker;
 
 class JpaDaoSupportTest {
 
 	private PersonCrudDaoImpl dao;
+	private List<City> cities;
 	private Person persistedPerson;
 
 	@BeforeEach
 	void setUp() throws Exception {
 		EntityManagerFactory emf = Persistence.createEntityManagerFactory("person");
 		EntityManager em = emf.createEntityManager();
-		em.getTransaction().begin();
-		dao = new PersonCrudDaoImpl(emf);
 		Faker faker = Faker.instance();
+				
+		em.getTransaction().begin();
+
+		cities = IntStream.rangeClosed(1, 2).mapToObj(i->{
+			State state = new State();
+			state.setName(faker.address().state());
+			em.persist(state);
+			
+			City city = new City();
+			city.setName(faker.address().city());
+			city.setPopulation(faker.number().numberBetween(1000, 10000));
+			city.setState(state);
+			em.persist(city);
+			return city;
+		}).collect(Collectors.toList());
+		
+		dao = new PersonCrudDaoImpl(emf);
 		persistedPerson = new Person();
 		persistedPerson.setName("John");
 		persistedPerson.setLastName("Doe");
 		persistedPerson.setBirthDay(faker.date().birthday());
-
 		em.persist(persistedPerson);
-
+		
 		IntStream.range(0, 10).forEach(i -> {
 			Person aPerson = new Person();
 			aPerson.setName(faker.address().firstName());
 			aPerson.setLastName(faker.address().lastName());
 			aPerson.setBirthDay(faker.date().birthday());
+			aPerson.setCity(cities.get(i%2));
 			em.persist(aPerson);
 		});
 		em.getTransaction().commit();
-
 	}
 
 	@Test
@@ -81,23 +101,40 @@ class JpaDaoSupportTest {
 		long all = dao.findAll().size();
 		assertEquals(11, all);
 	}
-
+	
 	@Test
 	void testFilter() {
 		PersonFilter pf = new PersonFilter();
-		pf.setExcludeIds(Arrays.asList(new Integer[] { persistedPerson.getId() }));
+		pf.addConstraint(ConstraintBuilder.not(ConstraintBuilder.in("id", Arrays.asList(new Integer[] { persistedPerson.getId() }))));
+		long allMinusFirst = dao.filter(pf).size();
+		assertEquals(10, allMinusFirst);
+	}
+	
+	@Test
+	void testCount() {
+		PersonFilter pf = new PersonFilter();
+		pf.addConstraint(ConstraintBuilder.not(ConstraintBuilder.in("id", Arrays.asList(new Integer[] { persistedPerson.getId() }))));
 		long allMinusFirst = dao.count(pf);
 		assertEquals(10, allMinusFirst);
 	}
 
 	@Test
-	void testCount() {
+	void testFilterByCity() {
 		PersonFilter pf = new PersonFilter();
-		pf.setExcludeIds(Arrays.asList(new Integer[] { persistedPerson.getId() }));
-		long allMinusFirst = dao.count(pf);
-		assertEquals(10, allMinusFirst);
+		pf.addConstraint(ConstraintBuilder.equal("city.name", cities.get(0).getName()));
+		pf.addConstraint(ConstraintBuilder.equal("city.population", cities.get(0).getPopulation()));
+		long count = dao.count(pf);
+		assertEquals(5, count);
 	}
 
+	@Test
+	void testFilterByState() {
+		PersonFilter pf = new PersonFilter();
+		pf.addConstraint(ConstraintBuilder.equal("city.state.name", cities.get(0).getState().getName()));
+		long count = dao.count(pf);
+		assertEquals(5, count);
+	}
+	
 	@Test
 	@Disabled
 	void testDelete() {

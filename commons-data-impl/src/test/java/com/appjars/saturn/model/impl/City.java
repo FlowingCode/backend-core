@@ -19,14 +19,11 @@
  */
 package com.appjars.saturn.model.impl;
 
-import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import com.appjars.saturn.model.BaseEntity;
@@ -38,7 +35,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-public class Person extends BaseEntity<Integer> {
+public class City extends BaseEntity<Integer> {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -48,12 +45,9 @@ public class Person extends BaseEntity<Integer> {
 	private String name;
 	
 	@Column
-	private String lastName;
-	
-	@Column
-	private Date birthDay;
-	
-	@ManyToOne
-	private City city;
+	private int population;
 
+	@ManyToOne
+	private State state;
+	
 }
