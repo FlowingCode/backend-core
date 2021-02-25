@@ -44,9 +44,9 @@ import com.appjars.saturn.model.constraints.RelationalConstraint;
 public class ConstraintTransformerJpaImpl extends ConstraintTransformer<Predicate> {
 
 	private final CriteriaBuilder criteriaBuilder;
-	private Root<?> root;
+	private From<?,?> root;
 	
-	public ConstraintTransformerJpaImpl(EntityManager em, Root<?> root) {
+	public ConstraintTransformerJpaImpl(EntityManager em, From<?,?> root) {
 		this.criteriaBuilder = em.getCriteriaBuilder();
 		this.root = Objects.requireNonNull(root);
 	}
@@ -65,7 +65,7 @@ public class ConstraintTransformerJpaImpl extends ConstraintTransformer<Predicat
 		return (Expression<T>) expression;
 	}
 		
-	private From<?,?> join(Root<?> root, String[] path) {
+	private From<?,?> join(From<?,?> root, String[] path) {
 		From<?,?> from = root;
 		for (String attributeName : path) {
 			from = join(from, attributeName);
