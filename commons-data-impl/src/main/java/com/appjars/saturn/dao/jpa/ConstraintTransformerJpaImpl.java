@@ -73,6 +73,7 @@ public class ConstraintTransformerJpaImpl extends ConstraintTransformer<Predicat
 		return from;
 	}
 	
+	@SuppressWarnings("rawtypes")
 	private From<?,?> join(From<?,?> source, String attributeName) {
 		Optional<Join> existingJoin = source.getJoins().stream().filter(join->join.getAttribute().getName().equals(attributeName)).map(join->(Join)join).findFirst();
 		return existingJoin.orElseGet(()->source.join(attributeName, JoinType.INNER));
