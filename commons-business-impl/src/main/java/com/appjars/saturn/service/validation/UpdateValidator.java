@@ -19,15 +19,18 @@
  */
 package com.appjars.saturn.service.validation;
 
-import java.io.Serializable;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 import com.appjars.saturn.model.ErrorDescription;
 import com.appjars.saturn.validation.Validator;
 
-public interface UpdateValidator<T extends Serializable> extends Validator<T> {
+public interface UpdateValidator<T> extends Validator<T> {
 
-	default DeletionValidator<T> and(DeletionValidator<T> then) {
+	default UpdateValidator<T> and(UpdateValidator<T> then) {
 		return t -> {
 			List<ErrorDescription> result = this.validate(t);
 			if (result.isEmpty()) {
@@ -36,5 +39,11 @@ public interface UpdateValidator<T extends Serializable> extends Validator<T> {
 			return result;
 		};
 	}
-
+	
+	static <T> UpdateValidator<T> forCondition(Predicate<T> predicate, Function<T, ErrorDescription> errorSupplier) {
+		Objects.requireNonNull(predicate);
+		Objects.requireNonNull(errorSupplier);
+		return t->predicate.test(t)?Validator.success():Collections.singletonList(errorSupplier.apply(t));
+	}
+	
 }
