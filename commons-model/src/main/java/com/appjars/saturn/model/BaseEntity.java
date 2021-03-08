@@ -40,33 +40,17 @@ public abstract class BaseEntity<K extends Serializable> implements Identifiable
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + Objects.hashCode(getId());
-		return result;
+		return Identifiables.hashCode(this);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Identifiable<K> other = (Identifiable<K>) obj;
-		return Objects.equals(getId(), other.getId());
+		return Identifiables.equals(this, obj);
 	}
 	
 	@Override
 	public String toString() {
-		K id = getId();
-		if (id!=null) {
-			return this.getClass().getName()+"@"+id;
-		} else {
-			return this.getClass().getName()+"@transient:"+Integer.toHexString(System.identityHashCode(this));
-		}
+		return Identifiables.toString(this);
 	}
 
 }
