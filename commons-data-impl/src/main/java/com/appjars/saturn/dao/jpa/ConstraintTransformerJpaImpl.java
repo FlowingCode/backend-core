@@ -30,13 +30,13 @@ import javax.persistence.criteria.From;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 
 import com.appjars.saturn.model.ConstraintTransformer;
 import com.appjars.saturn.model.constraints.AttributeBetweenConstraint;
 import com.appjars.saturn.model.constraints.AttributeConstraint;
 import com.appjars.saturn.model.constraints.AttributeInConstraint;
 import com.appjars.saturn.model.constraints.AttributeLikeConstraint;
+import com.appjars.saturn.model.constraints.AttributeNullConstraint;
 import com.appjars.saturn.model.constraints.AttributeRelationalConstraint;
 import com.appjars.saturn.model.constraints.NegatedConstraint;
 import com.appjars.saturn.model.constraints.RelationalConstraint;
@@ -150,4 +150,8 @@ public class ConstraintTransformerJpaImpl extends ConstraintTransformer<Predicat
 		return getExpression(c).in(c.getValues());
 	}
 
+	@Override
+	protected Predicate transformNullConstraint(AttributeNullConstraint c) {
+		return getExpression(c).isNull();
+	}
 }
