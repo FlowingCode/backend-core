@@ -24,6 +24,7 @@ import java.util.Collection;
 import com.appjars.saturn.model.constraints.AttributeBetweenConstraint;
 import com.appjars.saturn.model.constraints.AttributeInConstraint;
 import com.appjars.saturn.model.constraints.AttributeLikeConstraint;
+import com.appjars.saturn.model.constraints.AttributeNullConstraint;
 import com.appjars.saturn.model.constraints.AttributeRelationalConstraint;
 import com.appjars.saturn.model.constraints.NegatedConstraint;
 import com.appjars.saturn.model.constraints.RelationalConstraint;
@@ -55,5 +56,9 @@ public class ConstraintBuilder {
 	
 	public Constraint in(String attribute, Collection<?> values) {
 		return new AttributeInConstraint(attribute, values);	
+	}
+
+	public Constraint isNull(String attribute) {
+		return new AttributeNullConstraint(attribute);
 	}
 }

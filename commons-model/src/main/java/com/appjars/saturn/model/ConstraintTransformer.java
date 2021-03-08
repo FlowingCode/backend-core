@@ -25,6 +25,7 @@ import java.util.function.Function;
 import com.appjars.saturn.model.constraints.AttributeBetweenConstraint;
 import com.appjars.saturn.model.constraints.AttributeInConstraint;
 import com.appjars.saturn.model.constraints.AttributeLikeConstraint;
+import com.appjars.saturn.model.constraints.AttributeNullConstraint;
 import com.appjars.saturn.model.constraints.AttributeRelationalConstraint;
 import com.appjars.saturn.model.constraints.NegatedConstraint;
 
@@ -70,6 +71,10 @@ public abstract class ConstraintTransformer<T> implements Function<Constraint, T
 			return transformNegatedConstraint((NegatedConstraint) c);
 		}
 
+		if (c instanceof AttributeNullConstraint) {
+			return transformNullConstraint((AttributeNullConstraint) c);
+		}
+
 		return null;
 	}
 
@@ -100,6 +105,13 @@ public abstract class ConstraintTransformer<T> implements Function<Constraint, T
 	/** Return an implementation-specific representation of a {@code NegatedConstraint} constraint.
 	 * @return an implementation-specific representation of the constraint, or {@code null} if it cannot be transformed.*/
 	protected T transformNegatedConstraint(NegatedConstraint c) {
+		return null;
+	}
+
+	/**
+	 * Return an implementation-specific representation of a {@code AttributeNullConstraint} constraint.
+	 * @return an implementation-specific representation of the constraint, or {@code null} if it cannot be transformed.*/
+	protected T transformNullConstraint(AttributeNullConstraint c) {
 		return null;
 	}
 
