@@ -19,9 +19,11 @@
  */
 package com.appjars.saturn.validation;
 
-import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 import com.appjars.saturn.model.ErrorDescription;
 
@@ -29,17 +31,28 @@ import com.appjars.saturn.model.ErrorDescription;
  * 
  * Generic validation service
  * 
- * @author mlopez
+ * @author mlopez, jgodoy
  * 
  * @param <T>
  */
 @FunctionalInterface
-public interface Validator<T extends Serializable> {
+public interface Validator<T> {
 
 	public static List<ErrorDescription> success() {
 		return Collections.emptyList();
 	}
 	
 	public List<ErrorDescription> validate(T target);
-
+		
+	@SafeVarargs
+	static <T> ValidatorBuilder<T> on(ValidationKind... kinds) {
+		return new ValidatorBuilder<T>(kinds);
+	}
+		
+	static <T> Validator<T> forCondition(Predicate<T> predicate, Function<T, ErrorDescription> errorSupplier) {
+		Objects.requireNonNull(predicate);
+		Objects.requireNonNull(errorSupplier);
+		return t->predicate.test(t)?Validator.success():Collections.singletonList(errorSupplier.apply(t));
+	}
+	
 }

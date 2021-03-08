@@ -19,13 +19,16 @@
  */
 package com.appjars.saturn.service.validation;
 
-import java.io.Serializable;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 import com.appjars.saturn.model.ErrorDescription;
 import com.appjars.saturn.validation.Validator;
 
-public interface DeletionValidator<T extends Serializable> extends Validator<T> {
+public interface DeletionValidator<T> extends Validator<T> {
 
 	default DeletionValidator<T> and(DeletionValidator<T> then) {
 		return t -> {
@@ -37,4 +40,10 @@ public interface DeletionValidator<T extends Serializable> extends Validator<T> 
 		};
 	}
 
+	static <T> DeletionValidator<T> forCondition(Predicate<T> predicate, Function<T, ErrorDescription> errorSupplier) {
+		Objects.requireNonNull(predicate);
+		Objects.requireNonNull(errorSupplier);
+		return t->predicate.test(t)?Validator.success():Collections.singletonList(errorSupplier.apply(t));
+	}
+	
 }
