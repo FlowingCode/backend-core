@@ -19,8 +19,6 @@
  */
 package com.appjars.saturn.service;
 
-import java.io.Serializable;
-
 /**
  * A special kind of service that allows entities creation
  * 
@@ -29,7 +27,7 @@ import java.io.Serializable;
  * @param <T>
  * @param <K>
  */
-public interface CreationService<T extends Serializable, K extends Serializable> {
+public interface CreationService<T, K> {
 
 	K save(T entity);
 

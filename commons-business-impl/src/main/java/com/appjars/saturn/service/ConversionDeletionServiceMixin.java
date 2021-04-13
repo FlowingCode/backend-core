@@ -19,7 +19,6 @@
  */
 package com.appjars.saturn.service;
 
-import java.io.Serializable;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,7 +41,7 @@ import com.appjars.saturn.validation.Validator;
  * @param <B> The type of the business layer entity
  * @param <P> The type of the persistence layer entity
  */
-public interface ConversionDeletionServiceMixin<B extends Serializable, P> extends DeletionService<B>, BusinessConversionSupport<B, P> {
+public interface ConversionDeletionServiceMixin<B, P> extends DeletionService<B>, BusinessConversionSupport<B, P> {
 
 	DeletionDao<P> getDeletionDao();
 

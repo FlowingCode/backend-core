@@ -29,8 +29,7 @@ import java.util.Objects;
  *
  * @param <K>
  */
-@SuppressWarnings("serial")
-public abstract class BaseEntity<K extends Serializable> implements Identifiable<K> {
+public abstract class BaseEntity<K> implements Identifiable<K> {
 
 	@Override
 	public abstract void setId(K id);

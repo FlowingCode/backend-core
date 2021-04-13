@@ -19,8 +19,6 @@
  */
 package com.appjars.saturn.service;
 
-import java.io.Serializable;
-
 /**
  * A special kind of service that allows entities CRUD operations
  * 
@@ -29,7 +27,7 @@ import java.io.Serializable;
  * @param <T>
  * @param <K>
  */
-public interface CrudService<T extends Serializable, K extends Serializable>
+public interface CrudService<T, K>
 		extends CreationService<T, K>, UpdateService<T, K>, DeletionService<T>, QueryService<T, K> {
 
 	void deleteById(K id);

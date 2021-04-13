@@ -19,7 +19,6 @@
  */
 package com.appjars.saturn.service;
 
-import java.io.Serializable;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -43,7 +42,7 @@ import com.appjars.saturn.validation.Validator;
  * @param <P> The type of the persistence layer entity
  * @param <K> The type of the entity identifier 
  */
-public interface ConversionUpdateServiceMixin<B extends Serializable, P, K extends Serializable> extends UpdateService<B, K>, BusinessConversionSupport<B, P> {
+public interface ConversionUpdateServiceMixin<B, P, K> extends UpdateService<B, K>, BusinessConversionSupport<B, P> {
 
 	UpdateDao<P> getUpdateDao();
 

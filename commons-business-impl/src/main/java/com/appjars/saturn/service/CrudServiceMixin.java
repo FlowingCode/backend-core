@@ -19,7 +19,6 @@
  */
 package com.appjars.saturn.service;
 
-import java.io.Serializable;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,7 +45,7 @@ import com.appjars.saturn.validation.Validator;
  * @param <T>
  * @param <K>
  */
-public interface CrudServiceMixin<T extends Serializable, K extends Serializable> extends CreationServiceMixin<T, K>,
+public interface CrudServiceMixin<T, K> extends CreationServiceMixin<T, K>,
 		UpdateServiceMixin<T, K>, DeletionServiceMixin<T>, QueryServiceMixin<T, K>, CrudService<T, K> {
 
 	default CreationDao<T, K> getCreationDao() {

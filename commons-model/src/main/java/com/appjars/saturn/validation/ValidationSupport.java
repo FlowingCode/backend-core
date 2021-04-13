@@ -23,7 +23,7 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 
-public interface ValidationSupport<T extends Serializable> {
+public interface ValidationSupport<T> {
 
 	List<Validator<T>> getValidators();
 
