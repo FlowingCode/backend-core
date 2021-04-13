@@ -47,7 +47,7 @@ import com.appjars.saturn.validation.Validator;
  * @param <P> The type of the persistence layer entity
  * @param <K> The type of the entity identifier 
  */
-public interface ConversionCrudServiceMixin<B extends Serializable, P, K extends Serializable> 
+public interface ConversionCrudServiceMixin<B, P, K> 
 	extends ConversionCreationServiceMixin<B, P, K>,
 		ConversionUpdateServiceMixin<B, P, K>, 
 		ConversionDeletionServiceMixin<B, P>, 

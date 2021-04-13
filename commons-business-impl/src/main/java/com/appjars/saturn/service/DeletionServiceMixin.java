@@ -19,8 +19,6 @@
  */
 package com.appjars.saturn.service;
 
-import java.io.Serializable;
-
 /**
  * A special kind of service that allows entities deletion
  * 
@@ -30,7 +28,7 @@ import java.io.Serializable;
  * @param <T> The type of the entity
  * @param <K> The type of the entity identifier
  */
-public interface DeletionServiceMixin<T extends Serializable>
+public interface DeletionServiceMixin<T>
 	extends ConversionDeletionServiceMixin<T,T>, BusinessConversionSupport.Identity<T> {
  
 }

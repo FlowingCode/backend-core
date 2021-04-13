@@ -19,8 +19,6 @@
  */
 package com.appjars.saturn.service;
 
-import java.io.Serializable;
-
 /**
  * A special kind of service that allows entities update
  * 
@@ -30,7 +28,7 @@ import java.io.Serializable;
  * @param <T> The type of the entity
  * @param <K> The type of the entity identifier
  */
-public interface UpdateServiceMixin<T extends Serializable, K extends Serializable> 
+public interface UpdateServiceMixin<T, K> 
 	extends ConversionUpdateServiceMixin<T, T, K>, BusinessConversionSupport.Identity<T> {
 
 }

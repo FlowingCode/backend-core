@@ -19,7 +19,6 @@
  */
 package com.appjars.saturn.service;
 
-import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -40,7 +39,7 @@ import com.appjars.saturn.model.QuerySpec;
  * @param <P> The type of the persistence layer entity
  * @param <K> The type of the entity identifier 
  */
-public interface ConversionQueryServiceMixin<B extends Serializable, P, K extends Serializable> extends QueryService<B, K>, BusinessConversionSupport<B, P> {
+public interface ConversionQueryServiceMixin<B, P, K> extends QueryService<B, K>, BusinessConversionSupport<B, P> {
 
 	QueryDao<P, K> getQueryDao();
 

@@ -19,8 +19,6 @@
  */
 package com.appjars.saturn.model;
 
-import java.io.Serializable;
-
 /**
  * Represents an object that can be identified
  * 
@@ -28,7 +26,7 @@ import java.io.Serializable;
  *
  * @param <K>
  */
-public interface Identifiable<K extends Serializable> extends Serializable {
+public interface Identifiable<K> {
 	
 	K getId();
 	void setId(K id);

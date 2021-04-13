@@ -19,9 +19,7 @@
  */
 package com.appjars.saturn.dao;
 
-import java.io.Serializable;
-
-public interface CreationDao<T, K extends Serializable> {
+public interface CreationDao<T, K> {
 
 	K save(T entity);
 

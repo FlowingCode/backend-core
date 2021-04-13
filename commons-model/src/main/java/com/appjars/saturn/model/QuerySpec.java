@@ -22,7 +22,6 @@ package com.appjars.saturn.model;
 import java.beans.BeanInfo;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -36,7 +35,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class QuerySpec<K extends Serializable> {
+public class QuerySpec<K> {
 
 	public enum Order {
 		ASC, DESC;

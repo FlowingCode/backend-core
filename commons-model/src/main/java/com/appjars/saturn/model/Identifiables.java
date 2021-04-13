@@ -19,8 +19,6 @@
  */
 package com.appjars.saturn.model;
 
-import java.io.Serializable;
-
 import lombok.experimental.UtilityClass;
 
 /**
@@ -33,7 +31,7 @@ import lombok.experimental.UtilityClass;
 public class Identifiables {
 
 	/** Return the hash code of an {@code Identifiable}*/
-	public static <K extends Serializable> int hashCode(Identifiable<K> o) {
+	public static <K> int hashCode(Identifiable<K> o) {
 		if (o != null) {
 			K id = o.getId();
 			if (id != null) {
