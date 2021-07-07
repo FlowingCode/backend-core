@@ -66,4 +66,9 @@ public class ValidationException extends BaseException {
 		super(cause);
 	}
 
+	@Override
+	protected BaseException newInstance(ErrorDescription error) {
+		return new ValidationException(null, error);
+	}
+	
 }
