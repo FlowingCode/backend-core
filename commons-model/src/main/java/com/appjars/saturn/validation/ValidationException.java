@@ -58,7 +58,7 @@ public class ValidationException extends BaseException {
 		super(cause, messageKey, messageKeyValues);
 	}
 
-	public <T extends ErrorDescription> ValidationException(Throwable cause, T error) {
+	public ValidationException(Throwable cause, ErrorDescription error) {
 		super(cause, error);
 	}
 
