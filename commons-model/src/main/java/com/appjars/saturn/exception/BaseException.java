@@ -72,7 +72,7 @@ public abstract class BaseException extends RuntimeException {
 		this.messageKeyValues = messageKeyValues;
 	}
 
-	public <T extends ErrorDescription> BaseException(Throwable cause, T error) {
+	public BaseException(Throwable cause, ErrorDescription error) {
 		super(cause);
 		this.messageKey = error.getMessageKey();
 		this.messageKeyValues = error.getMessageKeyValues();
