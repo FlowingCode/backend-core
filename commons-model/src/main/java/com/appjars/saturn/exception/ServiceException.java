@@ -64,5 +64,10 @@ public class ServiceException extends BaseException {
 	public ServiceException(Throwable cause) {
 		super(cause);
 	}
+	
+	@Override
+	protected BaseException newInstance(ErrorDescription error) {
+		return new ServiceException(null, error);
+	}
 
 }

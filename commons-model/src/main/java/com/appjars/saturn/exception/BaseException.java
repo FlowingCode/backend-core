@@ -55,7 +55,7 @@ public abstract class BaseException extends RuntimeException {
 	}
 
 	public BaseException(String messageKey) {
-		super();
+		super(messageKey);
 		this.messageKey = messageKey;
 		messageKeyValues = null;
 	}
@@ -67,13 +67,13 @@ public abstract class BaseException extends RuntimeException {
 	}
 
 	public BaseException(String messageKey, Serializable... messageKeyValues) {
-		super();
+		super(messageKey);
 		this.messageKey = messageKey;
 		this.messageKeyValues = messageKeyValues;
 	}
 
 	public BaseException(Throwable cause, ErrorDescription error) {
-		super(cause);
+		super(error.getMessageKey(), cause);
 		this.messageKey = error.getMessageKey();
 		this.messageKeyValues = error.getMessageKeyValues();
 	}
@@ -83,6 +83,7 @@ public abstract class BaseException extends RuntimeException {
 		this.errors = errors;
 		messageKey = DEFAULT_MESSAGE_KEY;
 		messageKeyValues = null;
+		fillSuppressed();
 	}
 
 	public BaseException(List<ErrorDescription> errors) {
@@ -90,7 +91,20 @@ public abstract class BaseException extends RuntimeException {
 		this.errors = errors;
 		messageKey = DEFAULT_MESSAGE_KEY;
 		messageKeyValues = null;
+		fillSuppressed();
 	}
+
+	private void fillSuppressed() {
+		if (errors!=null) {
+			for (ErrorDescription error : errors) {
+				BaseException e = newInstance(error);
+				e.setStackTrace(new StackTraceElement[0]);
+				addSuppressed(e);
+			}
+		}
+	}
+	
+	protected abstract BaseException newInstance(ErrorDescription error);
 
 	public Object[] getMessageKeyValues() {
 		return messageKeyValues;
