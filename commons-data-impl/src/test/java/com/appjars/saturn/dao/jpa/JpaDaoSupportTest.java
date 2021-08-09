@@ -153,7 +153,7 @@ class JpaDaoSupportTest {
 		fail("Not yet implemented");
 	}
 
-	private static class PersonFilter extends QuerySpec<Integer> {
+	private static class PersonFilter extends QuerySpec {
 
 	}
 
