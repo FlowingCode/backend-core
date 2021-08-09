@@ -26,9 +26,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
-
-import com.appjars.saturn.model.constraints.AttributeInConstraint;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -65,27 +62,7 @@ public class QuerySpec {
 	public void addConstraint(Constraint constraint) {
 		this.constraints.add(constraint);
 	}
-	
-	@Deprecated
-	public void addEqualsConstraint(String attribute, Object value) {
-		addConstraint(ConstraintBuilder.equal(attribute, (Comparable<?>)value));
-	}
-
-	@Deprecated
-	public void addNotEqualsConstraint(String attribute, Object value) {
-		addConstraint(ConstraintBuilder.notEqual(attribute, (Comparable<?>)value));
-	}
-	@Deprecated
-
-	public void addLikeConstraint(String attribute, String value) {
-		addConstraint(ConstraintBuilder.like(attribute, value));
-	}
-
-	@Deprecated
-	public <T extends Comparable<T>> void addBetweenConstraint(String attribute, T valueStart, T valueEnd) {
-		addConstraint(ConstraintBuilder.between(attribute, valueStart, valueEnd));
-	}
-	
+			
 	@Override
 	public String toString() {
 		StringBuilder buffer = new StringBuilder(getClass().getName());
@@ -103,17 +80,4 @@ public class QuerySpec {
 		return buffer.toString();
 	}
 
-	@Deprecated
-	public <K> void setExcludeIds(Collection<K> ids) {
-		constraints.removeIf(c->c instanceof AttributeInConstraint && ((AttributeInConstraint)c).getAttribute().equals("id"));
-		if (ids!=null) {			
-			addConstraint(ConstraintBuilder.not(ConstraintBuilder.in("id", ids)));
-		}
-	}
-	
-	@Deprecated
-	public Collection<?> getExcludeIds() {
-		return constraints.stream().filter(c->c instanceof AttributeInConstraint && ((AttributeInConstraint)c).getAttribute().equals("id"))
-			.flatMap(c->((AttributeInConstraint)c).getValues().stream()).collect(Collectors.toList());
-	}
 }
