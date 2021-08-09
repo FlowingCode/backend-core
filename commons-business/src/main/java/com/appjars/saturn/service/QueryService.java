@@ -38,8 +38,8 @@ public interface QueryService<T, K> {
 
 	List<T> findAll();
 
-	List<T> filter(QuerySpec<K> filter);
+	List<T> filter(QuerySpec filter);
 
-	long count(QuerySpec<K> filter);
+	long count(QuerySpec filter);
 
 }

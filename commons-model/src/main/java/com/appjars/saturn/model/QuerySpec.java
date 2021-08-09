@@ -35,7 +35,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class QuerySpec<K> {
+public class QuerySpec {
 
 	public enum Order {
 		ASC, DESC;

@@ -101,12 +101,12 @@ public interface ConversionJpaDaoSupport<S, T extends Identifiable<K>, K extends
 	}
 
 	@Override
-	default long count(QuerySpec<K> filter) {
+	default long count(QuerySpec filter) {
 		return FilterProcesor.<T, K>of(getEntityManager(), getPersistentClass()).count(filter);
 	}
 
 	@Override
-	default List<S> filter(QuerySpec<K> filter) {
+	default List<S> filter(QuerySpec filter) {
 		return FilterProcesor.<T, K>of(getEntityManager(), getPersistentClass()).filter(filter).stream()
 				.map(this::convertFrom).collect(Collectors.toList());
 	}
@@ -121,7 +121,7 @@ public interface ConversionJpaDaoSupport<S, T extends Identifiable<K>, K extends
 			return new FilterProcesor<>(entityManager, persistentClass);
 		}
 
-		long count(QuerySpec<K> filter) {
+		long count(QuerySpec filter) {
 			CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 			CriteriaQuery<Long> cq = cb.createQuery(Long.class);
 			Root<T> root = cq.from(persistentClass);
@@ -148,7 +148,7 @@ public interface ConversionJpaDaoSupport<S, T extends Identifiable<K>, K extends
 			this.persistentClass = persistentClass;
 		}
 
-		public List<T> filter(QuerySpec<K> baseFilter) {
+		public List<T> filter(QuerySpec baseFilter) {
 			if (baseFilter.getReturnedAttributes() != null && baseFilter.getReturnedAttributes().length > 0) {
 				return filterNotFullData(baseFilter);
 			} else {
@@ -156,7 +156,7 @@ public interface ConversionJpaDaoSupport<S, T extends Identifiable<K>, K extends
 			}
 		}
 
-		protected CriteriaQuery<T> createFilterCriteria(final QuerySpec<K> baseFilter, CriteriaBuilder cb) {
+		protected CriteriaQuery<T> createFilterCriteria(final QuerySpec baseFilter, CriteriaBuilder cb) {
 			CriteriaQuery<T> crit = cb.createQuery(persistentClass);
 			Root<T> root = crit.from(persistentClass);
 			crit = addWhere(baseFilter, cb, crit, root);
@@ -186,7 +186,7 @@ public interface ConversionJpaDaoSupport<S, T extends Identifiable<K>, K extends
 			return crit;
 		}
 
-		private <U> CriteriaQuery<U> addWhere(final QuerySpec<K> baseFilter, CriteriaBuilder cb, CriteriaQuery<U> cq, Root<T> root) {			
+		private <U> CriteriaQuery<U> addWhere(final QuerySpec baseFilter, CriteriaBuilder cb, CriteriaQuery<U> cq, Root<T> root) {			
 			if (!baseFilter.getConstraints().isEmpty()) {
 				return cq.where(baseFilter.getConstraints().stream()
 						.map(new ConstraintTransformerJpaImpl(entityManager, root))
@@ -196,13 +196,13 @@ public interface ConversionJpaDaoSupport<S, T extends Identifiable<K>, K extends
 			}
 		}
 
-		protected List<T> filterFullData(QuerySpec<K> filter) {
+		protected List<T> filterFullData(QuerySpec filter) {
 			CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 			CriteriaQuery<T> criteria = createFilterCriteria(filter, cb);
 			return addPagination(criteria, filter).getResultList();
 		}
 
-		protected List<T> filterNotFullData(QuerySpec<K> filter) {
+		protected List<T> filterNotFullData(QuerySpec filter) {
 			CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 			CriteriaQuery<T> criteria = createFilterCriteria(filter, cb);
 //			ProjectionList projections = null;
@@ -225,7 +225,7 @@ public interface ConversionJpaDaoSupport<S, T extends Identifiable<K>, K extends
 			return this.entityManager.createQuery(criteria).getSingleResult();
 		}
 
-		protected TypedQuery<T> addPagination(CriteriaQuery<T> detachedCriteria, QuerySpec<K> filter) {
+		protected TypedQuery<T> addPagination(CriteriaQuery<T> detachedCriteria, QuerySpec filter) {
 			TypedQuery<T> criteria = this.entityManager.createQuery(detachedCriteria);
 			if (filter.getFirstResult() != null) {
 				criteria.setFirstResult(filter.getFirstResult());
