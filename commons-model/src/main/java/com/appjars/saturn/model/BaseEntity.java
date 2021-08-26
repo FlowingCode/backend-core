@@ -19,8 +19,8 @@
  */
 package com.appjars.saturn.model;
 
-import java.io.Serializable;
-import java.util.Objects;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 /**
  * Base class for entities
@@ -29,6 +29,8 @@ import java.util.Objects;
  *
  * @param <K>
  */
+@SuperBuilder
+@NoArgsConstructor
 public abstract class BaseEntity<K> implements Identifiable<K> {
 
 	@Override
