@@ -29,6 +29,5 @@ package com.appjars.saturn.model;
 public interface Identifiable<K> {
 	
 	K getId();
-	void setId(K id);
 	
 }
