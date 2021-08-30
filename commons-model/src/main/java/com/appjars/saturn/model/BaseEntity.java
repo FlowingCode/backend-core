@@ -33,7 +33,6 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 public abstract class BaseEntity<K> implements Identifiable<K> {
 
-	@Override
 	public abstract void setId(K id);
 	
 	@Override
