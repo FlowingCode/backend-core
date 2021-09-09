@@ -35,7 +35,7 @@ public interface BusinessConversionSupport<B, P> {
 
 	
 	/**Specialization of {@code ConversionSupport} that performs an identity conversion
-	 * @param <B> The type of the business layer and persistence layer entity */
+	 * @param <T> The type of the business layer and persistence layer entity */
 	public interface Identity<T> extends BusinessConversionSupport<T, T> {
 		
 		@Override
