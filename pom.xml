@@ -110,5 +110,37 @@
             </plugin>
         </plugins>
     </build>
-	
+
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<configuration>
+						<groups>
+						  <group>
+							<title>commons-data</title>
+							<packages>com.appjars.saturn.dao</packages>
+						  </group>
+						  <group>
+							<title>commons-data-impl</title>
+							<packages>com.appjars.saturn.dao.jpa</packages>
+						  </group>
+						  <group>
+							<title>commons-business</title>
+							<packages>com.appjars.saturn.service</packages>
+						  </group>
+						  <group>
+							<title>commons-business-impl</title>
+							<packages>com.appjars.saturn.service*</packages>
+						  </group>
+						  <group>
+							<title>commons-model</title>
+							<packages>com.appjars.saturn.model*:com.appjars.saturn.exception:com.appjars.saturn.validation</packages>
+						  </group>
+						</groups>
+				</configuration>
+			</plugin>
+		</plugins>
+	</reporting>
 </project>
