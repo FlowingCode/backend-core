@@ -22,6 +22,7 @@ package com.appjars.saturn.model;
 import java.util.Collection;
 
 import com.appjars.saturn.model.constraints.AttributeBetweenConstraint;
+import com.appjars.saturn.model.constraints.AttributeILikeConstraint;
 import com.appjars.saturn.model.constraints.AttributeInConstraint;
 import com.appjars.saturn.model.constraints.AttributeLikeConstraint;
 import com.appjars.saturn.model.constraints.AttributeNullConstraint;
@@ -61,4 +62,8 @@ public class ConstraintBuilder {
 	public Constraint isNull(String attribute) {
 		return new AttributeNullConstraint(attribute);
 	}
+	
+	public Constraint iLike(String attribute, String pattern) {
+      return new AttributeILikeConstraint(attribute, pattern); 
+    }
 }
