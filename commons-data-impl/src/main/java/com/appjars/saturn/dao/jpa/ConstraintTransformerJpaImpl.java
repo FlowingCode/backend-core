@@ -34,6 +34,7 @@ import javax.persistence.criteria.Predicate;
 import com.appjars.saturn.model.ConstraintTransformer;
 import com.appjars.saturn.model.constraints.AttributeBetweenConstraint;
 import com.appjars.saturn.model.constraints.AttributeConstraint;
+import com.appjars.saturn.model.constraints.AttributeILikeConstraint;
 import com.appjars.saturn.model.constraints.AttributeInConstraint;
 import com.appjars.saturn.model.constraints.AttributeLikeConstraint;
 import com.appjars.saturn.model.constraints.AttributeNullConstraint;
@@ -154,4 +155,9 @@ public class ConstraintTransformerJpaImpl extends ConstraintTransformer<Predicat
 	protected Predicate transformNullConstraint(AttributeNullConstraint c) {
 		return getExpression(c).isNull();
 	}
+	
+	@Override
+    protected Predicate transformILikeConstraint(AttributeILikeConstraint c) {
+        return criteriaBuilder.like(criteriaBuilder.lower(getExpression(c, String.class)), c.getPattern().toLowerCase());
+    }
 }

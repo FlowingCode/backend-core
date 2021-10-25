@@ -21,8 +21,8 @@ package com.appjars.saturn.model;
 
 import java.util.Optional;
 import java.util.function.Function;
-
 import com.appjars.saturn.model.constraints.AttributeBetweenConstraint;
+import com.appjars.saturn.model.constraints.AttributeILikeConstraint;
 import com.appjars.saturn.model.constraints.AttributeInConstraint;
 import com.appjars.saturn.model.constraints.AttributeLikeConstraint;
 import com.appjars.saturn.model.constraints.AttributeNullConstraint;
@@ -74,6 +74,10 @@ public abstract class ConstraintTransformer<T> implements Function<Constraint, T
 		if (c instanceof AttributeNullConstraint) {
 			return transformNullConstraint((AttributeNullConstraint) c);
 		}
+		
+		if (c instanceof AttributeILikeConstraint) {
+          return transformILikeConstraint((AttributeILikeConstraint) c);
+      }
 
 		return null;
 	}
@@ -115,4 +119,9 @@ public abstract class ConstraintTransformer<T> implements Function<Constraint, T
 		return null;
 	}
 
+	/** Return an implementation-specific representation of an {@code AttributeILikeConstraint} constraint.
+     * @return an implementation-specific representation of the constraint, or {@code null} if it cannot be transformed.*/
+    protected T transformILikeConstraint(AttributeILikeConstraint c) {
+        return null;
+    }
 }
