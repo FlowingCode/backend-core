@@ -30,22 +30,21 @@ import com.appjars.saturn.validation.Validator;
 
 public interface CreationValidator<T> extends Validator<T> {
 
-	default CreationValidator<T> and(CreationValidator<T> then) {
-		return t -> {
-			List<ErrorDescription> result = this.validate(t);
-			if (result.isEmpty()) {
-				result = then.validate(t); 
-			}
-			return result;
-		};
-	}
+  default CreationValidator<T> and(CreationValidator<T> then) {
+    return t -> {
+      List<ErrorDescription> result = this.validate(t);
+      if (result.isEmpty()) {
+        result = then.validate(t); 
+      }
+      return result;
+    };
+  }
 
-	static <T> CreationValidator<T> forCondition(Predicate<T> predicate, Function<T, ErrorDescription> errorSupplier) {
-		Objects.requireNonNull(predicate);
-		Objects.requireNonNull(errorSupplier);
-		return t->predicate.test(t)?Validator.success():Collections.singletonList(errorSupplier.apply(t));
-	}
-	
+  static <T> CreationValidator<T> forCondition(Predicate<T> predicate, Function<T, ErrorDescription> errorSupplier) {
+    Objects.requireNonNull(predicate);
+    Objects.requireNonNull(errorSupplier);
+    return t->predicate.test(t)?Validator.success():Collections.singletonList(errorSupplier.apply(t));
+  }
+
 }
-
 
