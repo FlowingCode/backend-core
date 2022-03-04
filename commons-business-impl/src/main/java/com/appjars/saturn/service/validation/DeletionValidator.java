@@ -30,20 +30,20 @@ import com.appjars.saturn.validation.Validator;
 
 public interface DeletionValidator<T> extends Validator<T> {
 
-	default DeletionValidator<T> and(DeletionValidator<T> then) {
-		return t -> {
-			List<ErrorDescription> result = this.validate(t);
-			if (result.isEmpty()) {
-				result = then.validate(t); 
-			}
-			return result;
-		};
-	}
+  default DeletionValidator<T> and(DeletionValidator<T> then) {
+    return t -> {
+      List<ErrorDescription> result = this.validate(t);
+      if (result.isEmpty()) {
+        result = then.validate(t); 
+      }
+      return result;
+    };
+  }
 
-	static <T> DeletionValidator<T> forCondition(Predicate<T> predicate, Function<T, ErrorDescription> errorSupplier) {
-		Objects.requireNonNull(predicate);
-		Objects.requireNonNull(errorSupplier);
-		return t->predicate.test(t)?Validator.success():Collections.singletonList(errorSupplier.apply(t));
-	}
-	
+  static <T> DeletionValidator<T> forCondition(Predicate<T> predicate, Function<T, ErrorDescription> errorSupplier) {
+    Objects.requireNonNull(predicate);
+    Objects.requireNonNull(errorSupplier);
+    return t->predicate.test(t)?Validator.success():Collections.singletonList(errorSupplier.apply(t));
+  }
+
 }

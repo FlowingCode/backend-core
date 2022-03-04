@@ -30,20 +30,20 @@ import com.appjars.saturn.validation.Validator;
 
 public interface UpdateValidator<T> extends Validator<T> {
 
-	default UpdateValidator<T> and(UpdateValidator<T> then) {
-		return t -> {
-			List<ErrorDescription> result = this.validate(t);
-			if (result.isEmpty()) {
-				result = then.validate(t); 
-			}
-			return result;
-		};
-	}
-	
-	static <T> UpdateValidator<T> forCondition(Predicate<T> predicate, Function<T, ErrorDescription> errorSupplier) {
-		Objects.requireNonNull(predicate);
-		Objects.requireNonNull(errorSupplier);
-		return t->predicate.test(t)?Validator.success():Collections.singletonList(errorSupplier.apply(t));
-	}
-	
+  default UpdateValidator<T> and(UpdateValidator<T> then) {
+    return t -> {
+      List<ErrorDescription> result = this.validate(t);
+      if (result.isEmpty()) {
+        result = then.validate(t); 
+      }
+      return result;
+    };
+  }
+
+  static <T> UpdateValidator<T> forCondition(Predicate<T> predicate, Function<T, ErrorDescription> errorSupplier) {
+    Objects.requireNonNull(predicate);
+    Objects.requireNonNull(errorSupplier);
+    return t->predicate.test(t)?Validator.success():Collections.singletonList(errorSupplier.apply(t));
+  }
+
 }
