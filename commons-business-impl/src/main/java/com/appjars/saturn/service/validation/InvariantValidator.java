@@ -28,4 +28,9 @@ public interface InvariantValidator<T> extends CreationValidator<T>, UpdateValid
     return t->predicate.test(t)?Validator.success():Collections.singletonList(errorSupplier.apply(t));
   }
 
+  static <T> InvariantValidator<T> forCondition(Predicate<T> predicate, String messageKey) {
+    Objects.requireNonNull(messageKey);
+    return forCondition(predicate, t->new ErrorDescription(messageKey));
+  }
+
 }
