@@ -46,4 +46,9 @@ public interface DeletionValidator<T> extends Validator<T> {
     return t->predicate.test(t)?Validator.success():Collections.singletonList(errorSupplier.apply(t));
   }
 
+  static <T> DeletionValidator<T> forCondition(Predicate<T> predicate, String messageKey) {
+    Objects.requireNonNull(messageKey);
+    return forCondition(predicate, t->new ErrorDescription(messageKey));
+  }
+
 }
