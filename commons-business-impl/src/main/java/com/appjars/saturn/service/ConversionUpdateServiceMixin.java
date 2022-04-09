@@ -52,8 +52,7 @@ public interface ConversionUpdateServiceMixin<B, P, K> extends UpdateService<B, 
 	@Override
 	default void update(B entity) {
 		if (this instanceof ValidationSupport) {
-			List<Validator<B>> validators = ((ValidationSupport<B>) this).getValidators().stream()
-					.filter(item -> (item instanceof UpdateValidator)).collect(Collectors.toList());
+			List<Validator<B>> validators = ((ValidationSupport<B>) this).getValidators(UpdateValidator.class);
 			List<ErrorDescription> errors = validators.stream().flatMap(val->val.validate(entity).stream()).collect(Collectors.toList());
 			if (!errors.isEmpty()) {
 				throw new UpdateValidationException(errors);

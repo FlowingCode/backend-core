@@ -51,8 +51,7 @@ public interface ConversionDeletionServiceMixin<B, P> extends DeletionService<B>
 	@Override
 	default void delete(B entity) {
 		if (this instanceof ValidationSupport) {
-			List<Validator<B>> validators = ((ValidationSupport<B>) this).getValidators().stream()
-					.filter(item -> (item instanceof DeletionValidator)).collect(Collectors.toList());
+			List<Validator<B>> validators = ((ValidationSupport<B>) this).getValidators(DeletionValidator.class);
 			List<ErrorDescription> errors = validators.stream().flatMap(val->val.validate(entity).stream()).collect(Collectors.toList());
 			if (!errors.isEmpty()) {
 				throw new DeletionValidationException(errors);
