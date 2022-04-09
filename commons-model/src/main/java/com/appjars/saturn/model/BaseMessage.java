@@ -47,8 +47,6 @@ public abstract class BaseMessage implements Serializable {
 
 	private Serializable[] messageKeyValues;
 
-	private String defaultMessage;
-
 	protected BaseMessage(String messageKey) {
 		Objects.requireNonNull(messageKey, MESSAGE_KEY_CANNOT_BE_NULL);
 		this.messageKey = messageKey;
