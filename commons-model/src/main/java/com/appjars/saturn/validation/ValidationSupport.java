@@ -19,12 +19,17 @@
  */
 package com.appjars.saturn.validation;
 
-import java.io.Serializable;
-import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public interface ValidationSupport<T> {
 
-	List<Validator<T>> getValidators();
+    List<Validator<T>> getValidators();
+    
+    default List<Validator<T>> getValidators(@SuppressWarnings("rawtypes") Class<? extends Validator> validatorType) {
+      return getValidators().stream().filter(validatorType::isInstance).collect(Collectors.toList());
+    }
+    
+    
 
 }

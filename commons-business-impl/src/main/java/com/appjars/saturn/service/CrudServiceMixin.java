@@ -73,8 +73,7 @@ public interface CrudServiceMixin<T, K> extends CreationServiceMixin<T, K>,
 	default void deleteById(K id) {
 		getQueryDao().findById(id).ifPresent(entity -> {
 			if (this instanceof ValidationSupport) {
-				List<Validator<T>> validators = ((ValidationSupport<T>) this).getValidators().stream()
-						.filter(item -> (item instanceof DeletionValidator)).collect(Collectors.toList());
+				List<Validator<T>> validators = ((ValidationSupport<T>) this).getValidators(DeletionValidator.class);
 				List<ErrorDescription> errors = validators.stream().flatMap(val->val.validate(entity).stream()).collect(Collectors.toList());
 				if (!errors.isEmpty()) {
 					throw new DeletionValidationException(errors);

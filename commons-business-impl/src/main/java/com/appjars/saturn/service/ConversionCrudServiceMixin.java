@@ -80,8 +80,7 @@ public interface ConversionCrudServiceMixin<B, P, K>
 		P persistentEntity = getQueryDao().findById(id).orElse(null);
 		if (persistentEntity!=null && this instanceof ValidationSupport) {
 			B entity = convertToBusiness(persistentEntity); 
-			List<Validator<B>> validators = ((ValidationSupport<B>) this).getValidators().stream()
-				.filter(item -> (item instanceof DeletionValidator)).collect(Collectors.toList());
+            List<Validator<B>> validators = ((ValidationSupport<B>) this).getValidators(DeletionValidator.class);
 			List<ErrorDescription> errors = validators.stream().flatMap(val->val.validate(entity).stream()).collect(Collectors.toList());
 			if (!errors.isEmpty()) {
 				throw new DeletionValidationException(errors);
