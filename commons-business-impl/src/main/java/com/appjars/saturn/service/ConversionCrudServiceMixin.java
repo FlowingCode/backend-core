@@ -33,6 +33,7 @@ import com.appjars.saturn.dao.QueryDao;
 import com.appjars.saturn.dao.UpdateDao;
 import com.appjars.saturn.model.ErrorDescription;
 import com.appjars.saturn.service.validation.DeletionValidator;
+import com.appjars.saturn.validation.DeletionValidationException;
 import com.appjars.saturn.validation.ValidationException;
 import com.appjars.saturn.validation.ValidationSupport;
 import com.appjars.saturn.validation.Validator;
@@ -83,7 +84,7 @@ public interface ConversionCrudServiceMixin<B, P, K>
 				.filter(item -> (item instanceof DeletionValidator)).collect(Collectors.toList());
 			List<ErrorDescription> errors = validators.stream().flatMap(val->val.validate(entity).stream()).collect(Collectors.toList());
 			if (!errors.isEmpty()) {
-				throw new ValidationException(errors);
+				throw new DeletionValidationException(errors);
 			}
 			getDeletionDao().delete(persistentEntity);
 		}
