@@ -29,6 +29,7 @@ import javax.transaction.Transactional.TxType;
 import com.appjars.saturn.dao.CreationDao;
 import com.appjars.saturn.model.ErrorDescription;
 import com.appjars.saturn.service.validation.CreationValidator;
+import com.appjars.saturn.validation.CreationValidationException;
 import com.appjars.saturn.validation.ValidationException;
 import com.appjars.saturn.validation.ValidationSupport;
 import com.appjars.saturn.validation.Validator;
@@ -57,7 +58,7 @@ extends CreationService<B, K>, BusinessConversionSupport<B, P> {
 					.filter(item -> (item instanceof CreationValidator)).collect(Collectors.toList());
 			List<ErrorDescription> errors = validators.stream().flatMap(val->val.validate(entity).stream()).collect(Collectors.toList());
 			if (!errors.isEmpty()) {
-				throw new ValidationException(errors);
+				throw new CreationValidationException(errors);
 			}
 		}		
 

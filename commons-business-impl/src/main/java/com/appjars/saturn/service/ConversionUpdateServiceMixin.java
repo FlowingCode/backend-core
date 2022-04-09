@@ -28,6 +28,7 @@ import javax.transaction.Transactional.TxType;
 import com.appjars.saturn.dao.UpdateDao;
 import com.appjars.saturn.model.ErrorDescription;
 import com.appjars.saturn.service.validation.UpdateValidator;
+import com.appjars.saturn.validation.UpdateValidationException;
 import com.appjars.saturn.validation.ValidationException;
 import com.appjars.saturn.validation.ValidationSupport;
 import com.appjars.saturn.validation.Validator;
@@ -55,7 +56,7 @@ public interface ConversionUpdateServiceMixin<B, P, K> extends UpdateService<B, 
 					.filter(item -> (item instanceof UpdateValidator)).collect(Collectors.toList());
 			List<ErrorDescription> errors = validators.stream().flatMap(val->val.validate(entity).stream()).collect(Collectors.toList());
 			if (!errors.isEmpty()) {
-				throw new ValidationException(errors);
+				throw new UpdateValidationException(errors);
 			}
 		}
 		getUpdateDao().update(convertToPersistence(entity));
