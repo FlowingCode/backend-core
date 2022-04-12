@@ -20,7 +20,8 @@
 package com.appjars.saturn.model;
 
 import java.util.Collection;
-
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import com.appjars.saturn.model.constraints.AttributeBetweenConstraint;
 import com.appjars.saturn.model.constraints.AttributeILikeConstraint;
 import com.appjars.saturn.model.constraints.AttributeInConstraint;
@@ -29,41 +30,116 @@ import com.appjars.saturn.model.constraints.AttributeNullConstraint;
 import com.appjars.saturn.model.constraints.AttributeRelationalConstraint;
 import com.appjars.saturn.model.constraints.NegatedConstraint;
 import com.appjars.saturn.model.constraints.RelationalConstraint;
+import lombok.AccessLevel;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
-import lombok.experimental.UtilityClass;
-
-@UtilityClass
+@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public class ConstraintBuilder {
 
-	public Constraint not(Constraint c) {
-		return new NegatedConstraint(c);	
-	}
-	
-	public Constraint equal(String attribute, Object value) {
-		return new AttributeRelationalConstraint(attribute, value, RelationalConstraint.EQ);	
-	}
-	
-	public Constraint notEqual(String attribute, Object value) {
-		return new AttributeRelationalConstraint(attribute, value, RelationalConstraint.NE);	
-	}
-	
-	public <T  extends Comparable<T>> Constraint between(String attribute, T lower, T upper) {
-		return new AttributeBetweenConstraint(attribute, lower, upper);	
-	}
-	
-	public Constraint like(String attribute, String pattern) {
-		return new AttributeLikeConstraint(attribute, pattern);	
-	}
-	
-	public Constraint in(String attribute, Collection<?> values) {
-		return new AttributeInConstraint(attribute, values);	
-	}
+  public static ConstraintBuilder of(String attribute0, String... attributes) {
+    String attribute = Stream.concat(Stream.of(attribute0), Stream.of(attributes)).collect(Collectors.joining("."));
+    return new ConstraintBuilder(attribute);
+  }
 
-	public Constraint isNull(String attribute) {
-		return new AttributeNullConstraint(attribute);
-	}
-	
-	public Constraint iLike(String attribute, String pattern) {
-      return new AttributeILikeConstraint(attribute, pattern); 
-    }
+  @NonNull
+  private final String attribute;
+
+  /**
+   * @deprecated Use {@link Constraint#not()}
+   */
+  @Deprecated
+  public static Constraint not(Constraint c) {
+    return new NegatedConstraint(c);	
+  }
+
+  /** @deprecated Use {@link #equal(String)} */
+  @Deprecated
+  public static Constraint equal(String attribute, Object value) {
+    return new AttributeRelationalConstraint(attribute, value, RelationalConstraint.EQ);	
+  }
+
+  /** @deprecated Use {@link #notEqual(String)} */
+  @Deprecated
+  public static Constraint notEqual(String attribute, Object value) {
+    return new AttributeRelationalConstraint(attribute, value, RelationalConstraint.NE);	
+  }
+
+  /** @deprecated Use {@link #between(String)} */
+  @Deprecated
+  public <T  extends Comparable<T>> Constraint between(String attribute, T lower, T upper) {
+    return new AttributeBetweenConstraint(attribute, lower, upper);	
+  }
+
+  /** @deprecated Use {@link #like(String)} */
+  @Deprecated
+  public static Constraint like(String attribute, String pattern) {
+    return new AttributeLikeConstraint(attribute, pattern);	
+  }
+
+  /** @deprecated Use {@link #in(String)} */
+  @Deprecated
+  public static Constraint in(String attribute, Collection<?> values) {
+    return new AttributeInConstraint(attribute, values);	
+  }
+
+  /** @deprecated Use {@link #isNull(String)} */
+  @Deprecated
+  public static Constraint isNull(String attribute) {
+    return new AttributeNullConstraint(attribute);
+  }
+
+  /** @deprecated Use {@link #iLike(String)} */
+  @Deprecated
+  public static Constraint iLike(String attribute, String pattern) {
+    return new AttributeILikeConstraint(attribute, pattern); 
+  }
+
+  public Constraint equal(Object value) {
+    return new AttributeRelationalConstraint(attribute, value, RelationalConstraint.EQ);
+  }
+
+  public Constraint notEqual(Object value) {
+    return new AttributeRelationalConstraint(attribute, value, RelationalConstraint.NE);
+  }
+
+  public Constraint lessThan(Object value) {
+    return new AttributeRelationalConstraint(attribute, value, RelationalConstraint.LT);
+  }
+
+  public Constraint greaterThan(Object value) {
+    return new AttributeRelationalConstraint(attribute, value, RelationalConstraint.GT);
+  }
+
+  public Constraint greaterOrEqualThan(Object value) {
+    return new AttributeRelationalConstraint(attribute, value, RelationalConstraint.GE);
+  }
+
+  public Constraint lessOrEqualThan(Object value) {
+    return new AttributeRelationalConstraint(attribute, value, RelationalConstraint.LE);
+  }
+
+  public <T extends Comparable<T>> Constraint between(T lower, T upper) {
+    return new AttributeBetweenConstraint(attribute, lower, upper);
+  }
+
+  public Constraint like(String pattern) {
+    return new AttributeLikeConstraint(attribute, pattern);
+  }
+
+  public Constraint in(Collection<?> values) {
+    return new AttributeInConstraint(attribute, values);
+  }
+
+  public Constraint isNull() {
+    return new AttributeNullConstraint(attribute);
+  }
+  public Constraint isNotNull() {
+    return ConstraintBuilder.not(new AttributeNullConstraint(attribute));
+  }
+
+  public Constraint iLike(String pattern) {
+    return new AttributeILikeConstraint(attribute, pattern);
+  }
+
 }

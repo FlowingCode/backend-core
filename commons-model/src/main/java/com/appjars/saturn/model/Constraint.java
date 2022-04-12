@@ -19,6 +19,12 @@
  */
 package com.appjars.saturn.model;
 
+import com.appjars.saturn.model.constraints.NegatedConstraint;
+
 public interface Constraint {
 
+  default Constraint not() {
+    return new NegatedConstraint(this);
+  }
+  
 }
