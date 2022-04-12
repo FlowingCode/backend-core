@@ -41,11 +41,17 @@ import com.appjars.saturn.model.constraints.AttributeNullConstraint;
 import com.appjars.saturn.model.constraints.AttributeRelationalConstraint;
 import com.appjars.saturn.model.constraints.NegatedConstraint;
 import com.appjars.saturn.model.constraints.RelationalConstraint;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor
 public class ConstraintTransformerJpaImpl extends ConstraintTransformer<Predicate> {
 
+	@NonNull
 	private final CriteriaBuilder criteriaBuilder;
-	private From<?,?> root;
+	
+	@NonNull
+	private final From<?,?> root;
 	
 	public ConstraintTransformerJpaImpl(EntityManager em, From<?,?> root) {
 		this.criteriaBuilder = em.getCriteriaBuilder();
