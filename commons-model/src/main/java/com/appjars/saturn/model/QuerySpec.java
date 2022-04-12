@@ -26,26 +26,29 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
-
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter
-@Setter
 public class QuerySpec {
 
 	public enum Order {
 		ASC, DESC;
 	}
 
+	@Getter
+	@Setter
 	private String[] returnedAttributes;
 
+	@Getter
+	@Setter
 	private Map<String, Order> orders;
 
 	private Integer firstResult;
 
 	private Integer maxResult;
 
+	@Getter
 	private final Collection<Constraint> constraints = new ArrayList<>();
 
 	public void addOrder(String property, Order order) {
@@ -80,4 +83,42 @@ public class QuerySpec {
 		return buffer.toString();
 	}
 
+	/**
+     * Return the position of the first result to retrieve.
+     * @return the position of the first result to retrieve (numbered from 0) or null.
+     * @see {@link #setFirstResult(Integer)}
+     */
+	public Integer getFirstResult() {
+      return firstResult;
+    }
+	
+	/**
+     * Return the maximum number of results to retrieve.
+     * @return the maximum number of results to retrieve, or null.
+     */
+	public Integer getMaxResult() {
+      return maxResult;
+    }
+
+    /**
+     * Set the position of the first result to retrieve.
+     * @param startPosition position of the first result, 
+     *        numbered from 0 (may be null)
+     * @return the same query instance
+     * @throws IllegalArgumentException if the argument is negative
+     */
+	public void setFirstResult(Integer firstResult) {
+	  if (firstResult!=null && firstResult<0) throw new IllegalArgumentException();
+      this.firstResult = firstResult;
+    }
+	
+    /**
+     * Set the maximum number of results to retrieve.
+     * @param maxResult  maximum number of results to retrieve (may be null)
+     * @throws IllegalArgumentException if the argument is negative
+     */
+	public void setMaxResult(Integer maxResult) {
+	  if (maxResult!=null && maxResult<0) throw new IllegalArgumentException();
+      this.maxResult = maxResult;
+    }
 }
