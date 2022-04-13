@@ -78,6 +78,7 @@
 		<module>commons-data-impl</module>
 		<module>commons-business</module>
 		<module>commons-business-impl</module>
+		<module>commons-business-spring-impl</module>
 		<module>commons-model</module>
 	</modules>
 	
