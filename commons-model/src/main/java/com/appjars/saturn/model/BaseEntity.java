@@ -29,7 +29,7 @@ import lombok.experimental.SuperBuilder;
  *
  * @param <K>
  */
-@SuperBuilder
+@SuperBuilder(toBuilder = true)
 @NoArgsConstructor
 public abstract class BaseEntity<K> implements Identifiable<K> {
 
