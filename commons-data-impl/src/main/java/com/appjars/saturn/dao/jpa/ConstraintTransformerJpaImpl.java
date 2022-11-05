@@ -118,7 +118,7 @@ public class ConstraintTransformerJpaImpl extends ConstraintTransformer<Predicat
 	
 	private Predicate transformEqualityConstraint(AttributeRelationalConstraint c) {
 		Expression<?> x = getExpression(c);
-		Object y = (Comparable<?>) c.getValue();
+		Object y = c.getValue();
 		
 		switch (c.getOperator()) {
 			case RelationalConstraint.EQ: return criteriaBuilder.equal(x, y);
