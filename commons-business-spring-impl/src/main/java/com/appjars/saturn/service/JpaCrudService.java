@@ -1,5 +1,7 @@
 package com.appjars.saturn.service;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -37,7 +39,22 @@ public abstract class JpaCrudService<T, K> implements CrudService<T, K> {
 		return ConstraintSpecification.buildSpecification(spec);
 	}
 
-	protected abstract K getId(T entity);
+	/**
+	 * Default implementation for obtaining an id from an entity by calling method getId() by reflection
+	 * @param entity
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	protected K getId(T entity) {
+		K id;
+		try {
+			Method m = entity.getClass().getMethod("getId");
+			id = (K) m.invoke(entity);
+		} catch (Exception e) {
+			throw new IllegalStateException(String.format("Problem when trying to obtain id of entity %s by assuming that its name is 'id'", entity));
+		}
+		return id;
+	};
 
 	private Sort buildSort(QuerySpec filter) {
 		if (filter.getOrders()==null || filter.getOrders().isEmpty()) {
