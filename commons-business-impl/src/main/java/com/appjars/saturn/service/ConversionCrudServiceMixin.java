@@ -50,7 +50,7 @@ import com.appjars.saturn.validation.Validator;
  */
 public interface ConversionCrudServiceMixin<B, P, K> 
 	extends ConversionCreationServiceMixin<B, P, K>,
-		ConversionUpdateServiceMixin<B, P, K>, 
+		ConversionUpdateServiceMixin<B, P>, 
 		ConversionDeletionServiceMixin<B, P>, 
 		ConversionQueryServiceMixin<B, P, K>,
 		CrudService<B, K> {

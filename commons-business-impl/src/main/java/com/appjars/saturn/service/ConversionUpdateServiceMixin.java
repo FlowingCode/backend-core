@@ -43,7 +43,7 @@ import com.appjars.saturn.validation.Validator;
  * @param <P> The type of the persistence layer entity
  * @param <K> The type of the entity identifier 
  */
-public interface ConversionUpdateServiceMixin<B, P, K> extends UpdateService<B, K>, BusinessConversionSupport<B, P> {
+public interface ConversionUpdateServiceMixin<B, P> extends UpdateService<B>, BusinessConversionSupport<B, P> {
 
 	UpdateDao<P> getUpdateDao();
 

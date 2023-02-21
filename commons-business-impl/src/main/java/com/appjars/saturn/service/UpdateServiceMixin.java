@@ -28,7 +28,7 @@ package com.appjars.saturn.service;
  * @param <T> The type of the entity
  * @param <K> The type of the entity identifier
  */
-public interface UpdateServiceMixin<T, K> 
-	extends ConversionUpdateServiceMixin<T, T, K>, BusinessConversionSupport.Identity<T> {
+public interface UpdateServiceMixin<T> 
+	extends ConversionUpdateServiceMixin<T, T>, BusinessConversionSupport.Identity<T> {
 
 }

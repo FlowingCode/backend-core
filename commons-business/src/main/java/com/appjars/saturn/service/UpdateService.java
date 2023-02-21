@@ -27,7 +27,7 @@ package com.appjars.saturn.service;
  * @param <T>
  * @param <K>
  */
-public interface UpdateService<T, K> {
+public interface UpdateService<T> {
 
 	void update(T entity);
 
