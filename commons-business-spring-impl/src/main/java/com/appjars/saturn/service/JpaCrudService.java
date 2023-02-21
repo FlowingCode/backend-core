@@ -18,7 +18,6 @@ import org.springframework.data.util.Streamable;
 
 import com.appjars.saturn.model.ErrorDescription;
 import com.appjars.saturn.model.QuerySpec;
-import com.appjars.saturn.service.CrudService;
 import com.appjars.saturn.service.validation.CreationValidator;
 import com.appjars.saturn.service.validation.DeletionValidator;
 import com.appjars.saturn.service.validation.UpdateValidator;
