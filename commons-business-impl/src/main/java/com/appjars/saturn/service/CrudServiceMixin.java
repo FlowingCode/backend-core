@@ -47,7 +47,7 @@ import com.appjars.saturn.validation.Validator;
  * @param <K>
  */
 public interface CrudServiceMixin<T, K> extends CreationServiceMixin<T, K>,
-		UpdateServiceMixin<T, K>, DeletionServiceMixin<T>, QueryServiceMixin<T, K>, CrudService<T, K> {
+		UpdateServiceMixin<T>, DeletionServiceMixin<T>, QueryServiceMixin<T, K>, CrudService<T, K> {
 
 	default CreationDao<T, K> getCreationDao() {
 		return getCrudDao();

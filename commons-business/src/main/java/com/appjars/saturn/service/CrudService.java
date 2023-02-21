@@ -28,7 +28,7 @@ package com.appjars.saturn.service;
  * @param <K>
  */
 public interface CrudService<T, K>
-		extends CreationService<T, K>, UpdateService<T, K>, DeletionService<T>, QueryService<T, K> {
+		extends CreationService<T, K>, UpdateService<T>, DeletionService<T>, QueryService<T, K> {
 
 	void deleteById(K id);
 
