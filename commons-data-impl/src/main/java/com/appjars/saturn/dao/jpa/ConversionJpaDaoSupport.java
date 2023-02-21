@@ -110,6 +110,16 @@ public interface ConversionJpaDaoSupport<S, T extends Identifiable<K>, K extends
 		return FilterProcesor.<T, K>of(getEntityManager(), getPersistentClass()).filter(filter).stream()
 				.map(this::convertFrom).collect(Collectors.toList());
 	}
+	
+	@Override
+	default Optional<S> filterWithSingleResult(QuerySpec filter) {
+		List<T> filtered = FilterProcesor.<T, K>of(getEntityManager(), getPersistentClass()).filter(filter);
+		if (filtered.size()>1) {
+			throw new IllegalStateException("Current filter returned more than one result");
+		}
+		return filtered.stream()
+				.map(this::convertFrom).findAny();
+	}
 
 	static class FilterProcesor<T extends Identifiable<K>, K extends Serializable> {
 
