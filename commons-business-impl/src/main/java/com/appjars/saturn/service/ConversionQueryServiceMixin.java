@@ -63,6 +63,12 @@ public interface ConversionQueryServiceMixin<B, P, K> extends QueryService<B, K>
 
 	@Transactional(value = TxType.REQUIRED, rollbackOn = Exception.class)
 	@Override
+	default Optional<B> filterWithSingleResult(QuerySpec filter) {
+		return getQueryDao().filterWithSingleResult(filter).map(this::convertToBusiness);
+	}
+
+	@Transactional(value = TxType.REQUIRED, rollbackOn = Exception.class)
+	@Override
 	default long count(QuerySpec filter) {
 		return getQueryDao().count(filter);
 	}

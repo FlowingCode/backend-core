@@ -32,6 +32,8 @@ public interface QueryDao<T, K> {
 
 	List<T> filter(QuerySpec filter);
 
+	Optional<T> filterWithSingleResult(QuerySpec filter);
+
 	long count(QuerySpec filter);
 
 }

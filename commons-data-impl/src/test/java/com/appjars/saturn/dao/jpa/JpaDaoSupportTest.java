@@ -111,6 +111,18 @@ class JpaDaoSupportTest {
 	}
 	
 	@Test
+	void testFilterWithSingleResult() {
+		PersonFilter pf = new PersonFilter();
+		pf.addConstraint(ConstraintBuilder.in("id", Arrays.asList(new Integer[] { persistedPerson.getId() })));
+		boolean isPresent = dao.filterWithSingleResult(pf).isPresent();
+		assertEquals(true, isPresent);
+		pf = new PersonFilter();
+		pf.addConstraint(ConstraintBuilder.in("id", Arrays.asList(new Integer[] { -1 })));
+		isPresent = dao.filterWithSingleResult(pf).isPresent();
+		assertEquals(false, isPresent);
+	}
+	
+	@Test
 	void testCount() {
 		PersonFilter pf = new PersonFilter();
 		pf.addConstraint(ConstraintBuilder.not(ConstraintBuilder.in("id", Arrays.asList(new Integer[] { persistedPerson.getId() }))));

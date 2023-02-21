@@ -65,4 +65,14 @@ public interface QueryService<T, K> {
    */
   long count(QuerySpec filter);
 
+  /**
+   * Apply filtering to entities in the system based on a certain query specification and retrieve a
+   * single result.
+   *
+   * @param filter the query specification used for filtering
+   * @return an {@code Optional} instance containing a single entity matching the query
+   *         specification if it exists; otherwise empty
+   */
+  Optional<T> filterWithSingleResult(QuerySpec filter);
+
 }
