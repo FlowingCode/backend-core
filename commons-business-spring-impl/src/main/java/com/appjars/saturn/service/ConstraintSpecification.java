@@ -1,8 +1,8 @@
 package com.appjars.saturn.service;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.lang.NonNull;
 import com.appjars.saturn.dao.jpa.ConstraintTransformerJpaImpl;
@@ -23,7 +23,7 @@ final class ConstraintSpecification<T> implements Specification<T> {
 	}
 
 	@Override
-	public javax.persistence.criteria.Predicate toPredicate(Root<T> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+	public jakarta.persistence.criteria.Predicate toPredicate(Root<T> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
 		return new ConstraintTransformerJpaImpl(criteriaBuilder, root).apply(constraint);
 	}
 

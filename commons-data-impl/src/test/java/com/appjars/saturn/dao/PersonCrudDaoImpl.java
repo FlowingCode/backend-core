@@ -19,8 +19,8 @@
  */
 package com.appjars.saturn.dao;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
 
 import com.appjars.saturn.dao.jpa.JpaDaoSupport;
 import com.appjars.saturn.model.impl.Person;

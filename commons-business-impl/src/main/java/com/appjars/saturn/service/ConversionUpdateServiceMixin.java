@@ -22,8 +22,8 @@ package com.appjars.saturn.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.transaction.Transactional;
-import javax.transaction.Transactional.TxType;
+import jakarta.transaction.Transactional;
+import jakarta.transaction.Transactional.TxType;
 
 import com.appjars.saturn.dao.UpdateDao;
 import com.appjars.saturn.model.ErrorDescription;
