@@ -20,15 +20,21 @@
 package com.appjars.saturn.service;
 
 /**
- * A special kind of service that allows entities creation
- * 
- * @author mlopez
+ * Specifies the contract of a generic service that is responsible for saving new entities to the database.
  *
- * @param <T>
- * @param <K>
+ * @param <T> Represents the entity type
+ * @param <K> Represents the key type
+ *
+ * @author mlopez
  */
 public interface CreationService<T, K> {
 
-	K save(T entity);
+    /**
+     * Saves a new entity to a database.
+     *
+     * @param entity the created entity to be saved
+     * @return an instance of key of entity this is saved to the database
+     */
+    K save(T entity);
 
 }

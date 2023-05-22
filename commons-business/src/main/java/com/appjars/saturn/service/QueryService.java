@@ -25,21 +25,44 @@ import java.util.Optional;
 import com.appjars.saturn.model.QuerySpec;
 
 /**
- * A special kind of service that allows entities querying
- * 
- * @author mlopez
+ * Specifies the contract of a generic service that handles querying operations on entities.
  *
- * @param <T>
- * @param <K>
+ * @param <T> the type of the entity to be queried
+ * @param <K> the type of the entity's identifying key
+ *
+ * @author mlopez
  */
 public interface QueryService<T, K> {
 
-	Optional<T> findById(K id);
+  /**
+   * Find an entity by its identifying key.
+   *
+   * @param id the entity's identifying key
+   * @return an {@code Optional} instance containing the entity if it exists; otherwise empty
+   */
+  Optional<T> findById(K id);
 
-	List<T> findAll();
+  /**
+   * Find all entities.
+   *
+   * @return a {@code List} containing all entities in the system
+   */
+  List<T> findAll();
 
-	List<T> filter(QuerySpec filter);
+  /**
+   * Apply filtering to entities in the system based on a certain query specification.
+   *
+   * @param filter the query specification used for filtering
+   * @return a {@code List} containing all entities matching the query specification
+   */
+  List<T> filter(QuerySpec filter);
 
-	long count(QuerySpec filter);
+  /**
+   * Count the number of entities that match a certain query specification.
+   *
+   * @param filter the query specification used for filtering
+   * @return the number of entities that match the query specification
+   */
+  long count(QuerySpec filter);
 
 }
