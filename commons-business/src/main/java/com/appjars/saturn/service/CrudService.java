@@ -20,16 +20,21 @@
 package com.appjars.saturn.service;
 
 /**
- * A special kind of service that allows entities CRUD operations
+ * Specifies the contract of a generic service that provides methods to manage entities based on CRUD operations.
  * 
- * @author mlopez
+ * @param <T> The type of entity being managed
+ * @param <K> The type of entity's identifier
  *
- * @param <T>
- * @param <K>
+ * @author mlopez
  */
 public interface CrudService<T, K>
 		extends CreationService<T, K>, UpdateService<T>, DeletionService<T>, QueryService<T, K> {
 
-	void deleteById(K id);
+  /**
+   * Deletes an entity by its identifier.
+   *
+   * @param id The identifier of the entity to be deleted
+   */
+  void deleteById(K id);
 
 }

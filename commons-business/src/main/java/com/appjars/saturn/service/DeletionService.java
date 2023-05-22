@@ -20,15 +20,20 @@
 package com.appjars.saturn.service;
 
 /**
- * A special kind of service that allows entities deletion
- * 
+ * Specifies the contract of a generic deletion service.
+ *
+ * @param <T> the type of entity (e.g., {@code User})
+ *
  * @author mlopez
  *
- * @param <T>
- * @param <K>
  */
 public interface DeletionService<T> {
 
-	void delete(T entity);
+    /**
+     * Deletes a given entity from the system.
+     *
+     * @param entity the entity to be deleted
+     */
+    void delete(T entity);
 
 }

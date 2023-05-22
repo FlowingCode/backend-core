@@ -20,15 +20,22 @@
 package com.appjars.saturn.service;
 
 /**
- * A special kind of service that allows entities update
- * 
- * @author mlopez
+ * Specifies the contract of a generic service that allows updating entities.
  *
- * @param <T>
- * @param <K>
+ * @param <T> type of entity to update
+ *
+ * @author mlopez
  */
 public interface UpdateService<T> {
 
-	void update(T entity);
+  /**
+   * Updates the given entity.
+   *
+   * @param entity the entity object to be updated
+   * @throws UpdateException if an exception occurs during the update process
+   * @throws EntityNotFoundException if the entity to be updated is not found
+   * @throws InvalidEntityException if the provided entity is not valid for the update declaration
+   */
+  void update(T entity);
 
 }
