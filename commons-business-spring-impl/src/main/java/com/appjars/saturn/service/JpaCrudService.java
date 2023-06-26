@@ -1,13 +1,12 @@
 package com.appjars.saturn.service;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.UndeclaredThrowableException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -15,7 +14,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.util.Streamable;
-
 import com.appjars.saturn.model.ErrorDescription;
 import com.appjars.saturn.model.QuerySpec;
 import com.appjars.saturn.service.validation.CreationValidator;
@@ -50,10 +48,12 @@ public abstract class JpaCrudService<T, K> implements CrudService<T, K> {
 			Method m = entity.getClass().getMethod("getId");
 			id = (K) m.invoke(entity);
 		} catch (Exception e) {
-			throw new IllegalStateException(String.format("Problem when trying to obtain id of entity %s by assuming that its name is 'id'", entity));
+            throw new UndeclaredThrowableException(e, String.format(
+                "Problem when trying to obtain id of entity of type %s by assuming that its name is 'id'",
+                entity.getClass().getName()));
 		}
 		return id;
-	};
+	}
 
 	private Sort buildSort(QuerySpec filter) {
 		if (filter.getOrders()==null || filter.getOrders().isEmpty()) {
