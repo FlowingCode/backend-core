@@ -4,13 +4,13 @@
 	<modelVersion>4.0.0</modelVersion>
 	
 	<parent>
-		<groupId>com.appjars.saturn.backend</groupId>
-		<artifactId>commons-backend</artifactId>
+		<groupId>com.flowingcode.backend-core</groupId>
+		<artifactId>backend-core</artifactId>
 		<version>3.0.0-SNAPSHOT</version>
 	</parent>
 	
-	<artifactId>commons-model</artifactId>
-	<name>Commons Backend - Model</name>
+	<artifactId>backend-core-model</artifactId>
+	<name>Backend Core - Model</name>
 
 	<dependencies>
 		<dependency>
