@@ -74,12 +74,12 @@
 	</dependencyManagement>
 	
 	<modules>
-		<module>commons-data</module>
-		<module>commons-data-impl</module>
-		<module>commons-business</module>
-		<module>commons-business-impl</module>
-		<module>commons-business-spring-impl</module>
-		<module>commons-model</module>
+		<module>backend-core-data</module>
+		<module>backend-core-data-impl</module>
+		<module>backend-core-business</module>
+		<module>backend-core-business-impl</module>
+		<module>backend-core-business-spring-impl</module>
+		<module>backend-core-model</module>
 	</modules>
 	
     <build>
