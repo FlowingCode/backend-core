@@ -121,23 +121,23 @@
 						<groups>
 						  <group>
 							<title>commons-data</title>
-							<packages>com.appjars.saturn.dao</packages>
+							<packages>com.flowingcode.backendcore.dao</packages>
 						  </group>
 						  <group>
 							<title>commons-data-impl</title>
-							<packages>com.appjars.saturn.dao.jpa</packages>
+							<packages>com.flowingcode.backendcore.dao.jpa</packages>
 						  </group>
 						  <group>
 							<title>commons-business</title>
-							<packages>com.appjars.saturn.service</packages>
+							<packages>com.flowingcode.backendcore.service</packages>
 						  </group>
 						  <group>
 							<title>commons-business-impl</title>
-							<packages>com.appjars.saturn.service*</packages>
+							<packages>com.flowingcode.backendcore.service*</packages>
 						  </group>
 						  <group>
 							<title>commons-model</title>
-							<packages>com.appjars.saturn.model*:com.appjars.saturn.exception:com.appjars.saturn.validation</packages>
+							<packages>com.flowingcode.backendcore.model*:com.flowingcode.backendcore.exception:com.flowingcode.backendcore.validation</packages>
 						  </group>
 						</groups>
 				</configuration>
