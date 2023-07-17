@@ -1,14 +1,14 @@
-# Commons Backend
+# Backend Core
 
-Commons utilities for back-end enterprise application development
+Commons utilities for backend enterprise application development
 
-## What is commons-backend?
+## What is backend-core?
 
 It's a set of common interfaces and implementations that allows to implement some of the principles of a clean architectural design for enterprise applications.
 
 For more info, please refer to [Documentation](src/site/markdown/index.md)
 
-Snapshots are available [here](https://maven.appjars.com/saturn/snapshots). 
+Snapshots are available [here](https://maven.flowingcode.com/snapshots). 
 
 ## Download release
 
@@ -21,11 +21,11 @@ Comming soon
 
 ## Release notes
 
-See [here](https://github.com/AppJars/commons-backend/releases)
+See [here](https://github.com/FlowingCode/backend-core/releases)
 
 ## Issue tracking
 
-Issues for this project are tracked [here](https://github.com/AppJars/commons-backend/issues). All bug reports and feature requests are appreciated. 
+Issues for this project are tracked [here](https://github.com/FlowingCode/backend-core/issues). All bug reports and feature requests are appreciated. 
 
 ## Contributions
 
@@ -42,7 +42,7 @@ Contributions are welcome, but there are no guarantees that they are accepted as
 
 Commons-Backend is distributed under Apache License 2.0. For license terms, see LICENSE.txt.
 
-Commons-Backend is written by Flowing Code S.A.
+Commons-Backend is written by Flowing Code
 
 # Developer Guide
 
