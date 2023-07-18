@@ -102,7 +102,7 @@ to support the following:
 * No business logic specific framework and libraries should be needed to import in order 
   to call exposed business logic services from presentation layer.
 
-![Model_commons-backend_Class_Diagram](../../model/Model_commons-backend_Class_Diagram.SVG)
+![Model_backend-core_Class_Diagram](../../model/Model_backend-core_Class_Diagram.SVG)
   
 The component should provide interfaces to be used as a foundation to build contracts 
 that will allow to implement the strict separation in case it's needed. Of course it
