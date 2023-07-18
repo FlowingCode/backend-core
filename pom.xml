@@ -1,19 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	
-	<parent>
-		<groupId>com.appjars.saturn</groupId>
-		<artifactId>parent-pom</artifactId>
-		<version>1.0-SNAPSHOT</version>
-	</parent>
-	
+
 	<groupId>com.flowingcode.backend-core</groupId>
 	<artifactId>backend-core</artifactId>
 	<packaging>pom</packaging>
 	<version>1.0.0-SNAPSHOT</version>
 	<name>Backend Core</name>
+
+	<organization>
+		<name>Flowing Code</name>
+		<url>https://www.flowingcode.com</url>
+	</organization>
+
+	<licenses>
+		<license>
+			<name>Apache 2</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
 
 	<prerequisites>
 		<maven>3</maven>
@@ -25,8 +31,8 @@
 		<maven.compiler.source>17</maven.compiler.source>
 		<maven.compiler.target>17</maven.compiler.target>
 	</properties>
-	
- 	<inceptionYear>2020</inceptionYear>
+
+	<inceptionYear>2020</inceptionYear>
 
 	<scm>
 		<connection>scm:git:git@github.com:AppJars/${project.artifactId}.git</connection>
@@ -35,29 +41,29 @@
 	</scm>
 
 	<repositories>
-        <repository>
-            <id>saturn-snapshots</id>
-            <url>https://maven.appjars.com/saturn/snapshots</url>
+		<repository>
+			<id>saturn-snapshots</id>
+			<url>https://maven.appjars.com/saturn/snapshots</url>
 			<releases>
 				<enabled>false</enabled>
 			</releases>
 			<snapshots>
 				<updatePolicy>always</updatePolicy>
 			</snapshots>
-        </repository>
+		</repository>
 	</repositories>
-	
+
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
-			    <groupId>jakarta.persistence</groupId>
-			    <artifactId>jakarta.persistence-api</artifactId>
-			    <version>3.1.0</version>
+				<groupId>jakarta.persistence</groupId>
+				<artifactId>jakarta.persistence-api</artifactId>
+				<version>3.1.0</version>
 			</dependency>
 			<dependency>
-			    <groupId>jakarta.transaction</groupId>
-			    <artifactId>jakarta.transaction-api</artifactId>
-			    <version>2.0.1</version>
+				<groupId>jakarta.transaction</groupId>
+				<artifactId>jakarta.transaction-api</artifactId>
+				<version>2.0.1</version>
 			</dependency>
 			<dependency>
 				<groupId>org.junit.jupiter</groupId>
@@ -72,7 +78,7 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
-	
+
 	<modules>
 		<module>backend-core-data</module>
 		<module>backend-core-data-impl</module>
@@ -81,67 +87,152 @@
 		<module>backend-core-business-spring-impl</module>
 		<module>backend-core-model</module>
 	</modules>
-	
-    <build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <artifactId>maven-site-plugin</artifactId>
-                    <version>3.9.0</version>
-                </plugin>
+
+	<build>
+
+		<pluginManagement>
+
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<version>2.22.1</version>
+					<configuration>
+						<useSystemClassLoader>false</useSystemClassLoader>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>3.7.0</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-deploy-plugin</artifactId>
+					<version>2.8.2</version>
+				</plugin>
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>license-maven-plugin</artifactId>
+					<version>2.0.0</version>
 					<configuration>
-					   <licenseName>apache_v2</licenseName>
+						<addJavaLicenseAfterPackage>false</addJavaLicenseAfterPackage>
+						<licenseName>apache_v2</licenseName>
 					</configuration>
 				</plugin>
-            </plugins>
-        </pluginManagement>
-        <plugins>
-            <plugin>
-                <artifactId>maven-site-plugin</artifactId>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.apache.maven.doxia</groupId>
-                        <artifactId>doxia-module-markdown</artifactId>
-                        <version>1.9.1</version>
-                    </dependency>
-                </dependencies>
-            </plugin>
-        </plugins>
-    </build>
+				<plugin>
+					<artifactId>maven-site-plugin</artifactId>
+					<version>3.9.0</version>
+				</plugin>
+			</plugins>
+
+		</pluginManagement>
+
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>3.3.1</version>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<quiet>true</quiet>
+					<doclint>none</doclint>
+					<failOnError>false</failOnError>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-project-info-reports-plugin</artifactId>
+				<version>3.1.2</version>
+			</plugin>
+			<plugin>
+				<artifactId>maven-site-plugin</artifactId>
+				<dependencies>
+					<dependency>
+						<groupId>org.apache.maven.doxia</groupId>
+						<artifactId>doxia-module-markdown</artifactId>
+						<version>1.9.1</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>3.0.1</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>jar-no-fork</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 
 	<reporting>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>3.3.1</version>
 				<configuration>
-						<groups>
-						  <group>
+					<quiet>true</quiet>
+					<doclint>none</doclint>
+					<failOnError>false</failOnError>
+					<groups>
+						<group>
 							<title>commons-data</title>
 							<packages>com.flowingcode.backendcore.dao</packages>
-						  </group>
-						  <group>
+						</group>
+						<group>
 							<title>commons-data-impl</title>
 							<packages>com.flowingcode.backendcore.dao.jpa</packages>
-						  </group>
-						  <group>
+						</group>
+						<group>
 							<title>commons-business</title>
 							<packages>com.flowingcode.backendcore.service</packages>
-						  </group>
-						  <group>
+						</group>
+						<group>
 							<title>commons-business-impl</title>
 							<packages>com.flowingcode.backendcore.service*</packages>
-						  </group>
-						  <group>
+						</group>
+						<group>
 							<title>commons-model</title>
 							<packages>com.flowingcode.backendcore.model*:com.flowingcode.backendcore.exception:com.flowingcode.backendcore.validation</packages>
-						  </group>
-						</groups>
+						</group>
+					</groups>
 				</configuration>
+				<reportSets>
+					<reportSet>
+						<reports>
+							<report>aggregate-no-fork</report>
+						</reports>
+					</reportSet>
+				</reportSets>
 			</plugin>
 		</plugins>
 	</reporting>
+
+	<distributionManagement>
+		<snapshotRepository>
+			<id>ossrh</id>
+			<url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
+		</snapshotRepository>
+		<repository>
+			<id>ossrh</id>
+			<url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+		</repository>
+	</distributionManagement>
+
 </project>
