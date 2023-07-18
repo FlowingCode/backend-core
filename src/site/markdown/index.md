@@ -209,7 +209,7 @@ specific libraries (ie: JPA).
 
 ###### Persistence Layer Implementation Module #####
 This module will contain implementation of the contracts defined in the previous module. 
-Commons-backend related module should offer specific persitent storage implementation 
+Backend-core related module should offer specific persitent storage implementation 
 as optional dependencies.
 Objects of the model layer with persistent storage specific meta-data should live in 
 this module.
