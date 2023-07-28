@@ -225,6 +225,10 @@
 	</reporting>
 
 	<distributionManagement>
+		<site>
+			<id>site</id>
+			<url>https://docs.flowingcode.com/backend-core</url>
+		</site>
 		<snapshotRepository>
 			<id>ossrh</id>
 			<url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
