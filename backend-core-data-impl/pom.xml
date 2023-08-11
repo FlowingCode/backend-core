@@ -11,6 +11,8 @@
 	
 	<artifactId>backend-core-data-impl</artifactId>
 	<name>Backend Core - Data Access Layer Implementations</name>
+	<description>Base implementations of interfaces for DAOs based on Backend Core</description>
+	<url>https://www.flowingcode.com/en/open-source/</url>
 
 	<dependencies>
 		<dependency>

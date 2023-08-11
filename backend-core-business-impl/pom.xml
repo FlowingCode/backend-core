@@ -11,7 +11,9 @@
 	
 	<artifactId>backend-core-business-impl</artifactId>
 	<name>Backend Core - Business Implementations</name>
-
+	<description>Base implementations of interfaces for services based on Backend Core</description>
+	<url>https://www.flowingcode.com/en/open-source/</url>
+	
 	<dependencies>
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
