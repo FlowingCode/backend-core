@@ -11,6 +11,8 @@
 	
 	<artifactId>backend-core-business-spring-impl</artifactId>
 	<name>Backend Core - Business Implementation (Spring Data)</name>
+	<description>Service implementation based on Spring Framework</description>
+	<url>https://www.flowingcode.com/en/open-source/</url>
 
 	<dependencies>
 		<dependency>

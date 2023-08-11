@@ -11,6 +11,8 @@
 	
 	<artifactId>backend-core-business</artifactId>
 	<name>Backend Core - Business Interfaces</name>
+	<description>Base interfaces for creating services contracts based on Backend Core</description>
+	<url>https://www.flowingcode.com/en/open-source/</url>
 
 	<dependencies>
 		<dependency>

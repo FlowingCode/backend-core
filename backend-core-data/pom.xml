@@ -11,6 +11,8 @@
 	
 	<artifactId>backend-core-data</artifactId>
 	<name>Backend Core - Data Access Interfaces</name>
+	<description>Base interfaces for creating DAOs contracts based on Backend Core</description>
+	<url>https://www.flowingcode.com/en/open-source/</url>
 
 	<dependencies>
 		<dependency>

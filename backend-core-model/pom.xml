@@ -11,6 +11,8 @@
 	
 	<artifactId>backend-core-model</artifactId>
 	<name>Backend Core - Model</name>
+	<description>Utility classes for building a model compatible with Backend Core</description>
+	<url>https://www.flowingcode.com/en/open-source/</url>
 
 	<dependencies>
 		<dependency>
