@@ -45,9 +45,9 @@
 	<inceptionYear>2020</inceptionYear>
 
 	<scm>
-		<connection>scm:git:git@github.com:AppJars/${project.artifactId}.git</connection>
-		<url>scm:git:git@github.com:AppJars/${project.artifactId}.git</url>
-		<developerConnection>scm:git:git@github.com:AppJars/${project.artifactId}.git</developerConnection>
+		<connection>scm:git:git@github.com:FlowingCode/backend-core.git</connection>
+		<url>scm:git:git@github.com:FlowingCode/backend-core.git</url>
+		<developerConnection>scm:git:git@github.com:FlowingCode/backend-core.git</developerConnection>
 	</scm>
 
 	<dependencyManagement>
