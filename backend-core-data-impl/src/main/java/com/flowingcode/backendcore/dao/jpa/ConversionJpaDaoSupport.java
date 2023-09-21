@@ -174,25 +174,12 @@ public interface ConversionJpaDaoSupport<S, T extends Identifiable<K>, K extends
 				for (Entry<String, QuerySpec.Order> entry : baseFilter.getOrders().entrySet()) {
 					if (QuerySpec.Order.ASC.equals(entry.getValue())) {
 						crit.orderBy(cb.asc(root.get(entry.getKey())));
-//						crit.addOrder(Order.asc(entry.getKey()));
 					} else {
 						crit.orderBy(cb.desc(root.get(entry.getKey())));
-//						crit.addOrder(Order.desc(entry.getKey()));
 					}
 
 				}
 			}
-//			// si el objeto admite borrado lógico
-//			if (Auditable.class.isAssignableFrom(getPersistentClass())
-//					&& AuditableFilter.class.isAssignableFrom(baseFilter.getClass())) {
-//				AuditableFilter<PK> filter = (AuditableFilter<PK>) baseFilter;
-//				if (filter.getActivo() != null) {
-//					crit.add(Restrictions.eq(Auditable.Attribute.ACTIVO, filter.getActivo()));
-//				}
-//				if (filter.getFechaAlta() != null) {
-//					crit.add(Restrictions.eq(Auditable.Attribute.FECHA_ALTA, filter.getFechaAlta()));
-//				}
-//			}
 			return crit;
 		}
 
@@ -215,15 +202,6 @@ public interface ConversionJpaDaoSupport<S, T extends Identifiable<K>, K extends
 		protected List<T> filterNotFullData(QuerySpec filter) {
 			CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 			CriteriaQuery<T> criteria = createFilterCriteria(filter, cb);
-//			ProjectionList projections = null;
-//			if (filter.getReturnedAttributes() != null) {
-//				projections = Projections.projectionList();
-//				for (String attr : filter.getReturnedAttributes()) {
-//					projections.add(Projections.alias(Projections.property(attr), attr));
-//				}
-//			}
-//			criteria.setProjection(Projections.distinct(projections));
-//			criteria.setResultTransformer(new AliasToBeanResultTransformer(persistentClass));
 			return addPagination(criteria, filter).getResultList();
 		}
 
