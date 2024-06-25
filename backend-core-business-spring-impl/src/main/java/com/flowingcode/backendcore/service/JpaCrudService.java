@@ -1,5 +1,16 @@
 package com.flowingcode.backendcore.service;
 
+import com.flowingcode.backendcore.model.ErrorDescription;
+import com.flowingcode.backendcore.model.QuerySpec;
+import com.flowingcode.backendcore.service.validation.CreationValidator;
+import com.flowingcode.backendcore.service.validation.DeletionValidator;
+import com.flowingcode.backendcore.service.validation.UpdateValidator;
+import com.flowingcode.backendcore.validation.CreationValidationException;
+import com.flowingcode.backendcore.validation.DeletionValidationException;
+import com.flowingcode.backendcore.validation.UpdateValidationException;
+import com.flowingcode.backendcore.validation.ValidationException;
+import com.flowingcode.backendcore.validation.ValidationSupport;
+import com.flowingcode.backendcore.validation.Validator;
 import java.lang.reflect.Method;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.Collections;
@@ -14,19 +25,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.util.Streamable;
-
-import com.flowingcode.backendcore.model.ErrorDescription;
-import com.flowingcode.backendcore.model.QuerySpec;
-import com.flowingcode.backendcore.service.CrudService;
-import com.flowingcode.backendcore.service.validation.CreationValidator;
-import com.flowingcode.backendcore.service.validation.DeletionValidator;
-import com.flowingcode.backendcore.service.validation.UpdateValidator;
-import com.flowingcode.backendcore.validation.CreationValidationException;
-import com.flowingcode.backendcore.validation.DeletionValidationException;
-import com.flowingcode.backendcore.validation.UpdateValidationException;
-import com.flowingcode.backendcore.validation.ValidationException;
-import com.flowingcode.backendcore.validation.ValidationSupport;
-import com.flowingcode.backendcore.validation.Validator;
 
 public abstract class JpaCrudService<T, K> implements CrudService<T, K> {
 
@@ -108,6 +106,11 @@ public abstract class JpaCrudService<T, K> implements CrudService<T, K> {
 			return getExecutor().findAll(buildSpecification(filter), buildPageable(filter)).toList();
 		}
 	}
+	
+    @Override
+    public Optional<T> filterWithSingleResult(QuerySpec filter) {
+      return getExecutor().findOne(buildSpecification(filter));
+    }
 
 	@Override
 	public long count(QuerySpec filter) {
