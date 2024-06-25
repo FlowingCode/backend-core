@@ -40,4 +40,13 @@
 		</dependency>
 	</dependencies>
 
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-expression</artifactId>
+				<version>6.0.8</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 </project>
