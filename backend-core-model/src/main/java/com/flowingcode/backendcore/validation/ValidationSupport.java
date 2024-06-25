@@ -19,17 +19,22 @@
  */
 package com.flowingcode.backendcore.validation;
 
+import com.flowingcode.backendcore.model.ErrorDescription;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public interface ValidationSupport<T> {
 
-    List<Validator<T>> getValidators();
-    
-    default List<Validator<T>> getValidators(@SuppressWarnings("rawtypes") Class<? extends Validator> validatorType) {
-      return getValidators().stream().filter(validatorType::isInstance).collect(Collectors.toList());
-    }
-    
-    
+  List<Validator<T>> getValidators();
+
+  default List<Validator<T>> getValidators(
+      @SuppressWarnings("rawtypes") Class<? extends Validator> validatorType) {
+    return getValidators().stream().filter(validatorType::isInstance).collect(Collectors.toList());
+  }
+
+  default List<ErrorDescription> validate(Class<Validator<T>> validatorType, T t) {
+      List<Validator<T>> validators = ((ValidationSupport<T>) this).getValidators(validatorType);
+      return validators.stream().flatMap(val -> val.validate(t).stream()).collect(Collectors.toList());
+  }
 
 }
