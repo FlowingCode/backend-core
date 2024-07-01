@@ -26,10 +26,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 
+@Accessors(chain=true)
 public class QuerySpec {
 
 	public enum Order {
@@ -51,19 +52,22 @@ public class QuerySpec {
 	@Getter
 	private final Collection<Constraint> constraints = new ArrayList<>();
 
-	public void addOrder(String property, Order order) {
+	public QuerySpec addOrder(String property, Order order) {
 		if (this.orders == null) {
 			this.orders = new LinkedHashMap<>();
 		}
 		this.orders.put(property, order);
+		return this;
 	}
 
-	public void addOrder(String property) {
+	public QuerySpec addOrder(String property) {
 		addOrder(property, Order.ASC);
+		return this;
 	}
 	
-	public void addConstraint(Constraint constraint) {
+	public QuerySpec addConstraint(Constraint constraint) {
 		this.constraints.add(constraint);
+		return this;
 	}
 			
 	@Override
@@ -107,9 +111,10 @@ public class QuerySpec {
      * @return the same query instance
      * @throws IllegalArgumentException if the argument is negative
      */
-	public void setFirstResult(Integer firstResult) {
+	public QuerySpec setFirstResult(Integer firstResult) {
 	  if (firstResult!=null && firstResult<0) throw new IllegalArgumentException();
       this.firstResult = firstResult;
+      return this;
     }
 	
     /**
@@ -117,8 +122,9 @@ public class QuerySpec {
      * @param maxResult  maximum number of results to retrieve (may be null)
      * @throws IllegalArgumentException if the argument is negative
      */
-	public void setMaxResult(Integer maxResult) {
+	public QuerySpec setMaxResult(Integer maxResult) {
 	  if (maxResult!=null && maxResult<0) throw new IllegalArgumentException();
       this.maxResult = maxResult;
+      return this;
     }
 }
