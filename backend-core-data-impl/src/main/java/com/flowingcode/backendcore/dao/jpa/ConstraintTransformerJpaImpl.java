@@ -135,8 +135,8 @@ public class ConstraintTransformerJpaImpl extends ConstraintTransformer<Predicat
 		switch (c.getOperator()) {
 			case RelationalConstraint.LE: return criteriaBuilder.lessThanOrEqualTo(x, y);
 			case RelationalConstraint.LT: return criteriaBuilder.lessThan(x, y);
-			case RelationalConstraint.GE: return criteriaBuilder.greaterThan(x, y);
-			case RelationalConstraint.GT: return criteriaBuilder.greaterThanOrEqualTo(x, y);
+			case RelationalConstraint.GE: return criteriaBuilder.greaterThanOrEqualTo(x, y);
+			case RelationalConstraint.GT: return criteriaBuilder.greaterThan(x, y);
 			default: return null;
 		}
 	}
