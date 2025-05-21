@@ -1,49 +1,109 @@
+[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE.txt)
+
 # Backend Core
 
-Commons utilities for backend enterprise application development
+Common utilities for backend enterprise application development.
 
-## What is backend-core?
+Backend Core provides a set of modular libraries to help you implement clean architecture (three-tier, hexagonal, DDD) in your enterprise Java applications. It includes:
 
-It's a set of common interfaces and implementations that allows to implement some of the principles of a clean architectural design for enterprise applications.
+- **Model layer**: domain interfaces and DTOs (`backend-core-model`)
+- **Data layer**: persistence contracts (`backend-core-data`) and JPA-based implementations (`backend-core-data-impl`)
+- **Service layer**: business logic contracts (`backend-core-business`) and default implementations (`backend-core-business-impl`)
+- **Spring Boot integration**: auto-configuration support (`backend-core-business-spring-impl`)
 
-For more info, please refer to [Documentation](src/site/markdown/index.md)
+## Features
 
-Snapshots are available [here](https://maven.flowingcode.com/snapshots). 
+- Generic CRUD interfaces and base implementations
+- Strongly-typed filtering and query support
+- Reusable service layering and transactional support
+- Spring Boot integration for easy wiring
+- Fully documented design and examples
 
-## Download release
+## Getting Started
 
-Comming soon
+### Prerequisites
 
-## Building
+- Java 17 or higher
+- Maven 3.x
 
-- git clone repository
-- mvn clean install
+### Build from Source
 
-## Release notes
+```bash
+git clone https://github.com/FlowingCode/backend-core.git
+cd backend-core
+mvn clean install
+```
 
-See [here](https://github.com/FlowingCode/backend-core/releases)
+### Generate Documentation
 
-## Issue tracking
+```bash
+mvn site
+# Open target/site/index.html in your browser
+```
 
-Issues for this project are tracked [here](https://github.com/FlowingCode/backend-core/issues). All bug reports and feature requests are appreciated. 
+## Usage
 
-## Contributions
+### Available Modules
 
-Contributions are welcome, but there are no guarantees that they are accepted as such. Process for contributing is the following:
+| Module                             | Description                                                          |
+|------------------------------------|----------------------------------------------------------------------|
+| `backend-core-model`               | Domain interfaces, DTOs, exceptions and validation                   |
+| `backend-core-data`                | DAO contracts (CRUD, Query, etc.)                                    |
+| `backend-core-data-impl`           | JPA implementations for DAO contracts                                |
+| `backend-core-business`            | Service contracts (business logic interfaces)                        |
+| `backend-core-business-impl`       | Default implementations for business/service contracts               |
+| `backend-core-business-spring-impl`| Spring Boot auto-configuration for services and repositories          |
 
-- Fork this project
-- Create an issue to this project about the contribution (bug or feature) if there is no such issue about it already. Try to keep the scope minimal.
-- Develop and test the fix or functionality carefully. Only include minimum amount of code needed to fix the issue.
-- Refer to the fixed issue in commit
-- Send a pull request for the original project
-- Comment on the original issue that you have implemented a fix for it
+Add the desired module(s) to your project's dependencies:
 
-## License & Author
+```xml
+<!-- Replace <artifactId> with the module(s) you need -->
+<dependency>
+  <groupId>com.flowingcode.backend-core</groupId>
+  <artifactId>backend-core-data</artifactId>
+  <version>1.1.0-SNAPSHOT</version>
+</dependency>
+```
 
-Commons-Backend is distributed under Apache License 2.0. For license terms, see LICENSE.txt.
+Snapshots are available at:
 
-Commons-Backend is written by Flowing Code
+```xml
+<repository>
+  <id>flowingcode-snapshots</id>
+  <url>https://maven.flowingcode.com/snapshots</url>
+  <snapshots>
+    <enabled>true</enabled>
+  </snapshots>
+</repository>
+```
 
-# Developer Guide
+For release versions, see Maven Central (coming soon).
 
-Comming soon
+## Documentation
+
+Detailed design documentation and API reference are available via the Maven Site and in the source Markdown docs:
+
+- [Maven Site](target/site/index.html)
+- [Design documentation](src/site/markdown/index.md)
+
+## Release Notes
+
+See the [GitHub releases](https://github.com/FlowingCode/backend-core/releases).
+
+## Issue Tracking
+
+Report bugs and request features on [GitHub Issues](https://github.com/FlowingCode/backend-core/issues).
+
+## Contributing
+
+Contributions are welcome! Please follow the process outlined below:
+
+1. Fork this repository.
+2. Create an issue for your contribution (bug or feature request), or select an existing one.
+3. Develop and test your changes carefully; include only the minimum code required.
+4. Reference the issue in your commit messages.
+5. Send a pull request and comment on the issue once it's ready.
+
+## License
+
+Apache License 2.0. See [LICENSE.txt](LICENSE.txt).
