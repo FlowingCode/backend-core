@@ -23,6 +23,12 @@ import com.flowingcode.backendcore.model.ErrorDescription;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Provides validation support utilities for collecting and executing validators on an object.
+ *
+ * @param <T> the type under validation
+ * @author mlopez
+ */
 public interface ValidationSupport<T> {
 
   List<Validator<T>> getValidators();

@@ -39,6 +39,14 @@ import com.flowingcode.backendcore.dao.CrudDao;
 import com.flowingcode.backendcore.model.Identifiable;
 import com.flowingcode.backendcore.model.QuerySpec;
 
+/**
+ * DAO support interface that converts between source domain type S and persistent entity type T and provides generic CRUD operations.
+ *
+ * @param <S> the source domain type
+ * @param <T> the persistent entity type
+ * @param <K> the identifier type
+ * @author mlopez
+ */
 public interface ConversionJpaDaoSupport<S, T extends Identifiable<K>, K extends Serializable>
 		extends CrudDao<S, K> {
 

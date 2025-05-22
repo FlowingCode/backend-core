@@ -19,6 +19,13 @@
  */
 package com.flowingcode.backendcore.dao;
 
+/**
+ * Data access interface for creating entities of type T.
+ *
+ * @param <T> the entity type
+ * @param <K> the identifier type returned upon creation
+ * @author mlopez
+ */
 public interface CreationDao<T, K> {
 
 	K save(T entity);
