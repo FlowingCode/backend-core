@@ -22,6 +22,11 @@ package com.flowingcode.backendcore.model;
 import com.flowingcode.backendcore.model.constraints.DisjunctionConstraint;
 import com.flowingcode.backendcore.model.constraints.NegatedConstraint;
 
+/**
+ * General constraint interface representing a filtering criterion for queries.
+ *
+ * @author jgodoy
+ */
 public interface Constraint {
 
   default Constraint not() {

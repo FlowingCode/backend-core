@@ -21,6 +21,11 @@ package com.flowingcode.backendcore.model.constraints;
 
 import com.flowingcode.backendcore.model.Constraint;
 
+/**
+ * Interface defining relational comparison operators for attribute constraints.
+ *
+ * @author jgodoy
+ */
 public interface RelationalConstraint extends Constraint {
 
 	String EQ = "=";

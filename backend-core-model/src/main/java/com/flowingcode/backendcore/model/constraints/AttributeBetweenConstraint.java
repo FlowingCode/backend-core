@@ -26,6 +26,11 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.experimental.FieldDefaults;
 
+/**
+ * Constraint that checks if an attribute's value falls between two inclusive bounds.
+ *
+ * @author jgodoy
+ */
 @Getter
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AttributeBetweenConstraint implements AttributeConstraint {

@@ -19,6 +19,12 @@
  */
 package com.flowingcode.backendcore.dao;
 
+/**
+ * Data access interface for deleting entities of type T.
+ *
+ * @param <T> the entity type
+ * @author mlopez
+ */
 public interface DeletionDao<T> {
 
 	void delete(T entity);

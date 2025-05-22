@@ -46,9 +46,12 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 /**
- * JPA/Criteria implementation of {@link ConstraintTransformer}.
+ * JPA/Criteria implementation of {@link ConstraintTransformer} for converting model constraints
+ * into JPA {@link jakarta.persistence.criteria.Predicate} instances.
  *
  * <p><b>Instances are not thread-safe.</b> A new instance must be created for each query.
+ *
+ * @author jgodoy
  */
 @RequiredArgsConstructor
 public class ConstraintTransformerJpaImpl extends ConstraintTransformer<Predicate> {

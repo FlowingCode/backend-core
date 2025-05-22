@@ -25,6 +25,11 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
+/**
+ * Constraint for relational comparison on an attribute using a comparison operator.
+ *
+ * @author jgodoy
+ */
 @Getter
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
