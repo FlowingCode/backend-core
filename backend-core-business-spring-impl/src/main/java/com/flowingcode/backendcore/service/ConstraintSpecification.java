@@ -14,7 +14,8 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 
 /**
- * Spring Data JPA {@link org.springframework.data.jpa.domain.Specification} that applies a model {@link com.flowingcode.backendcore.model.Constraint}.
+ * Spring Data JPA {@code Specification} that applies a model
+ * {@code Constraint}.
  *
  * @param <T> the entity type
  * @author jgodoy

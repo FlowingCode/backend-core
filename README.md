@@ -107,3 +107,5 @@ Contributions are welcome! Please follow the process outlined below:
 ## License
 
 Apache License 2.0. See [LICENSE.txt](LICENSE.txt).
+
+Copyright (c) FlowingCode
