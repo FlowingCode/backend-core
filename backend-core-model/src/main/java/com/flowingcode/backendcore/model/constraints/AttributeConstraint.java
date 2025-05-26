@@ -22,7 +22,7 @@ package com.flowingcode.backendcore.model.constraints;
 import com.flowingcode.backendcore.model.Constraint;
 
 /**
- * Marker interface for constraints applied to entity attributes.
+ * Specialization of {@code Constraint} that applies to entity attributes.
  *
  * @author jgodoy
  */
