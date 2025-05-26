@@ -45,7 +45,8 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 /**
- * JPA implementation of {@link com.flowingcode.backendcore.model.ConstraintTransformer} for converting model constraints into JPA {@link jakarta.persistence.criteria.Predicate} instances.
+ * JPA implementation of {@code ConstraintTransformer} for converting
+ * model constraints into JPA {@code Predicate} instances.
  *
  * @author jgodoy
  */
