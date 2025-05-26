@@ -24,6 +24,13 @@ import java.util.Optional;
 
 import com.flowingcode.backendcore.model.QuerySpec;
 
+/**
+ * Data access interface for querying entities of type T identified by keys of type K.
+ *
+ * @param <T> the entity type
+ * @param <K> the identifier type
+ * @author mlopez
+ */
 public interface QueryDao<T, K> {
 
 	Optional<T> findById(K id);
