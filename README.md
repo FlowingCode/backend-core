@@ -104,6 +104,8 @@ Contributions are welcome! Please follow the process outlined below:
 4. Reference the issue in your commit messages.
 5. Send a pull request and comment on the issue once it's ready.
 
-## License
+## License & Author
 
-Apache License 2.0. See [LICENSE.txt](LICENSE.txt).
+This library is distributed under Apache License 2.0. For license terms, see LICENSE.txt.
+
+Backend Core is written by Flowing Code S.A.
