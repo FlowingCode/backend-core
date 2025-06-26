@@ -115,6 +115,7 @@
 					<version>3.0.1</version>
 					<configuration>
 						<tagNameFormat>@{project.version}</tagNameFormat>
+						<releaseProfiles>release</releaseProfiles>
 					</configuration>
 				</plugin>
 				<plugin>
@@ -257,6 +258,21 @@
 				</plugins>
 			</build>
 		</profile>
+
+        	<profile>
+            		<id>release</id>
+            		<build>
+                		<plugins>
+                    			<plugin>
+                        			<groupId>org.sonatype.central</groupId>
+                        			<artifactId>central-publishing-maven-plugin</artifactId>
+                        			<version>0.7.0</version>
+                        			<extensions>true</extensions>
+                    			</plugin>
+                		</plugins>
+        	    	</build>
+	        </profile>
+
 	</profiles>
 
 	<distributionManagement>
