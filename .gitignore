@@ -4,3 +4,5 @@
 target
 .vscode
 .factorypath
+.vaadin
+.eclipse
