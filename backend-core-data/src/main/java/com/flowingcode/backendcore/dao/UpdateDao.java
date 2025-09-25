@@ -19,6 +19,12 @@
  */
 package com.flowingcode.backendcore.dao;
 
+/**
+ * Data access interface for updating entities of type T.
+ *
+ * @param <T> the entity type
+ * @author mlopez
+ */
 public interface UpdateDao<T> {
 
 	void update(T entity);

@@ -5,6 +5,11 @@ import java.util.List;
 import com.flowingcode.backendcore.exception.BaseException;
 import com.flowingcode.backendcore.model.ErrorDescription;
 
+/**
+ * Thrown to indicate validation failures during create operations.
+ *
+ * @author mlopez
+ */
 @SuppressWarnings("serial")
 public class CreationValidationException extends ValidationException {
 

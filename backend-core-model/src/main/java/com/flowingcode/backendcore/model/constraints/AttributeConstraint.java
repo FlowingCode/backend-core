@@ -21,6 +21,11 @@ package com.flowingcode.backendcore.model.constraints;
 
 import com.flowingcode.backendcore.model.Constraint;
 
+/**
+ * Specialization of {@code Constraint} that applies to entity attributes.
+ *
+ * @author jgodoy
+ */
 public interface AttributeConstraint extends Constraint {
 
 	String getAttribute();

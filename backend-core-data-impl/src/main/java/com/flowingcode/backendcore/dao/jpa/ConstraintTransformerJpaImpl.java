@@ -44,6 +44,12 @@ import jakarta.persistence.criteria.Predicate;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * JPA implementation of {@code ConstraintTransformer} for converting
+ * model constraints into JPA {@code Predicate} instances.
+ *
+ * @author jgodoy
+ */
 @RequiredArgsConstructor
 public class ConstraintTransformerJpaImpl extends ConstraintTransformer<Predicate> {
 

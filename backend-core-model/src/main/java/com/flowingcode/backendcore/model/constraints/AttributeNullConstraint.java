@@ -6,6 +6,11 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
+/**
+ * Constraint indicating that the specified attribute's value must be null.
+ *
+ * @author jgodoy
+ */
 @Getter
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)

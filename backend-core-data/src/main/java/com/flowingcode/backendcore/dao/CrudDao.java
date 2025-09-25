@@ -19,7 +19,14 @@
  */
 package com.flowingcode.backendcore.dao;
 
+/**
+ * Generic CRUD data access interface combining create, retrieve, update, and delete operations.
+ *
+ * @param <T> the entity type
+ * @param <K> the identifier type
+ * @author mlopez
+ */
 public interface CrudDao<T, K>
-		extends CreationDao<T, K>, UpdateDao<T>, DeletionDao<T>, QueryDao<T, K> {
+	extends CreationDao<T, K>, UpdateDao<T>, DeletionDao<T>, QueryDao<T, K> {
 
 }
