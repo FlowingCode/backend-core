@@ -2,7 +2,7 @@
  * #%L
  * Commons Backend - Model
  * %%
- * Copyright (C) 2020 - 2021 Flowing Code
+ * Copyright (C) 2020 - 2026 Flowing Code
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +28,7 @@ import com.flowingcode.backendcore.model.constraints.AttributeInConstraint;
 import com.flowingcode.backendcore.model.constraints.AttributeLikeConstraint;
 import com.flowingcode.backendcore.model.constraints.AttributeNullConstraint;
 import com.flowingcode.backendcore.model.constraints.AttributeRelationalConstraint;
+import com.flowingcode.backendcore.model.constraints.DisjunctionConstraint;
 import com.flowingcode.backendcore.model.constraints.NegatedConstraint;
 
 /**
@@ -80,6 +81,10 @@ public abstract class ConstraintTransformer<T> implements Function<Constraint, T
           return transformILikeConstraint((AttributeILikeConstraint) c);
       }
 
+		if (c instanceof DisjunctionConstraint) {
+			return transformDisjunctionConstraint((DisjunctionConstraint) c);
+		}
+
 		return null;
 	}
 
@@ -125,4 +130,10 @@ public abstract class ConstraintTransformer<T> implements Function<Constraint, T
     protected T transformILikeConstraint(AttributeILikeConstraint c) {
         return null;
     }
+
+	/** Return an implementation-specific representation of a {@code DisjunctionConstraint} constraint.
+	 * @return an implementation-specific representation of the constraint, or {@code null} if it cannot be transformed.*/
+	protected T transformDisjunctionConstraint(DisjunctionConstraint c) {
+		return null;
+	}
 }
