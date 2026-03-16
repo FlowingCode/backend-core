@@ -49,7 +49,7 @@ public abstract class ConstraintTransformer<T> implements Function<Constraint, T
 	}
 	
 	/** Return an implementation-specific representation of the constraint, or {@code null} if it cannot be transformed.
-	 * This method delegated into one of the of the {@code transform*Constraint} methods, depending on the actual constraint class.*/
+	 * This method delegates into one of the {@code transform*Constraint} methods, depending on the actual constraint class.*/
 	protected T transform(Constraint c) {
 
 		if (c instanceof AttributeBetweenConstraint) {
