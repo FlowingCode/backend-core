@@ -2,7 +2,7 @@
  * #%L
  * Commons Backend - Data Access Layer Implementations
  * %%
- * Copyright (C) 2020 - 2021 Flowing Code
+ * Copyright (C) 2020 - 2026 Flowing Code
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,6 +31,7 @@ import com.flowingcode.backendcore.model.constraints.AttributeInConstraint;
 import com.flowingcode.backendcore.model.constraints.AttributeLikeConstraint;
 import com.flowingcode.backendcore.model.constraints.AttributeNullConstraint;
 import com.flowingcode.backendcore.model.constraints.AttributeRelationalConstraint;
+import com.flowingcode.backendcore.model.constraints.DisjunctionConstraint;
 import com.flowingcode.backendcore.model.constraints.NegatedConstraint;
 import com.flowingcode.backendcore.model.constraints.RelationalConstraint;
 
@@ -44,6 +45,11 @@ import jakarta.persistence.criteria.Predicate;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * JPA/Criteria implementation of {@link ConstraintTransformer}.
+ *
+ * <p><b>Instances are not thread-safe.</b> A new instance must be created for each query.
+ */
 @RequiredArgsConstructor
 public class ConstraintTransformerJpaImpl extends ConstraintTransformer<Predicate> {
 
@@ -80,10 +86,12 @@ public class ConstraintTransformerJpaImpl extends ConstraintTransformer<Predicat
 		return from;
 	}
 	
+	private JoinType currentJoinType = JoinType.INNER;
+
 	@SuppressWarnings("rawtypes")
 	private From<?,?> join(From<?,?> source, String attributeName) {
 		Optional<Join> existingJoin = source.getJoins().stream().filter(join->join.getAttribute().getName().equals(attributeName)).map(join->(Join)join).findFirst();
-		return existingJoin.orElseGet(()->source.join(attributeName, JoinType.INNER));
+		return existingJoin.orElseGet(()->source.join(attributeName, currentJoinType));
 	}
 	
 	private static Class<?> boxed(Class<?> type) {
@@ -166,4 +174,18 @@ public class ConstraintTransformerJpaImpl extends ConstraintTransformer<Predicat
     protected Predicate transformILikeConstraint(AttributeILikeConstraint c) {
         return criteriaBuilder.like(criteriaBuilder.lower(getExpression(c, String.class)), c.getPattern().toLowerCase());
     }
+
+	@Override
+	protected Predicate transformDisjunctionConstraint(DisjunctionConstraint c) {
+		JoinType saved = currentJoinType;
+		currentJoinType = JoinType.LEFT;
+		try {
+			Predicate[] predicates = c.getConstraints().stream()
+					.map(this::apply)
+					.toArray(Predicate[]::new);
+			return criteriaBuilder.or(predicates);
+		} finally {
+			currentJoinType = saved;
+		}
+	}
 }

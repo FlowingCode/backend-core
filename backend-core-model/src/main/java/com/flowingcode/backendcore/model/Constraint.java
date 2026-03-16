@@ -2,7 +2,7 @@
  * #%L
  * Commons Backend - Model
  * %%
- * Copyright (C) 2020 - 2021 Flowing Code
+ * Copyright (C) 2020 - 2026 Flowing Code
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@
  */
 package com.flowingcode.backendcore.model;
 
+import com.flowingcode.backendcore.model.constraints.DisjunctionConstraint;
 import com.flowingcode.backendcore.model.constraints.NegatedConstraint;
 
 public interface Constraint {
@@ -26,5 +27,24 @@ public interface Constraint {
   default Constraint not() {
     return new NegatedConstraint(this);
   }
-  
+
+  /**
+   * Returns a constraint that is satisfied when this constraint or any of the given constraints is
+   * satisfied (logical OR).
+   *
+   * @param first the first additional constraint
+   * @param rest  optional additional constraints
+   * @return a {@link DisjunctionConstraint} combining this and the given constraints
+   */
+  default Constraint or(Constraint first, Constraint... rest) {
+    return DisjunctionConstraint.of(this, prepend(first, rest));
+  }
+
+  private static Constraint[] prepend(Constraint first, Constraint[] rest) {
+    Constraint[] result = new Constraint[1 + rest.length];
+    result[0] = first;
+    System.arraycopy(rest, 0, result, 1, rest.length);
+    return result;
+  }
+
 }

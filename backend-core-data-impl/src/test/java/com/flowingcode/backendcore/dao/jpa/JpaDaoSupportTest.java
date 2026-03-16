@@ -2,7 +2,7 @@
  * #%L
  * Commons Backend - Data Access Layer Implementations
  * %%
- * Copyright (C) 2020 - 2021 Flowing Code
+ * Copyright (C) 2020 - 2026 Flowing Code
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -147,6 +147,27 @@ class JpaDaoSupportTest {
 		assertEquals(5, count);
 	}
 	
+	@Test
+	void testFilterWithOrConstraint() {
+		// OR of both city ids must match all 10 persons that have a city assigned
+		PersonFilter pf = new PersonFilter();
+		pf.addConstraint(
+			ConstraintBuilder.of("city", "id").equal(cities.get(0).getId())
+				.or(ConstraintBuilder.of("city", "id").equal(cities.get(1).getId())));
+		assertEquals(10, dao.count(pf));
+	}
+
+	@Test
+	void testFilterWithOrConstraintPartialMatch() {
+		// city.id branch matches 5 persons; id branch matches persistedPerson (who has no city).
+		// LEFT JOIN on city must keep persistedPerson in the result set so the OR can match them.
+		PersonFilter pf = new PersonFilter();
+		pf.addConstraint(
+			ConstraintBuilder.of("city", "id").equal(cities.get(0).getId())
+				.or(ConstraintBuilder.of("id").equal(persistedPerson.getId())));
+		assertEquals(6, dao.count(pf));
+	}
+
 	@Test
 	@Disabled
 	void testDelete() {
