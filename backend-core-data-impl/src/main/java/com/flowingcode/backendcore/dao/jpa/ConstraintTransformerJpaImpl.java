@@ -102,7 +102,7 @@ public class ConstraintTransformerJpaImpl extends ConstraintTransformer<Predicat
 	
 	@Override
 	protected Predicate transformNegatedConstraint(NegatedConstraint c) {		
-		return criteriaBuilder.not(transform(c.getConstraint()));
+		return criteriaBuilder.not(apply(c.getConstraint()));
 	}
 
 	@Override
