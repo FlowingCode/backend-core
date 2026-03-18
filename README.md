@@ -6,7 +6,7 @@ Common utilities for backend enterprise application development.
 
 Backend Core provides a set of modular libraries to help you implement clean architecture (three-tier, hexagonal, DDD) in your enterprise Java applications. It includes:
 
-- **Model layer**: domain interfaces and DTOs (`backend-core-model`)
+- **Model layer**: domain interfaces, DTOs, exceptions, and validation (`backend-core-model`)
 - **Data layer**: persistence contracts (`backend-core-data`) and JPA-based implementations (`backend-core-data-impl`)
 - **Service layer**: business logic contracts (`backend-core-business`) and default implementations (`backend-core-business-impl`)
 - **Spring Boot integration**: auto-configuration support (`backend-core-business-spring-impl`)
