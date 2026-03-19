@@ -34,13 +34,6 @@ cd backend-core
 mvn clean install
 ```
 
-### Generate Documentation
-
-```bash
-mvn site
-# Open target/site/index.html in your browser
-```
-
 ## Usage
 
 ### Available Modules
@@ -81,9 +74,8 @@ For release versions, see Maven Central (coming soon).
 
 ## Documentation
 
-Detailed design documentation and API reference are available via the Maven Site and in the source Markdown docs:
+Design documentation is available in the source Markdown docs:
 
-- [Maven Site](target/site/index.html)
 - [Design documentation](src/site/markdown/index.md)
 
 ## Release Notes
