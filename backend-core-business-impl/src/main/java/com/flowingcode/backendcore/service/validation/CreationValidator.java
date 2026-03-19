@@ -28,6 +28,12 @@ import java.util.function.Predicate;
 import com.flowingcode.backendcore.model.ErrorDescription;
 import com.flowingcode.backendcore.validation.Validator;
 
+/**
+ * Validator for creation operations on entities.
+ *
+ * @param <T> the type being validated
+ * @author mlopez
+ */
 public interface CreationValidator<T> extends Validator<T> {
 
   default CreationValidator<T> and(CreationValidator<T> then) {
