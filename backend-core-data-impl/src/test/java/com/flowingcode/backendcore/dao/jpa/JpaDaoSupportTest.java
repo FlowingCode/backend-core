@@ -169,6 +169,25 @@ class JpaDaoSupportTest {
 	}
 
 	@Test
+	void testIsNullConstraintAfterOrDoesNotMatchAbsentCity() {
+		// Without the OR, city.population IS NULL correctly returns 0:
+		// persistedPerson has no city, so the INNER JOIN on city excludes them.
+		PersonFilter baseline = new PersonFilter();
+		baseline.addConstraint(ConstraintBuilder.of("id").equal(persistedPerson.getId()));
+		baseline.addConstraint(ConstraintBuilder.of("city", "population").isNull());
+		assertEquals(0, dao.count(baseline));
+
+		// Adding an OR that includes persistedPerson should not change the result:
+		// the IS NULL constraint still requires city to exist, regardless of the OR.
+		PersonFilter withOr = new PersonFilter();
+		withOr.addConstraint(
+			ConstraintBuilder.of("city", "id").equal(cities.get(0).getId())
+				.or(ConstraintBuilder.of("id").equal(persistedPerson.getId())));
+		withOr.addConstraint(ConstraintBuilder.of("city", "population").isNull());
+		assertEquals(0, dao.count(withOr));
+	}
+
+	@Test
 	@Disabled
 	void testDelete() {
 		fail("Not yet implemented");

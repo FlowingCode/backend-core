@@ -90,8 +90,12 @@ public class ConstraintTransformerJpaImpl extends ConstraintTransformer<Predicat
 
 	@SuppressWarnings("rawtypes")
 	private From<?,?> join(From<?,?> source, String attributeName) {
-		Optional<Join> existingJoin = source.getJoins().stream().filter(join->join.getAttribute().getName().equals(attributeName)).map(join->(Join)join).findFirst();
-		return existingJoin.orElseGet(()->source.join(attributeName, currentJoinType));
+		Optional<Join> existingJoin = source.getJoins().stream()
+				.map(join -> (Join) join)
+				.filter(join -> join.getAttribute().getName().equals(attributeName))
+				.filter(join -> join.getJoinType() == currentJoinType)
+				.findFirst();
+		return existingJoin.orElseGet(() -> source.join(attributeName, currentJoinType));
 	}
 	
 	private static Class<?> boxed(Class<?> type) {
