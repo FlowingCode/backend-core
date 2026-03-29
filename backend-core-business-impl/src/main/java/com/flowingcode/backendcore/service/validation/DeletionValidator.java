@@ -28,6 +28,12 @@ import java.util.function.Predicate;
 import com.flowingcode.backendcore.model.ErrorDescription;
 import com.flowingcode.backendcore.validation.Validator;
 
+/**
+ * Validator for deletion operations on entities.
+ *
+ * @param <T> the type being validated
+ * @author mlopez
+ */
 public interface DeletionValidator<T> extends Validator<T> {
 
   default DeletionValidator<T> and(DeletionValidator<T> then) {

@@ -10,6 +10,12 @@ import com.flowingcode.backendcore.service.validation.CreationValidator;
 import com.flowingcode.backendcore.service.validation.UpdateValidator;
 import com.flowingcode.backendcore.validation.Validator;
 
+/**
+ * Validator that enforces invariants during both creation and update operations.
+ *
+ * @param <T> the type being validated
+ * @author jgodoy
+ */
 public interface InvariantValidator<T> extends CreationValidator<T>, UpdateValidator<T> {
 
   default InvariantValidator<T> and(InvariantValidator<T> then) {

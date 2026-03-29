@@ -25,6 +25,11 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
+/**
+ * Constraint for SQL LIKE pattern matching on an attribute.
+ *
+ * @author jgodoy
+ */
 @Getter
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)

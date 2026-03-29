@@ -6,6 +6,11 @@ import com.flowingcode.backendcore.validation.Validator;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * Enumeration of service validation kinds corresponding to different operation types.
+ *
+ * @author mlopez
+ */
 @RequiredArgsConstructor
 public enum ServiceValidationKind implements ValidationKind {
 

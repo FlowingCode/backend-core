@@ -23,6 +23,13 @@ import java.io.Serializable;
 
 import com.flowingcode.backendcore.model.Identifiable;
 
+/**
+ * DAO support interface for JPA entities, providing default identity conversions.
+ *
+ * @param <T> the persistent entity type
+ * @param <K> the identifier type
+ * @author mlopez
+ */
 public interface JpaDaoSupport<T extends Identifiable<K>, K extends Serializable>
 		extends ConversionJpaDaoSupport<T, T, K> {
 

@@ -13,6 +13,13 @@ import com.flowingcode.backendcore.model.QuerySpec;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * Spring Data JPA {@code Specification} that applies a model
+ * {@code Constraint}.
+ *
+ * @param <T> the entity type
+ * @author jgodoy
+ */
 @SuppressWarnings("serial")
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 final class ConstraintSpecification<T> implements Specification<T> {
