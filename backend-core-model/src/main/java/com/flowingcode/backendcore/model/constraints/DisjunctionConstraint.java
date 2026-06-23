@@ -29,6 +29,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
 /** A constraint that is satisfied when any of its member constraints is satisfied (logical OR). */
+@Deprecated(since = "1.2.0", forRemoval = false)
 @Getter
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)

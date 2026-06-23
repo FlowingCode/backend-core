@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.flowingcode.backendcore.model.QuerySpec;
+import com.flowingcode.backendcore.model.filter.BaseFilter;
 
 public interface QueryDao<T, K> {
 
@@ -30,10 +31,41 @@ public interface QueryDao<T, K> {
 
 	List<T> findAll();
 
+	/**
+	 * @deprecated Use {@link #filter(BaseFilter)} with a {@link BaseFilter}
+	 *             subclass.
+	 */
+	@Deprecated(since = "1.2.0", forRemoval = false)
 	List<T> filter(QuerySpec filter);
 
+	/**
+	 * @deprecated Use {@link #filterWithSingleResult(BaseFilter)} with a
+	 *             {@link BaseFilter} subclass.
+	 */
+	@Deprecated(since = "1.2.0", forRemoval = false)
 	Optional<T> filterWithSingleResult(QuerySpec filter);
 
+	/**
+	 * @deprecated Use {@link #count(BaseFilter)} with a {@link BaseFilter}
+	 *             subclass.
+	 */
+	@Deprecated(since = "1.2.0", forRemoval = false)
 	long count(QuerySpec filter);
+
+	/**
+	 * Returns the entities that match the given {@code filter}. Annotations on
+	 * the filter fields drive the generated JPA Criteria.
+	 */
+	List<T> filter(BaseFilter filter);
+
+	/**
+	 * Returns the single entity matching the given {@code filter}, if any.
+	 *
+	 * @throws IllegalStateException if more than one entity matches
+	 */
+	Optional<T> filterWithSingleResult(BaseFilter filter);
+
+	/** Returns the number of entities matching the given {@code filter}. */
+	long count(BaseFilter filter);
 
 }

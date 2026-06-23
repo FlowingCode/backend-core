@@ -22,6 +22,8 @@ package com.flowingcode.backendcore.dao.jpa;
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Objects;
@@ -38,6 +40,7 @@ import jakarta.persistence.criteria.Root;
 import com.flowingcode.backendcore.dao.CrudDao;
 import com.flowingcode.backendcore.model.Identifiable;
 import com.flowingcode.backendcore.model.QuerySpec;
+import com.flowingcode.backendcore.model.filter.BaseFilter;
 
 public interface ConversionJpaDaoSupport<S, T extends Identifiable<K>, K extends Serializable>
 		extends CrudDao<S, K> {
@@ -101,17 +104,23 @@ public interface ConversionJpaDaoSupport<S, T extends Identifiable<K>, K extends
 	}
 
 	@Override
+	@Deprecated(since = "1.2.0", forRemoval = false)
+	@SuppressWarnings("deprecation")
 	default long count(QuerySpec filter) {
 		return FilterProcesor.<T, K>of(getEntityManager(), getPersistentClass()).count(filter);
 	}
 
 	@Override
+	@Deprecated(since = "1.2.0", forRemoval = false)
+	@SuppressWarnings("deprecation")
 	default List<S> filter(QuerySpec filter) {
 		return FilterProcesor.<T, K>of(getEntityManager(), getPersistentClass()).filter(filter).stream()
 				.map(this::convertFrom).collect(Collectors.toList());
 	}
-	
+
 	@Override
+	@Deprecated(since = "1.2.0", forRemoval = false)
+	@SuppressWarnings("deprecation")
 	default Optional<S> filterWithSingleResult(QuerySpec filter) {
 		List<T> filtered = FilterProcesor.<T, K>of(getEntityManager(), getPersistentClass()).filter(filter);
 		if (filtered.size()>1) {
@@ -119,6 +128,93 @@ public interface ConversionJpaDaoSupport<S, T extends Identifiable<K>, K extends
 		}
 		return filtered.stream()
 				.map(this::convertFrom).findAny();
+	}
+
+	@Override
+	default List<S> filter(BaseFilter filter) {
+		return baseFilterProcessor().filter(filter).stream()
+				.map(this::convertFrom).collect(Collectors.toList());
+	}
+
+	@Override
+	default Optional<S> filterWithSingleResult(BaseFilter filter) {
+		return baseFilterProcessor().filterWithSingleResult(filter).map(this::convertFrom);
+	}
+
+	@Override
+	default long count(BaseFilter filter) {
+		return baseFilterProcessor().count(filter);
+	}
+
+	/**
+	 * Hook for adding non-declarative predicates to a {@link BaseFilter}-driven
+	 * query. Predicates returned here are ANDed with those derived from the
+	 * filter's annotations.
+	 *
+	 * <p>Defaults to no extra predicates.
+	 */
+	default Collection<Predicate> customizePredicates(BaseFilter filter, CriteriaBuilder cb,
+			CriteriaQuery<?> cq, Root<T> root) {
+		return Collections.emptyList();
+	}
+
+	/**
+	 * Last-chance hook to mutate the in-progress {@code CriteriaQuery} (e.g.
+	 * {@code distinct}, projections, group-by). Called once per filter, count,
+	 * and single-result query after predicates have been applied.
+	 *
+	 * <p>Defaults to a no-op.
+	 */
+	default void customizeCriteria(BaseFilter filter, CriteriaBuilder cb, CriteriaQuery<?> cq,
+			Root<T> root) {
+		// no-op
+	}
+
+	/**
+	 * Reads the value of the given field on {@code filter} without forcing the
+	 * hook to do its own reflection. Backed by the same cached metadata used to
+	 * build the declarative predicates.
+	 *
+	 * <p>Useful from {@link #customizePredicates} when consuming a field
+	 * declared as {@code @Attribute(manual = true)}, but works for any field
+	 * declared on the filter (annotated or not).
+	 *
+	 * @throws IllegalArgumentException if the filter class has no field with the
+	 *         given name
+	 */
+	default Object getFilterFieldValue(BaseFilter filter, String fieldName) {
+		return BaseFilterJpaProcessor.readField(filter, fieldName);
+	}
+
+	/**
+	 * Typed convenience overload of {@link #getFilterFieldValue(BaseFilter, String)};
+	 * casts the value through {@code type} so the caller doesn't have to.
+	 *
+	 * @throws IllegalArgumentException if the filter class has no such field
+	 * @throws ClassCastException if the stored value is not assignable to
+	 *         {@code type}
+	 */
+	default <V> V getFilterFieldValue(BaseFilter filter, String fieldName, Class<V> type) {
+		Object value = getFilterFieldValue(filter, fieldName);
+		return value == null ? null : type.cast(value);
+	}
+
+	private BaseFilterJpaProcessor<T, K> baseFilterProcessor() {
+		final ConversionJpaDaoSupport<S, T, K> self = this;
+		return BaseFilterJpaProcessor.<T, K>of(getEntityManager(), getPersistentClass(),
+				new BaseFilterJpaProcessor.Hooks<T>() {
+					@Override
+					public Collection<Predicate> customizePredicates(BaseFilter filter,
+							CriteriaBuilder cb, CriteriaQuery<?> cq, Root<T> root) {
+						return self.customizePredicates(filter, cb, cq, root);
+					}
+
+					@Override
+					public void customizeCriteria(BaseFilter filter, CriteriaBuilder cb,
+							CriteriaQuery<?> cq, Root<T> root) {
+						self.customizeCriteria(filter, cb, cq, root);
+					}
+				});
 	}
 
 	static class FilterProcesor<T extends Identifiable<K>, K extends Serializable> {

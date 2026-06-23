@@ -21,6 +21,7 @@ package com.flowingcode.backendcore.model.constraints;
 
 import com.flowingcode.backendcore.model.Constraint;
 
+@Deprecated(since = "1.2.0", forRemoval = false)
 public interface AttributeConstraint extends Constraint {
 
 	String getAttribute();

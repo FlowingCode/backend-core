@@ -74,7 +74,7 @@ f.setMaxResult(50);
 PersonFilter f = PersonFilter.builder()
         .name("Ada")
         .birthDateFrom(LocalDate.of(1990, 1, 1))
-        .order("name", BaseFilter.Order.ASC)   // @Singular generates per-entry adder
+        .addOrder("name", BaseFilter.Order.ASC)
         .maxResult(50)
         .build();
 ```
@@ -83,10 +83,10 @@ Notes on the dual-style design:
 
 - Lombok's `@SuperBuilder` is the simplest way to produce a typed builder that correctly composes with inheritance — subclasses opt in by adding `@SuperBuilder` and their builder inherits the base fields automatically. The existing codebase already relies on Lombok (`@Getter`/`@Setter`/`@Accessors(chain=true)` on `QuerySpec`), so this matches established conventions.
 - The chainable POJO setters (via `@Accessors(chain = true)`) are kept so callers who already work with mutable filters — including code wired through frameworks that prefer no-arg construction + property binding (e.g. JSON deserialization, query-param binding) — don't pay any extra ceremony.
-- `@Singular("order")` exposes a per-entry `.order(key, value)` adder on the builder while still letting `.orders(map)` set the whole map. The internal store is a `LinkedHashMap` so insertion order is preserved across both styles.
+- The inner `BaseFilterBuilder` is declared explicitly so that paging validation and a per-entry `.addOrder(...)` adder are part of the builder API; Lombok fills in the rest (fields, `self()`, `build()`, the subclass plumbing). The built `orders` map is a `LinkedHashMap` (mutable, insertion-ordered) so subsequent POJO-style `addOrder(...)` calls still work after `build()`.
 - `toBuilder = true` lets callers rebuild a tweaked copy of an existing filter (`f.toBuilder().maxResult(10).build()`), useful for paging.
 - The sort-order attribute string follows the same dotted-path convention as `@Attribute` (see §3.2) so callers can sort across joins.
-- Pagination validators throw `IllegalArgumentException` on negative values, matching `QuerySpec`. Validation logic is centralized in a private helper (or in the setters themselves) and the `@SuperBuilder`-generated `build()` is wired through an explicit constructor that delegates to the setters, so both styles enforce the same invariants. If keeping the builder honest via a custom constructor proves clumsy in practice, the implementer can fall back to writing the builder explicitly — the public surface (`PersonFilter.builder()...build()`) is what the spec commits to, not the Lombok mechanics.
+- Pagination validators throw `IllegalArgumentException` on negative values, matching `QuerySpec`. Validation lives in both the POJO setters and the corresponding builder methods (`firstResult(...)` / `maxResult(...)` on `BaseFilterBuilder`), so both construction styles enforce the same invariants.
 
 ### 3.2 Annotations (in `backend-core-model`, package `com.flowingcode.backendcore.model.filter`)
 
@@ -99,11 +99,15 @@ All annotations are field-level (`@Target(ElementType.FIELD)`), retained at runt
 public @interface Attribute {
     /** Dotted attribute path on the target entity, e.g. "city.state.name". */
     String value();
+
+    /** When true, predicate building is the hook's responsibility. */
+    boolean manual() default false;
 }
 ```
 
 - Maps a filter field to one or more entity attributes via a dotted path. Path traversal follows the same `split("\\.")` + auto-join convention used today in `ConstraintTransformerJpaImpl`, including the inner-join-by-default behavior.
 - A filter field with `@Attribute` and no role annotation defaults to **equality** (`cb.equal(...)`).
+- `manual = true` is the escape hatch for predicates that don't fit the declarative model. The processor records the field (so the value-accessor helper can read it) but emits no predicate; the DAO's `customizePredicates` hook is responsible for the constraint. On a manual field the `value()` is informational — the processor never resolves it — but stays useful as documentation of which entity attribute the hook is expected to target. `manual = true` cannot combine with `@From`, `@To`, or `@WhenNull`, since none of those have meaning when the predicate is hand-built.
 
 #### `@From` and `@To`
 
@@ -209,6 +213,17 @@ Both hooks are called once per query (filter, count, single-result). They receiv
 
 Why hooks and not annotation processors: it keeps the abstraction surface small and predictable, and it routes customization through the DAO — the layer that already owns the entity-shaped logic — instead of fanning custom behavior across filter classes.
 
+### 5.1 Value-accessor helper
+
+Hooks frequently need to read filter field values to build predicates by hand. To avoid forcing every implementer to maintain its own reflection logic, the DAO base exposes:
+
+```java
+default Object getFilterFieldValue(BaseFilter filter, String fieldName);
+default <V> V getFilterFieldValue(BaseFilter filter, String fieldName, Class<V> type);
+```
+
+Both overloads are backed by the same cached reflection used to build the declarative predicates, so the lookup is essentially a map read. The helper works on any field declared on the filter (annotated or not); it is especially useful for fields marked `@Attribute(manual = true)`, where the declarative path has been intentionally skipped.
+
 ## 6. Usage example
 
 ```java
@@ -233,6 +248,22 @@ public class PersonFilter extends BaseFilter {
 
     @Attribute("deletedAt") @WhenNull(WhenNull.Policy.IS_NULL)
     private Instant deletedAt;              // null → deletedAt IS NULL; non-null → equality
+
+    @Attribute(value = "nickname", manual = true)
+    private String nicknameLike;            // processor skips this; hook builds the LIKE
+}
+
+// DAO with a manual predicate
+class PersonDao implements JpaDaoSupport<Person, Integer> {
+    // ... getEntityManager() ...
+
+    @Override
+    public Collection<Predicate> customizePredicates(BaseFilter filter, CriteriaBuilder cb,
+            CriteriaQuery<?> cq, Root<Person> root) {
+        String pattern = getFilterFieldValue(filter, "nicknameLike", String.class);
+        return pattern == null ? List.of()
+                : List.of(cb.like(root.get("nickname"), "%" + pattern + "%"));
+    }
 }
 
 // POJO style
@@ -244,7 +275,7 @@ f1.setMaxResult(50);
 // Builder style
 PersonFilter f2 = PersonFilter.builder()
         .birthDateFrom(LocalDate.of(1990, 1, 1))
-        .order("name", BaseFilter.Order.ASC)
+        .addOrder("name", BaseFilter.Order.ASC)
         .maxResult(50)
         .build();
 
@@ -271,7 +302,7 @@ With both bounds set on `birthDate`, the processor emits `birthDate >= :from AND
 1. **Sort order via annotation.** Should a filter class be able to declare a default sort via annotation (e.g. `@DefaultSort("createdAt DESC")`)? Out of scope for v1; callers use `addOrder`.
 2. **Validation timing.** Should the per-class reflection/validation run eagerly at startup (e.g. via a CDI extension or a Spring `BeanPostProcessor`) or lazily on first use? Spec assumes lazy with caching. Eager validation can be added later without API changes.
 3. **Field discovery.** Inherited fields from a deeper hierarchy (filter extending filter) should be supported. Confirm whether non-public fields require `setAccessible(true)` allowances in target deployments.
-4. **Builder validation hookup.** The spec commits to validation firing from both POJO and builder paths but leaves the precise Lombok wiring (custom constructor accepting the builder vs. hand-written builder) to the implementer. Worth a quick prototype before locking in.
+4. **Builder validation hookup.** Resolved during implementation: the inner `BaseFilterBuilder` is declared explicitly with `@SuperBuilder` filling in the missing parts, and the `firstResult(...)` / `maxResult(...)` builder methods carry the same validation as the POJO setters.
 
 ## 10. Out of scope / follow-ups
 

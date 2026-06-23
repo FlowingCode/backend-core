@@ -21,9 +21,12 @@ package com.flowingcode.backendcore.model;
 
 /**
  * Thrown by {@link ConstraintTransformer} when the {@link QuerySpec} contains an unsupported {@link Constraint}.
- * 
+ *
  * @author Javier Godoy / Flowing Code
+ * @deprecated Part of the legacy {@link QuerySpec}-based filter API. New code
+ *             should use {@link com.flowingcode.backendcore.model.filter.BaseFilter}.
  */
+@Deprecated(since = "1.2.0", forRemoval = false)
 public class ConstraintTransformerException extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;

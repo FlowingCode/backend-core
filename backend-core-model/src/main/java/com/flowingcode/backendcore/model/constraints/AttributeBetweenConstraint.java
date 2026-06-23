@@ -26,6 +26,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.experimental.FieldDefaults;
 
+@Deprecated(since = "1.2.0", forRemoval = false)
 @Getter
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AttributeBetweenConstraint implements AttributeConstraint {
