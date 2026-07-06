@@ -41,6 +41,8 @@ import com.flowingcode.backendcore.model.filter.To;
 import com.flowingcode.backendcore.model.filter.WhenNull;
 
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
+import jakarta.persistence.NonUniqueResultException;
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
@@ -105,11 +107,19 @@ class BaseFilterJpaProcessor<T extends Identifiable<K>, K extends Serializable> 
 	}
 
 	Optional<T> filterWithSingleResult(BaseFilter filter) {
-		List<T> result = filter(filter);
-		if (result.size() > 1) {
-			throw new IllegalStateException("Current filter returned more than one result");
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<T> cq = cb.createQuery(persistentClass);
+		Root<T> root = cq.from(persistentClass);
+		cq.select(root);
+		applyPredicates(filter, cb, cq, root);
+		hooks.customizeCriteria(filter, cb, cq, root);
+		try {
+			return Optional.of(em.createQuery(cq).getSingleResult());
+		} catch (NoResultException e) {
+			return Optional.empty();
+		} catch (NonUniqueResultException e) {
+			throw new IllegalStateException("Current filter returned more than one result", e);
 		}
-		return result.stream().findFirst();
 	}
 
 	long count(BaseFilter filter) {

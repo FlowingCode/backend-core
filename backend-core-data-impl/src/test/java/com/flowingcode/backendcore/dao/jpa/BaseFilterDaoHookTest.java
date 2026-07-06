@@ -38,6 +38,7 @@ import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -99,10 +100,11 @@ class BaseFilterDaoHookTest {
 	}
 
 	private HookDao dao;
+	private EntityManagerFactory emf;
 
 	@BeforeEach
 	void setUp() {
-		EntityManagerFactory emf = Persistence.createEntityManagerFactory("person");
+		emf = Persistence.createEntityManagerFactory("person");
 		EntityManager em = emf.createEntityManager();
 		em.getTransaction().begin();
 		for (String name : new String[] {"John", "Jane", "Alice", "John"}) {
@@ -114,6 +116,13 @@ class BaseFilterDaoHookTest {
 		em.getTransaction().commit();
 		em.close();
 		dao = new HookDao(emf);
+	}
+
+	@AfterEach
+	void tearDown() {
+		if (emf != null && emf.isOpen()) {
+			emf.close();
+		}
 	}
 
 	@Test

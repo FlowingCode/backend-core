@@ -69,11 +69,17 @@ public class AttributePathResolver {
 	 * Resolves {@code attributePath} and verifies the leaf attribute's Java type
 	 * is assignable to {@code expectedType}.
 	 *
+	 * @throws IllegalArgumentException if {@code attributePath} is blank, has a
+	 *         leading or trailing dot, or contains empty segments
 	 * @throws ClassCastException if the leaf attribute type isn't compatible
 	 */
 	@SuppressWarnings("unchecked")
 	public <V> Expression<V> resolve(String attributePath, Class<V> expectedType) {
 		Objects.requireNonNull(attributePath, "attributePath");
+		if (attributePath.isBlank() || attributePath.startsWith(".")
+				|| attributePath.endsWith(".") || attributePath.contains("..")) {
+			throw new IllegalArgumentException("Invalid attributePath: \"" + attributePath + "\"");
+		}
 		String[] path = attributePath.split("\\.");
 		String attributeName = path[path.length - 1];
 		String[] joinPath = Arrays.copyOf(path, path.length - 1);

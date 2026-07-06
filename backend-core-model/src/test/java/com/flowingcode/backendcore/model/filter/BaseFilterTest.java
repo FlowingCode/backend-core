@@ -145,4 +145,17 @@ class BaseFilterTest {
 		assertEquals("Ada", tweaked.getName());
 		assertNotSame(original, tweaked);
 	}
+
+	@Test
+	void toBuilder_ordersAreIsolatedFromOriginal() {
+		SampleFilter original = SampleFilter.builder().addOrder("a").build();
+		SampleFilter tweaked = original.toBuilder()
+				.addOrder("b", BaseFilter.Order.DESC)
+				.build();
+
+		assertIterableEquals(Arrays.asList("a"), original.getOrders().keySet(),
+				"adding an order on the clone builder must not mutate the original");
+		assertIterableEquals(Arrays.asList("a", "b"), tweaked.getOrders().keySet());
+		assertEquals(BaseFilter.Order.DESC, tweaked.getOrders().get("b"));
+	}
 }

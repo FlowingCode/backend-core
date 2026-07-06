@@ -146,9 +146,10 @@ public abstract class BaseFilter {
 
 		/** Adds an order on {@code attribute} with the given {@code direction}. */
 		public B addOrder(String attribute, Order direction) {
-			if (this.orders == null) {
-				this.orders = new LinkedHashMap<>();
-			}
+			// Always copy: a builder obtained via toBuilder() shares the map reference
+			// with the source filter, so mutating in place would leak into it.
+			this.orders = this.orders == null ? new LinkedHashMap<>()
+					: new LinkedHashMap<>(this.orders);
 			this.orders.put(attribute, direction);
 			return self();
 		}
