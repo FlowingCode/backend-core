@@ -21,6 +21,11 @@ package com.flowingcode.backendcore.model.constraints;
 
 import com.flowingcode.backendcore.model.Constraint;
 
+/**
+ * @deprecated Part of the legacy {@link com.flowingcode.backendcore.model.QuerySpec}-based
+ *             filter API. New code should use
+ *             {@link com.flowingcode.backendcore.model.filter.BaseFilter}.
+ */
 @Deprecated(since = "1.2.0", forRemoval = false)
 public interface RelationalConstraint extends Constraint {
 

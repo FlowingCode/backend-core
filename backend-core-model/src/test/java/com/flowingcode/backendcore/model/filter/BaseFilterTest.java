@@ -26,6 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.time.LocalDate;
+import java.time.Month;
 import java.util.Arrays;
 
 import lombok.Getter;
@@ -59,13 +60,13 @@ class BaseFilterTest {
 	void pojo_chainableSetters_carryAllState() {
 		SampleFilter f = new SampleFilter()
 				.setName("Ada")
-				.setBirthDateFrom(LocalDate.of(1990, 1, 1))
-				.setBirthDateTo(LocalDate.of(2000, 1, 1));
+				.setBirthDateFrom(LocalDate.of(1990, Month.JANUARY, 1))
+				.setBirthDateTo(LocalDate.of(2000, Month.JANUARY, 1));
 		f.addOrder("name").setMaxResult(50).setFirstResult(10);
 
 		assertEquals("Ada", f.getName());
-		assertEquals(LocalDate.of(1990, 1, 1), f.getBirthDateFrom());
-		assertEquals(LocalDate.of(2000, 1, 1), f.getBirthDateTo());
+		assertEquals(LocalDate.of(1990, Month.JANUARY, 1), f.getBirthDateFrom());
+		assertEquals(LocalDate.of(2000, Month.JANUARY, 1), f.getBirthDateTo());
 		assertEquals(50, f.getMaxResult());
 		assertEquals(10, f.getFirstResult());
 		assertIterableEquals(Arrays.asList("name"), f.getOrders().keySet());
@@ -76,7 +77,7 @@ class BaseFilterTest {
 	void builder_setsState() {
 		SampleFilter f = SampleFilter.builder()
 				.name("Ada")
-				.birthDateFrom(LocalDate.of(1990, 1, 1))
+				.birthDateFrom(LocalDate.of(1990, Month.JANUARY, 1))
 				.addOrder("name", BaseFilter.Order.DESC)
 				.addOrder("birthDate", BaseFilter.Order.ASC)
 				.firstResult(0)
@@ -84,7 +85,7 @@ class BaseFilterTest {
 				.build();
 
 		assertEquals("Ada", f.getName());
-		assertEquals(LocalDate.of(1990, 1, 1), f.getBirthDateFrom());
+		assertEquals(LocalDate.of(1990, Month.JANUARY, 1), f.getBirthDateFrom());
 		assertNull(f.getBirthDateTo());
 		assertEquals(0, f.getFirstResult());
 		assertEquals(25, f.getMaxResult());

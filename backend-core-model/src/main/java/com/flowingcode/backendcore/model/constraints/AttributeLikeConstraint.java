@@ -25,6 +25,11 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
+/**
+ * @deprecated Part of the legacy {@link com.flowingcode.backendcore.model.QuerySpec}-based
+ *             filter API. New code should use
+ *             {@link com.flowingcode.backendcore.model.filter.BaseFilter}.
+ */
 @Deprecated(since = "1.2.0", forRemoval = false)
 @Getter
 @RequiredArgsConstructor

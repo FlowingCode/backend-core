@@ -55,17 +55,54 @@ public interface QueryDao<T, K> {
 	/**
 	 * Returns the entities that match the given {@code filter}. Annotations on
 	 * the filter fields drive the generated JPA Criteria.
+	 *
+	 * <p>The default implementation throws {@link UnsupportedOperationException}
+	 * so that existing {@code QueryDao} implementors keep compiling when
+	 * upgrading. DAOs built on {@code JpaDaoSupport} /
+	 * {@code ConversionJpaDaoSupport} override it with the actual behavior;
+	 * standalone implementors should override it too.
+	 *
+	 * @throws UnsupportedOperationException if the implementation does not
+	 *         support {@link BaseFilter}-based queries
 	 */
-	List<T> filter(BaseFilter filter);
+	default List<T> filter(BaseFilter filter) {
+		throw new UnsupportedOperationException(
+				"filter(BaseFilter) is not implemented by this QueryDao");
+	}
 
 	/**
 	 * Returns the single entity matching the given {@code filter}, if any.
 	 *
+	 * <p>The default implementation throws {@link UnsupportedOperationException}
+	 * so that existing {@code QueryDao} implementors keep compiling when
+	 * upgrading. DAOs built on {@code JpaDaoSupport} /
+	 * {@code ConversionJpaDaoSupport} override it with the actual behavior;
+	 * standalone implementors should override it too.
+	 *
 	 * @throws IllegalStateException if more than one entity matches
+	 * @throws UnsupportedOperationException if the implementation does not
+	 *         support {@link BaseFilter}-based queries
 	 */
-	Optional<T> filterWithSingleResult(BaseFilter filter);
+	default Optional<T> filterWithSingleResult(BaseFilter filter) {
+		throw new UnsupportedOperationException(
+				"filterWithSingleResult(BaseFilter) is not implemented by this QueryDao");
+	}
 
-	/** Returns the number of entities matching the given {@code filter}. */
-	long count(BaseFilter filter);
+	/**
+	 * Returns the number of entities matching the given {@code filter}.
+	 *
+	 * <p>The default implementation throws {@link UnsupportedOperationException}
+	 * so that existing {@code QueryDao} implementors keep compiling when
+	 * upgrading. DAOs built on {@code JpaDaoSupport} /
+	 * {@code ConversionJpaDaoSupport} override it with the actual behavior;
+	 * standalone implementors should override it too.
+	 *
+	 * @throws UnsupportedOperationException if the implementation does not
+	 *         support {@link BaseFilter}-based queries
+	 */
+	default long count(BaseFilter filter) {
+		throw new UnsupportedOperationException(
+				"count(BaseFilter) is not implemented by this QueryDao");
+	}
 
 }

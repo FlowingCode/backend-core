@@ -103,6 +103,9 @@ public interface ConversionJpaDaoSupport<S, T extends Identifiable<K>, K extends
 				.map(this::convertFrom).collect(Collectors.toList());
 	}
 
+	/**
+	 * @deprecated Use {@link #count(BaseFilter)} with a {@link BaseFilter} subclass.
+	 */
 	@Override
 	@Deprecated(since = "1.2.0", forRemoval = false)
 	@SuppressWarnings("deprecation")
@@ -110,6 +113,9 @@ public interface ConversionJpaDaoSupport<S, T extends Identifiable<K>, K extends
 		return FilterProcesor.<T, K>of(getEntityManager(), getPersistentClass()).count(filter);
 	}
 
+	/**
+	 * @deprecated Use {@link #filter(BaseFilter)} with a {@link BaseFilter} subclass.
+	 */
 	@Override
 	@Deprecated(since = "1.2.0", forRemoval = false)
 	@SuppressWarnings("deprecation")
@@ -118,6 +124,10 @@ public interface ConversionJpaDaoSupport<S, T extends Identifiable<K>, K extends
 				.map(this::convertFrom).collect(Collectors.toList());
 	}
 
+	/**
+	 * @deprecated Use {@link #filterWithSingleResult(BaseFilter)} with a
+	 *             {@link BaseFilter} subclass.
+	 */
 	@Override
 	@Deprecated(since = "1.2.0", forRemoval = false)
 	@SuppressWarnings("deprecation")
