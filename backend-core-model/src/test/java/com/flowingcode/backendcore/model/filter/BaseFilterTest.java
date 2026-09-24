@@ -28,6 +28,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -158,5 +160,55 @@ class BaseFilterTest {
 				"adding an order on the clone builder must not mutate the original");
 		assertIterableEquals(Arrays.asList("a", "b"), tweaked.getOrders().keySet());
 		assertEquals(BaseFilter.Order.DESC, tweaked.getOrders().get("b"));
+	}
+
+	@Test
+	void toBuilder_instanceAddOrderOnCopy_doesNotLeakIntoOriginal() {
+		SampleFilter original = SampleFilter.builder().name("Ada").addOrder("name").build();
+		SampleFilter copy = original.toBuilder().build();
+		copy.addOrder("birthDate", BaseFilter.Order.DESC);
+
+		assertIterableEquals(Arrays.asList("name"), original.getOrders().keySet());
+		assertIterableEquals(Arrays.asList("name", "birthDate"), copy.getOrders().keySet());
+	}
+
+	@Test
+	void builderOrdersSetter_copiesCallerMap() {
+		Map<String, BaseFilter.Order> caller = new LinkedHashMap<>(Map.of("name", BaseFilter.Order.ASC));
+		SampleFilter f = SampleFilter.builder().orders(caller).build();
+		caller.put("sneaky", BaseFilter.Order.DESC);
+
+		assertIterableEquals(Arrays.asList("name"), f.getOrders().keySet());
+	}
+
+	@Test
+	void pojoOrdersSetter_copiesCallerMap() {
+		Map<String, BaseFilter.Order> caller = new LinkedHashMap<>(Map.of("name", BaseFilter.Order.ASC));
+		SampleFilter f = new SampleFilter();
+		f.setOrders(caller);
+		caller.put("sneaky", BaseFilter.Order.DESC);
+
+		assertIterableEquals(Arrays.asList("name"), f.getOrders().keySet());
+	}
+
+	@Test
+	void getOrders_isUnmodifiable_whetherSetOrNot() {
+		SampleFilter unset = new SampleFilter();
+		SampleFilter set = SampleFilter.builder().addOrder("name").build();
+
+		assertThrows(UnsupportedOperationException.class,
+				() -> unset.getOrders().put("injected", BaseFilter.Order.DESC));
+		assertThrows(UnsupportedOperationException.class,
+				() -> set.getOrders().put("injected", BaseFilter.Order.DESC));
+	}
+
+	@Test
+	void filtersBuiltFromSameBuilder_doNotShareOrders() {
+		SampleFilter.SampleFilterBuilder<?, ?> builder = SampleFilter.builder().addOrder("name");
+		SampleFilter first = builder.build();
+		SampleFilter second = builder.build();
+		first.addOrder("birthDate");
+
+		assertIterableEquals(Arrays.asList("name"), second.getOrders().keySet());
 	}
 }

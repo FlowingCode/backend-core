@@ -60,6 +60,11 @@ import lombok.experimental.SuperBuilder;
  * and the builder's {@code firstResult(...)} / {@code maxResult(...)} methods
  * apply the same checks before {@code build()} returns, so both styles enforce
  * the same invariants.
+ *
+ * <p>The sort orders are never shared: maps passed to {@link #setOrders(Map)} or
+ * to the builder are copied, {@link #addOrder(String, Order)} copies before
+ * writing, and {@link #getOrders()} returns an unmodifiable view. A filter
+ * obtained through {@code toBuilder()} is therefore independent of its source.
  */
 @Getter
 @Setter
@@ -86,9 +91,9 @@ public abstract class BaseFilter {
 
 	/** Adds an order on {@code attribute} with the given {@code direction}. */
 	public BaseFilter addOrder(String attribute, Order direction) {
-		if (this.orders == null) {
-			this.orders = new LinkedHashMap<>();
-		}
+		// Copy before writing: the map may be shared with the builder this filter
+		// was built from, or with another filter built from that same builder.
+		this.orders = copyOf(this.orders);
 		this.orders.put(attribute, direction);
 		return this;
 	}
@@ -96,9 +101,26 @@ public abstract class BaseFilter {
 	/**
 	 * Returns the configured sort orders, preserving insertion order. Never
 	 * {@code null}; an empty map indicates no ordering.
+	 *
+	 * @return an unmodifiable view of the sort orders
 	 */
 	public Map<String, Order> getOrders() {
-		return orders == null ? Collections.emptyMap() : orders;
+		return orders == null ? Collections.emptyMap() : Collections.unmodifiableMap(orders);
+	}
+
+	/**
+	 * Replaces the sort orders with a copy of {@code orders}, so later changes to
+	 * the argument do not affect this filter.
+	 *
+	 * @param orders the sort orders in application order, or {@code null} to clear
+	 */
+	public BaseFilter setOrders(Map<String, Order> orders) {
+		this.orders = orders == null ? null : copyOf(orders);
+		return this;
+	}
+
+	private static Map<String, Order> copyOf(Map<String, Order> orders) {
+		return orders == null ? new LinkedHashMap<>() : new LinkedHashMap<>(orders);
 	}
 
 	/**
@@ -148,9 +170,20 @@ public abstract class BaseFilter {
 		public B addOrder(String attribute, Order direction) {
 			// Always copy: a builder obtained via toBuilder() shares the map reference
 			// with the source filter, so mutating in place would leak into it.
-			this.orders = this.orders == null ? new LinkedHashMap<>()
-					: new LinkedHashMap<>(this.orders);
+			this.orders = copyOf(this.orders);
 			this.orders.put(attribute, direction);
+			return self();
+		}
+
+		/**
+		 * Replaces the sort orders with a copy of {@code orders}, so later changes
+		 * to the argument do not affect the built filter.
+		 *
+		 * @param orders the sort orders in application order, or {@code null} to
+		 *        clear
+		 */
+		public B orders(Map<String, Order> orders) {
+			this.orders = orders == null ? null : copyOf(orders);
 			return self();
 		}
 
