@@ -159,9 +159,25 @@ public interface ConversionJpaDaoSupport<S, T extends Identifiable<K>, K extends
 	/**
 	 * Hook for adding non-declarative predicates to a {@link BaseFilter}-driven
 	 * query. Predicates returned here are ANDed with those derived from the
-	 * filter's annotations.
+	 * filter's annotations, including the disjunction of its
+	 * {@link com.flowingcode.backendcore.model.filter.Or @Or} fields. To combine a
+	 * hand-built predicate with {@code OR}, return it already combined, e.g.
+	 * {@code cb.or(...)}.
 	 *
-	 * <p>Defaults to no extra predicates.
+	 * <p>The hook reads the values it needs through the accessors of the concrete
+	 * filter class, typically the fields declared as
+	 * {@link com.flowingcode.backendcore.model.filter.Attribute#manual()
+	 * manual}:
+	 *
+	 * <pre>{@code
+	 * if (filter instanceof PersonFilter f && f.getSearch() != null) {
+	 *     return List.of(cb.like(root.get("name"), "%" + f.getSearch() + "%"));
+	 * }
+	 * return List.of();
+	 * }</pre>
+	 *
+	 * <p>Called once per filter, count and single-result query, with whichever
+	 * filter class the caller passed. Defaults to no extra predicates.
 	 */
 	default Collection<Predicate> customizePredicates(BaseFilter filter, CriteriaBuilder cb,
 			CriteriaQuery<?> cq, Root<T> root) {
@@ -170,43 +186,21 @@ public interface ConversionJpaDaoSupport<S, T extends Identifiable<K>, K extends
 
 	/**
 	 * Last-chance hook to mutate the in-progress {@code CriteriaQuery} (e.g.
-	 * {@code distinct}, projections, group-by). Called once per filter, count,
-	 * and single-result query after predicates have been applied.
+	 * {@code distinct}, extra roots or joins). Called once per filter, count and
+	 * single-result query after predicates have been applied; the count query is
+	 * the one whose {@link CriteriaQuery#getResultType()} is {@code Long}.
+	 *
+	 * <p>The hook must keep the selection the query was created with, which is
+	 * the entity root, or the count of it: replacing it (for instance, with a
+	 * projection) makes the query fail with an {@code IllegalStateException}.
+	 * The hook must not add a {@code GROUP BY} to the count query either. A
+	 * {@code distinct(true)} set on the count query counts distinct entities.
 	 *
 	 * <p>Defaults to a no-op.
 	 */
 	default void customizeCriteria(BaseFilter filter, CriteriaBuilder cb, CriteriaQuery<?> cq,
 			Root<T> root) {
 		// no-op
-	}
-
-	/**
-	 * Reads the value of the given field on {@code filter} without forcing the
-	 * hook to do its own reflection. Backed by the same cached metadata used to
-	 * build the declarative predicates.
-	 *
-	 * <p>Useful from {@link #customizePredicates} when consuming a field
-	 * declared as {@code @Attribute(manual = true)}, but works for any field
-	 * declared on the filter (annotated or not).
-	 *
-	 * @throws IllegalArgumentException if the filter class has no field with the
-	 *         given name
-	 */
-	default Object getFilterFieldValue(BaseFilter filter, String fieldName) {
-		return BaseFilterJpaProcessor.readField(filter, fieldName);
-	}
-
-	/**
-	 * Typed convenience overload of {@link #getFilterFieldValue(BaseFilter, String)};
-	 * casts the value through {@code type} so the caller doesn't have to.
-	 *
-	 * @throws IllegalArgumentException if the filter class has no such field
-	 * @throws ClassCastException if the stored value is not assignable to
-	 *         {@code type}
-	 */
-	default <V> V getFilterFieldValue(BaseFilter filter, String fieldName, Class<V> type) {
-		Object value = getFilterFieldValue(filter, fieldName);
-		return value == null ? null : type.cast(value);
 	}
 
 	private BaseFilterJpaProcessor<T, K> baseFilterProcessor() {

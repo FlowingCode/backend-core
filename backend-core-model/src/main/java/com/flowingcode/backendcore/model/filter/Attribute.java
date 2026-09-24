@@ -28,27 +28,36 @@ import java.lang.annotation.Target;
  * Maps a filter field to an entity attribute.
  *
  * <p>The value is a dotted attribute path on the target entity (e.g.
- * {@code "city.state.name"}). Path traversal auto-joins associations using
- * inner joins, reusing existing joins when one is already present on the same
- * attribute and join type.
+ * {@code "city.state.name"}). Path traversal auto-joins associations, reusing
+ * an existing join when one is already present on the same attribute. Joins are
+ * inner joins, except where an inner join would drop rows the predicate is meant
+ * to match: paths of {@link Or} fields, {@code IS NULL} predicates from
+ * {@link WhenNull}, and sort orders use left joins. Consequently, an equality or
+ * comparison on a nested path never matches rows whose association is
+ * {@code null}.
  *
  * <p>A filter field carrying only {@code @Attribute} is interpreted as an
  * equality predicate against the resolved attribute. Pair it with {@link From}
- * or {@link To} to express range comparisons, or with {@link WhenNull} to
- * control how a null field value is handled.
+ * or {@link To} to express range comparisons, with {@link Like} or {@link In}
+ * for pattern and membership matching, with {@link WhenNull} to control how a
+ * null field value is handled, or with {@link Or} to place the predicate in the
+ * filter's disjunction.
  *
  * <p>Set {@link #manual()} to {@code true} when the predicate for the field is
  * built by hand in a DAO hook (e.g.
- * {@code ConversionJpaDaoSupport#customizePredicates}). The processor will skip
- * declarative predicate building for the field but still track it so the
- * field's value can be retrieved via
- * {@code ConversionJpaDaoSupport#getFilterFieldValue}. Manual fields cannot
- * combine with {@link From}, {@link To} or {@link WhenNull}, since none of
- * those have meaning when the predicate is hand-built.
+ * {@code ConversionJpaDaoSupport#customizePredicates}). The processor skips
+ * the field, and the hook reads its value through the filter's accessor, so a
+ * manual field must have one. Manual fields cannot
+ * combine with {@link From}, {@link To}, {@link Like}, {@link In},
+ * {@link WhenNull} or {@link Or}, since none of those have meaning when the
+ * predicate is hand-built.
  *
  * @see From
  * @see To
+ * @see Like
+ * @see In
  * @see WhenNull
+ * @see Or
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
@@ -63,9 +72,9 @@ public @interface Attribute {
 	String value();
 
 	/**
-	 * When {@code true}, the processor records the field for value lookup but
-	 * does not generate a declarative predicate. The caller is responsible for
-	 * producing the predicate in a DAO hook.
+	 * When {@code true}, the processor does not generate a declarative predicate
+	 * for the field. The caller is responsible for producing the predicate in a
+	 * DAO hook, reading the value through the filter's accessor.
 	 */
 	boolean manual() default false;
 }

@@ -25,34 +25,34 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Overrides how a {@code null} value on the annotated filter field is handled.
+ * Matches the {@link Attribute} of a {@code Collection} filter field with an
+ * {@code IN} predicate: the attribute must equal one of the collection's
+ * elements.
  *
- * <p>The default policy for any field carrying {@link Attribute} is
- * {@link Policy#SKIP}: a null field contributes no predicate. Use this
- * annotation with {@link Policy#IS_NULL} to instead emit a
- * {@code attribute IS NULL} predicate. Associations along a nested path are
- * then left-joined, so {@code @Attribute("city.name")} matches both a city with
- * a {@code null} name and a {@code null} city.
+ * <p>A {@code null} field value contributes no predicate. An empty collection is
+ * handled according to {@link #whenEmpty()}, which defaults to
+ * {@link EmptyPolicy#SKIP}: an empty selection is treated as "no criterion", the
+ * same as {@code null}, rather than as "match nothing".
  *
- * <p>{@code @WhenNull} requires {@link Attribute} on the same field and is not
- * allowed alongside {@link From}, {@link To}, {@link Like} or {@link In}, since
- * none of those have sensible {@code IS_NULL} semantics.
+ * <p>Must be paired with {@link Attribute}, and cannot combine with
+ * {@link From}, {@link To}, {@link Like} or {@link WhenNull}.
  *
  * @see Attribute
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
-public @interface WhenNull {
+public @interface In {
 
-	Policy value();
+	/** How an empty collection is handled. Defaults to {@link EmptyPolicy#SKIP}. */
+	EmptyPolicy whenEmpty() default EmptyPolicy.SKIP;
 
-	/** Policy applied to a null filter field. */
-	enum Policy {
+	/** Policy applied to an empty collection. */
+	enum EmptyPolicy {
 
-		/** Emit no predicate for this field when its value is {@code null}. */
+		/** Emit no predicate, as for a {@code null} field value. */
 		SKIP,
 
-		/** Emit an {@code IS NULL} predicate when the field value is {@code null}. */
-		IS_NULL
+		/** Emit a predicate that matches no rows. */
+		MATCH_NONE
 	}
 }

@@ -45,6 +45,7 @@ import org.junit.jupiter.api.Test;
 import com.flowingcode.backendcore.model.filter.Attribute;
 import com.flowingcode.backendcore.model.filter.BaseFilter;
 import com.flowingcode.backendcore.model.filter.From;
+import com.flowingcode.backendcore.model.impl.City;
 import com.flowingcode.backendcore.model.impl.Person;
 
 import lombok.Getter;
@@ -66,18 +67,25 @@ class BaseFilterDaoHookTest {
 
 	static class HookDao implements JpaDaoSupport<Person, Integer> {
 
-		final EntityManagerFactory emf;
+		final EntityManager em;
 		final AtomicInteger predicatesCalls = new AtomicInteger();
 		final AtomicInteger criteriaCalls = new AtomicInteger();
 		final AtomicBoolean restrictByName = new AtomicBoolean();
 
-		HookDao(EntityManagerFactory emf) {
-			this.emf = emf;
+		HookDao(EntityManager em) {
+			this.em = em;
 		}
 
 		@Override
 		public EntityManager getEntityManager() {
-			return emf.createEntityManager();
+			return em;
+		}
+
+		// Tests subclass this DAO anonymously, and the default reflective lookup only
+		// inspects the interfaces implemented directly by the runtime class.
+		@Override
+		public Class<Person> getPersistentClass() {
+			return Person.class;
 		}
 
 		@Override
@@ -101,6 +109,7 @@ class BaseFilterDaoHookTest {
 
 	private HookDao dao;
 	private EntityManagerFactory emf;
+	private EntityManager em;
 
 	@BeforeEach
 	void setUp() {
@@ -115,11 +124,16 @@ class BaseFilterDaoHookTest {
 		}
 		em.getTransaction().commit();
 		em.close();
-		dao = new HookDao(emf);
+		// One EntityManager for all the DAOs of a test, like one per transaction under Spring.
+		this.em = emf.createEntityManager();
+		dao = new HookDao(this.em);
 	}
 
 	@AfterEach
 	void tearDown() {
+		if (em != null && em.isOpen()) {
+			em.close();
+		}
 		if (emf != null && emf.isOpen()) {
 			emf.close();
 		}
@@ -145,7 +159,7 @@ class BaseFilterDaoHookTest {
 		// Restrict to a name with exactly one match so the call succeeds.
 		dao.restrictByName.set(true);
 		// The data has two "John"s, so override the restriction inline.
-		HookDao d = new HookDao(dao.emf) {
+		HookDao d = new HookDao(em) {
 			@Override
 			public Collection<Predicate> customizePredicates(BaseFilter filter, CriteriaBuilder cb,
 					CriteriaQuery<?> cq, Root<Person> root) {
@@ -181,22 +195,23 @@ class BaseFilterDaoHookTest {
 	@SuperBuilder
 	static class ManualPersonFilter extends BaseFilter {
 
-		// Manual field: processor records it but never produces a predicate. The
-		// hook consumes the value via getFilterFieldValue and builds the LIKE.
+		// Manual field: the processor never produces a predicate for it. The hook
+		// reads the value through the getter and builds the predicate itself.
 		@Attribute(value = "name", manual = true)
 		private String nameLike;
 	}
 
 	@Test
-	void manualField_isSkipped_andHookUsesHelperToBuildPredicate() {
-		HookDao d = new HookDao(dao.emf) {
+	void manualField_isSkipped_andHookReadsItThroughTheGetter() {
+		HookDao d = new HookDao(em) {
 			@Override
 			public Collection<Predicate> customizePredicates(BaseFilter filter, CriteriaBuilder cb,
 					CriteriaQuery<?> cq, Root<Person> root) {
 				predicatesCalls.incrementAndGet();
-				String pattern = getFilterFieldValue(filter, "nameLike", String.class);
-				return pattern == null ? Collections.emptyList()
-						: List.of(cb.like(root.get("name"), pattern));
+				if (filter instanceof ManualPersonFilter f && f.getNameLike() != null) {
+					return List.of(cb.like(root.get("name"), f.getNameLike()));
+				}
+				return Collections.emptyList();
 			}
 		};
 
@@ -232,17 +247,11 @@ class BaseFilterDaoHookTest {
 	}
 
 	@Test
-	void getFilterFieldValue_rejectsUnknownField() {
-		assertThrows(IllegalArgumentException.class,
-				() -> dao.getFilterFieldValue(PersonFilter.builder().build(), "noSuchField"));
-	}
-
-	@Test
 	void criteriaHookCanMutateQuery() {
 		// Validate the hook can run cq.* operations against the live query. Applying
 		// distinct on a SELECT-entity query with unique IDs is a no-op result-wise
 		// but a valid Criteria mutation that exercises the hook end-to-end.
-		HookDao d = new HookDao(dao.emf) {
+		HookDao d = new HookDao(em) {
 			@Override
 			public void customizeCriteria(BaseFilter filter, CriteriaBuilder cb, CriteriaQuery<?> cq,
 					Root<Person> root) {
@@ -251,5 +260,62 @@ class BaseFilterDaoHookTest {
 		};
 		List<Person> people = d.filter(PersonFilter.builder().build());
 		assertEquals(4, people.size());
+	}
+
+	@Test
+	@SuppressWarnings({"unchecked", "rawtypes"})
+	void criteriaHookCannotReplaceSelection() {
+		HookDao d = new HookDao(em) {
+			@Override
+			public void customizeCriteria(BaseFilter filter, CriteriaBuilder cb, CriteriaQuery<?> cq,
+					Root<Person> root) {
+				((CriteriaQuery) cq).select(root.get("name"));
+			}
+		};
+		PersonFilter f = PersonFilter.builder().build();
+
+		assertThrows(IllegalStateException.class, () -> d.filter(f));
+		assertThrows(IllegalStateException.class, () -> d.filterWithSingleResult(f));
+		assertThrows(IllegalStateException.class, () -> d.count(f));
+	}
+
+	@Test
+	void criteriaHookCannotGroupCountQuery() {
+		HookDao d = new HookDao(em) {
+			@Override
+			public void customizeCriteria(BaseFilter filter, CriteriaBuilder cb, CriteriaQuery<?> cq,
+					Root<Person> root) {
+				cq.groupBy(root.get("name"));
+			}
+		};
+		assertThrows(IllegalStateException.class, () -> d.count(PersonFilter.builder().build()));
+	}
+
+	@Test
+	void distinctFromCriteriaHook_countsDistinctEntities() {
+		// A second root yields one row per (person, city) pair; distinct collapses
+		// them back to the four people in both the list and the count query.
+		EntityManager tx = emf.createEntityManager();
+		tx.getTransaction().begin();
+		for (String name : new String[] {"Rome", "Paris"}) {
+			City city = new City();
+			city.setName(name);
+			tx.persist(city);
+		}
+		tx.getTransaction().commit();
+		tx.close();
+
+		HookDao d = new HookDao(em) {
+			@Override
+			public void customizeCriteria(BaseFilter filter, CriteriaBuilder cb, CriteriaQuery<?> cq,
+					Root<Person> root) {
+				cq.from(City.class);
+				cq.distinct(true);
+			}
+		};
+		PersonFilter f = PersonFilter.builder().build();
+
+		assertEquals(4, d.filter(f).size());
+		assertEquals(4, d.count(f));
 	}
 }

@@ -30,52 +30,48 @@ import jakarta.persistence.criteria.JoinType;
 
 /**
  * Resolves a dotted attribute path on a JPA {@code From} root into a leaf
- * {@code Expression}, auto-joining associations along the way and reusing
- * existing joins when one is already present on the same attribute and join
- * type.
+ * {@code Expression}, auto-joining associations along the way.
+ *
+ * <p>The caller chooses the join type of each resolution. A join that already
+ * exists on the same attribute is reused whatever its type, so an association
+ * is joined at most once per query. Reuse is safe for the declarative filter
+ * predicates, which are always combined as a conjunction: an inner join is only
+ * requested for a conjunct that rejects {@code null}, so every result row has
+ * that association anyway, and a left join behaves as an inner join under such
+ * a conjunct.
  *
  * <p>Instances are not thread-safe: a new resolver should be created per
  * {@code CriteriaQuery}.
  */
-public class AttributePathResolver {
+class AttributePathResolver {
 
 	private final From<?, ?> root;
 
-	private JoinType currentJoinType = JoinType.INNER;
-
-	public AttributePathResolver(From<?, ?> root) {
+	AttributePathResolver(From<?, ?> root) {
 		this.root = Objects.requireNonNull(root, "root");
-	}
-
-	/** Returns the join type currently used when creating new joins. */
-	public JoinType getCurrentJoinType() {
-		return currentJoinType;
-	}
-
-	/** Sets the join type used for newly created joins by subsequent resolutions. */
-	public void setCurrentJoinType(JoinType joinType) {
-		this.currentJoinType = Objects.requireNonNull(joinType, "joinType");
 	}
 
 	/**
 	 * Resolves {@code attributePath} into an {@code Expression} of the leaf
-	 * attribute on the root, auto-joining as needed.
+	 * attribute on the root, creating missing joins with {@code joinType}.
 	 */
-	public Expression<?> resolve(String attributePath) {
-		return resolve(attributePath, Object.class);
+	Expression<?> resolve(String attributePath, JoinType joinType) {
+		return resolve(attributePath, Object.class, joinType);
 	}
 
 	/**
-	 * Resolves {@code attributePath} and verifies the leaf attribute's Java type
-	 * is assignable to {@code expectedType}.
+	 * Resolves {@code attributePath}, creating missing joins with
+	 * {@code joinType}, and verifies the leaf attribute's Java type is assignable
+	 * to {@code expectedType}.
 	 *
 	 * @throws IllegalArgumentException if {@code attributePath} is blank, has a
 	 *         leading or trailing dot, or contains empty segments
 	 * @throws ClassCastException if the leaf attribute type isn't compatible
 	 */
 	@SuppressWarnings("unchecked")
-	public <V> Expression<V> resolve(String attributePath, Class<V> expectedType) {
+	<V> Expression<V> resolve(String attributePath, Class<V> expectedType, JoinType joinType) {
 		Objects.requireNonNull(attributePath, "attributePath");
+		Objects.requireNonNull(joinType, "joinType");
 		if (attributePath.isBlank() || attributePath.startsWith(".")
 				|| attributePath.endsWith(".") || attributePath.contains("..")) {
 			throw new IllegalArgumentException("Invalid attributePath: \"" + attributePath + "\"");
@@ -83,27 +79,26 @@ public class AttributePathResolver {
 		String[] path = attributePath.split("\\.");
 		String attributeName = path[path.length - 1];
 		String[] joinPath = Arrays.copyOf(path, path.length - 1);
-		Expression<?> expression = traverse(root, joinPath).get(attributeName);
+		Expression<?> expression = traverse(root, joinPath, joinType).get(attributeName);
 		boxed(expression.getJavaType()).asSubclass(expectedType);
 		return (Expression<V>) expression;
 	}
 
-	private From<?, ?> traverse(From<?, ?> source, String[] path) {
+	private From<?, ?> traverse(From<?, ?> source, String[] path, JoinType joinType) {
 		From<?, ?> from = source;
 		for (String name : path) {
-			from = join(from, name);
+			from = join(from, name, joinType);
 		}
 		return from;
 	}
 
 	@SuppressWarnings("rawtypes")
-	private From<?, ?> join(From<?, ?> source, String attributeName) {
+	private From<?, ?> join(From<?, ?> source, String attributeName, JoinType joinType) {
 		Optional<Join> existing = source.getJoins().stream()
 				.map(j -> (Join) j)
 				.filter(j -> j.getAttribute().getName().equals(attributeName))
-				.filter(j -> j.getJoinType() == currentJoinType)
 				.findFirst();
-		return existing.orElseGet(() -> source.join(attributeName, currentJoinType));
+		return existing.orElseGet(() -> source.join(attributeName, joinType));
 	}
 
 	private static Class<?> boxed(Class<?> type) {
