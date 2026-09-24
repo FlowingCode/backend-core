@@ -22,6 +22,8 @@ package com.flowingcode.backendcore.dao.jpa;
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Objects;
@@ -38,6 +40,7 @@ import jakarta.persistence.criteria.Root;
 import com.flowingcode.backendcore.dao.CrudDao;
 import com.flowingcode.backendcore.model.Identifiable;
 import com.flowingcode.backendcore.model.QuerySpec;
+import com.flowingcode.backendcore.model.filter.BaseFilter;
 
 public interface ConversionJpaDaoSupport<S, T extends Identifiable<K>, K extends Serializable>
 		extends CrudDao<S, K> {
@@ -100,18 +103,34 @@ public interface ConversionJpaDaoSupport<S, T extends Identifiable<K>, K extends
 				.map(this::convertFrom).collect(Collectors.toList());
 	}
 
+	/**
+	 * @deprecated Use {@link #count(BaseFilter)} with a {@link BaseFilter} subclass.
+	 */
 	@Override
+	@Deprecated(since = "1.2.0", forRemoval = false)
+	@SuppressWarnings("deprecation")
 	default long count(QuerySpec filter) {
 		return FilterProcesor.<T, K>of(getEntityManager(), getPersistentClass()).count(filter);
 	}
 
+	/**
+	 * @deprecated Use {@link #filter(BaseFilter)} with a {@link BaseFilter} subclass.
+	 */
 	@Override
+	@Deprecated(since = "1.2.0", forRemoval = false)
+	@SuppressWarnings("deprecation")
 	default List<S> filter(QuerySpec filter) {
 		return FilterProcesor.<T, K>of(getEntityManager(), getPersistentClass()).filter(filter).stream()
 				.map(this::convertFrom).collect(Collectors.toList());
 	}
-	
+
+	/**
+	 * @deprecated Use {@link #filterWithSingleResult(BaseFilter)} with a
+	 *             {@link BaseFilter} subclass.
+	 */
 	@Override
+	@Deprecated(since = "1.2.0", forRemoval = false)
+	@SuppressWarnings("deprecation")
 	default Optional<S> filterWithSingleResult(QuerySpec filter) {
 		List<T> filtered = FilterProcesor.<T, K>of(getEntityManager(), getPersistentClass()).filter(filter);
 		if (filtered.size()>1) {
@@ -119,6 +138,87 @@ public interface ConversionJpaDaoSupport<S, T extends Identifiable<K>, K extends
 		}
 		return filtered.stream()
 				.map(this::convertFrom).findAny();
+	}
+
+	@Override
+	default List<S> filter(BaseFilter filter) {
+		return baseFilterProcessor().filter(filter).stream()
+				.map(this::convertFrom).collect(Collectors.toList());
+	}
+
+	@Override
+	default Optional<S> filterWithSingleResult(BaseFilter filter) {
+		return baseFilterProcessor().filterWithSingleResult(filter).map(this::convertFrom);
+	}
+
+	@Override
+	default long count(BaseFilter filter) {
+		return baseFilterProcessor().count(filter);
+	}
+
+	/**
+	 * Hook for adding non-declarative predicates to a {@link BaseFilter}-driven
+	 * query. Predicates returned here are ANDed with those derived from the
+	 * filter's annotations, including the disjunction of its
+	 * {@link com.flowingcode.backendcore.model.filter.Or @Or} fields. To combine a
+	 * hand-built predicate with {@code OR}, return it already combined, e.g.
+	 * {@code cb.or(...)}.
+	 *
+	 * <p>The hook reads the values it needs through the accessors of the concrete
+	 * filter class, typically the fields declared as
+	 * {@link com.flowingcode.backendcore.model.filter.Attribute#manual()
+	 * manual}:
+	 *
+	 * <pre>{@code
+	 * if (filter instanceof PersonFilter f && f.getSearch() != null) {
+	 *     return List.of(cb.like(root.get("name"), "%" + f.getSearch() + "%"));
+	 * }
+	 * return List.of();
+	 * }</pre>
+	 *
+	 * <p>Called once per filter, count and single-result query, with whichever
+	 * filter class the caller passed. Defaults to no extra predicates.
+	 */
+	default Collection<Predicate> customizePredicates(BaseFilter filter, CriteriaBuilder cb,
+			CriteriaQuery<?> cq, Root<T> root) {
+		return Collections.emptyList();
+	}
+
+	/**
+	 * Last-chance hook to mutate the in-progress {@code CriteriaQuery} (e.g.
+	 * {@code distinct}, extra roots or joins). Called once per filter, count and
+	 * single-result query after predicates have been applied; the count query is
+	 * the one whose {@link CriteriaQuery#getResultType()} is {@code Long}.
+	 *
+	 * <p>The hook must keep the selection the query was created with, which is
+	 * the entity root, or the count of it: replacing it (for instance, with a
+	 * projection) makes the query fail with an {@code IllegalStateException}.
+	 * The hook must not add a {@code GROUP BY} to the count query either. A
+	 * {@code distinct(true)} set on the count query counts distinct entities.
+	 *
+	 * <p>Defaults to a no-op.
+	 */
+	default void customizeCriteria(BaseFilter filter, CriteriaBuilder cb, CriteriaQuery<?> cq,
+			Root<T> root) {
+		// no-op
+	}
+
+	private BaseFilterJpaProcessor<T, K> baseFilterProcessor() {
+		final ConversionJpaDaoSupport<S, T, K> self = this;
+		return BaseFilterJpaProcessor.<T, K>of(getEntityManager(), getPersistentClass(),
+				new BaseFilterJpaProcessor.Hooks<T>() {
+					@Override
+					public Collection<Predicate> customizePredicates(BaseFilter filter,
+							CriteriaBuilder cb, CriteriaQuery<?> cq, Root<T> root) {
+						return self.customizePredicates(filter, cb, cq, root);
+					}
+
+					@Override
+					public void customizeCriteria(BaseFilter filter, CriteriaBuilder cb,
+							CriteriaQuery<?> cq, Root<T> root) {
+						self.customizeCriteria(filter, cb, cq, root);
+					}
+				});
 	}
 
 	static class FilterProcesor<T extends Identifiable<K>, K extends Serializable> {
