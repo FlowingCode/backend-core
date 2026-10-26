@@ -110,6 +110,8 @@ public @interface Attribute {
 
 - Maps a filter field to one entity attribute via a dotted path. Path traversal follows the same `split("\\.")` + auto-join convention used today in `ConstraintTransformerJpaImpl`; see §4.1 for the join types.
 - A filter field with `@Attribute` and no role annotation defaults to **equality** (`cb.equal(...)`).
+- An empty or blank `String` value is treated exactly like `null` by every annotation, so a cleared text field adds no criterion. Matching an empty string is built in a DAO hook.
+- The path may not go through a collection (one-to-many, many-to-many, element collection), nor end at one — neither in a filter field nor in a sort order. See §4.1.
 - `manual = true` is the escape hatch for predicates that don't fit the declarative model. The processor emits no predicate for the field; the DAO's `customizePredicates` hook is responsible for the constraint, reading the value through the filter's accessor (§5.1). On a manual field the `value()` is informational — the processor never resolves it — but stays useful as documentation of which entity attribute the hook is expected to target. `manual = true` cannot combine with `@From`, `@To`, `@Like`, `@In`, `@WhenNull` or `@Or`, since none of those have meaning when the predicate is hand-built.
 
 #### `@From` and `@To`
@@ -150,7 +152,7 @@ public @interface WhenNull {
 }
 ```
 
-- Per-field override for null handling. Default is `SKIP` (no predicate emitted), so most filter fields don't need this annotation.
+- Per-field override for null handling. Default is `SKIP` (no predicate emitted), so most filter fields don't need this annotation. An empty or blank `String` counts as null and follows the same policy.
 - `IS_NULL` makes a null field emit `cb.isNull(...)` against the resolved attribute path. The associations on the path are left-joined, so `@Attribute("city.name")` matches both a city with a null name and a null city.
 - Only meaningful on plain equality fields that also carry `@Attribute`; the processor rejects `@WhenNull` alongside `@From`, `@To`, `@Like` or `@In`.
 
@@ -167,9 +169,9 @@ public @interface Like {
 ```
 
 - Matches a `String` field with `LIKE` instead of equality. A non-`String` field is a configuration error.
-- `CONTAINS` (default), `STARTS_WITH` and `ENDS_WITH` wrap the value with `%` and escape the `%` / `_` wildcards and the `\` escape character in it, so the value always matches literally. `RAW` passes the value through as the pattern, wildcards included — the behavior of the legacy `ConstraintBuilder.like(...)`.
+- `CONTAINS` (default), `STARTS_WITH` and `ENDS_WITH` wrap the value with `%` and escape the `%` / `_` wildcards and the `!` escape character in it, so the value always matches literally. The escape character is `!` rather than `\`, which MySQL and MariaDB also treat as special inside string literals. `RAW` passes the value through as the pattern, wildcards included — the behavior of the legacy `ConstraintBuilder.like(...)`.
 - `ignoreCase = true` compares `lower(attribute)` with the value lower-cased in `Locale.ROOT`; it replaces the legacy `iLike(...)`.
-- A null value is skipped.
+- A null, empty or blank value is skipped.
 
 #### `@In`
 
@@ -230,7 +232,7 @@ For each call, the processor:
    - `@Like` → `LIKE`, `@In` → `IN`, as described in §3.2.
    - `@From`-only / `@To`-only → comparison predicate honoring the field's `inclusive` flag (`>` / `>=` / `<` / `<=`).
    - `@From` + `@To` on the same `@Attribute` path → `cb.between(...)` only when both values are non-null **and** both bounds are inclusive; otherwise two ANDed comparison predicates with each side's `inclusive` setting honored independently. When only one side is non-null, emit just that side's comparison.
-   - Null values are skipped unless `@WhenNull(IS_NULL)` is present.
+   - Null values, and empty or blank `String` values, are skipped unless `@WhenNull(IS_NULL)` is present.
    - Predicates of `@Or` fields are combined with `OR`; the result, the other predicates and the predicates from the `customizePredicates` hook are combined with `AND`.
 4. **Resolves attribute paths** with `AttributePathResolver`, a package-private utility modeled on the path/join helper of `ConstraintTransformerJpaImpl` (split on `.`, auto-join). It is new code rather than an extraction: the deprecated transformer is left untouched, and the new processor does not depend on `Constraint` / `ConstraintTransformer`. Join types are described in §4.1.
 5. **Applies sort orders** from `BaseFilter.getOrders()` in insertion order.
@@ -245,6 +247,8 @@ Associations along a path are joined once per query: a join already present on t
 
 - **Inner** for equality, comparison, `LIKE` and `IN` predicates of non-`@Or` fields. These conjuncts reject null, so every result row has the association anyway. As a consequence, such a predicate on a nested path never matches rows whose association is null.
 - **Left** where an inner join would drop the rows the query is meant to return: `IS NULL` predicates from `@WhenNull(IS_NULL)`, predicates of `@Or` fields, and sort orders (sorting must not change the result set, nor make `filter` disagree with `count`).
+
+**Collection paths are rejected.** Joining a collection yields one row per element, so a predicate on it would return duplicate entities, `count()` would count rows instead of entities, and paging would slice rows; sorting on it would make `filter` disagree with `count`. Adding `DISTINCT` would fix the predicates only, and fails with sorts on some databases (with `DISTINCT`, PostgreSQL requires every `ORDER BY` expression in the select list). Resolving a path that goes through or ends at a collection therefore throws `IllegalStateException`, when the predicate or order is built. Criteria on collections are built in a DAO hook, for example as an `EXISTS` subquery.
 
 Reusing a join across types is safe because the declarative predicates are always combined as a conjunction: an inner join is only requested for a null-rejecting conjunct, and a left join behaves as an inner join under such a conjunct. The join type is inferred rather than configurable, so there is no join-type attribute on the annotations.
 

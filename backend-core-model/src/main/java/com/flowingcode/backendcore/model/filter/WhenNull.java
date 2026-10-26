@@ -28,7 +28,8 @@ import java.lang.annotation.Target;
  * Overrides how a {@code null} value on the annotated filter field is handled.
  *
  * <p>The default policy for any field carrying {@link Attribute} is
- * {@link Policy#SKIP}: a null field contributes no predicate. Use this
+ * {@link Policy#SKIP}: a null field contributes no predicate. An empty or blank
+ * {@code String} counts as null, so it follows the same policy. Use this
  * annotation with {@link Policy#IS_NULL} to instead emit a
  * {@code attribute IS NULL} predicate. Associations along a nested path are
  * then left-joined, so {@code @Attribute("city.name")} matches both a city with

@@ -27,10 +27,17 @@ import jakarta.persistence.criteria.Expression;
 import jakarta.persistence.criteria.From;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
+import jakarta.persistence.criteria.Path;
+import jakarta.persistence.metamodel.PluralAttribute;
 
 /**
  * Resolves a dotted attribute path on a JPA {@code From} root into a leaf
  * {@code Expression}, auto-joining associations along the way.
+ *
+ * <p>Paths through a collection (a one-to-many or many-to-many association, or
+ * an element collection) are rejected: joining a collection yields one row per
+ * element, which would duplicate results and make paging and counting
+ * inconsistent. Such predicates and orders are built in a DAO hook.
  *
  * <p>The caller chooses the join type of each resolution. A join that already
  * exists on the same attribute is reused whatever its type, so an association
@@ -66,6 +73,8 @@ class AttributePathResolver {
 	 *
 	 * @throws IllegalArgumentException if {@code attributePath} is blank, has a
 	 *         leading or trailing dot, or contains empty segments
+	 * @throws IllegalStateException if the path goes through or ends at a
+	 *         collection
 	 * @throws ClassCastException if the leaf attribute type isn't compatible
 	 */
 	@SuppressWarnings("unchecked")
@@ -79,26 +88,43 @@ class AttributePathResolver {
 		String[] path = attributePath.split("\\.");
 		String attributeName = path[path.length - 1];
 		String[] joinPath = Arrays.copyOf(path, path.length - 1);
-		Expression<?> expression = traverse(root, joinPath, joinType).get(attributeName);
+		Path<?> expression = traverse(root, joinPath, joinType, attributePath).get(attributeName);
+		if (expression.getModel() instanceof PluralAttribute) {
+			throw collectionPath(attributePath, attributeName);
+		}
 		boxed(expression.getJavaType()).asSubclass(expectedType);
 		return (Expression<V>) expression;
 	}
 
-	private From<?, ?> traverse(From<?, ?> source, String[] path, JoinType joinType) {
+	private From<?, ?> traverse(From<?, ?> source, String[] path, JoinType joinType,
+			String attributePath) {
 		From<?, ?> from = source;
 		for (String name : path) {
-			from = join(from, name, joinType);
+			Join<?, ?> join = join(from, name, joinType);
+			if (join.getAttribute().isCollection()) {
+				throw collectionPath(attributePath, name);
+			}
+			from = join;
 		}
 		return from;
 	}
 
 	@SuppressWarnings("rawtypes")
-	private From<?, ?> join(From<?, ?> source, String attributeName, JoinType joinType) {
+	private Join<?, ?> join(From<?, ?> source, String attributeName, JoinType joinType) {
+		// Entity joins added by a hook (e.g. Hibernate's root.join(Entity.class))
+		// may have no attribute; they never match an attribute path.
 		Optional<Join> existing = source.getJoins().stream()
 				.map(j -> (Join) j)
+				.filter(j -> j.getAttribute() != null)
 				.filter(j -> j.getAttribute().getName().equals(attributeName))
 				.findFirst();
-		return existing.orElseGet(() -> source.join(attributeName, joinType));
+		return existing.isPresent() ? existing.get() : source.join(attributeName, joinType);
+	}
+
+	private static IllegalStateException collectionPath(String attributePath, String collection) {
+		return new IllegalStateException("Attribute path \"" + attributePath
+				+ "\" goes through the collection \"" + collection
+				+ "\"; collection paths are not supported, build the predicate or order in a DAO hook");
 	}
 
 	private static Class<?> boxed(Class<?> type) {

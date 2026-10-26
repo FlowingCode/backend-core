@@ -31,16 +31,16 @@ import java.lang.annotation.Target;
  * <p>With the default {@link Match#CONTAINS}, the field value is searched
  * anywhere in the attribute. The {@code CONTAINS}, {@code STARTS_WITH} and
  * {@code ENDS_WITH} modes escape the {@code %} and {@code _} wildcards (and the
- * escape character itself) in the field value, so the value is always matched
- * literally. Use {@link Match#RAW} to pass the field value through as the
+ * {@code !} escape character itself) in the field value, so the value is always
+ * matched literally. Use {@link Match#RAW} to pass the field value through as the
  * pattern, wildcards included.
  *
  * <p>Set {@link #ignoreCase()} to compare case-insensitively; both sides are
  * lower-cased before comparing.
  *
- * <p>A {@code null} field value contributes no predicate. Must be paired with
- * {@link Attribute}, and cannot combine with {@link From}, {@link To},
- * {@link In} or {@link WhenNull}.
+ * <p>A {@code null}, empty or blank field value contributes no predicate. Must
+ * be paired with {@link Attribute}, and cannot combine with {@link From},
+ * {@link To}, {@link In} or {@link WhenNull}.
  *
  * @see Attribute
  */

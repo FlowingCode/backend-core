@@ -98,6 +98,7 @@ class BaseFilterPipelineTest {
 		persist(tx, "johnny", "smith", null);
 		persist(tx, "Ann_B", "Roe", null);
 		persist(tx, "AnnXB", "Roe", null);
+		persist(tx, "Hey!", "Ng", null);
 		tx.getTransaction().commit();
 		tx.close();
 
@@ -133,7 +134,7 @@ class BaseFilterPipelineTest {
 		assertEquals(expectedNames.length, dao.count(filter), "count() must agree with filter()");
 	}
 
-	private static final String[] EVERYONE = {"John", "Jane", "Alice", "johnny", "Ann_B", "AnnXB"};
+	private static final String[] EVERYONE = {"John", "Jane", "Alice", "johnny", "Ann_B", "AnnXB", "Hey!"};
 
 	// ----- @Like -----
 
@@ -181,6 +182,8 @@ class BaseFilterPipelineTest {
 		// Unescaped, "_" would also match "AnnXB" and "%" would match everyone.
 		assertMatches(new LikeFilter().setNameContains("n_B"), "Ann_B");
 		assertMatches(new LikeFilter().setNameContains("%"));
+		// Unescaped, "!" would escape the closing "%" and require a literal "%".
+		assertMatches(new LikeFilter().setNameContains("y!"), "Hey!");
 	}
 
 	@Test
@@ -274,8 +277,8 @@ class BaseFilterPipelineTest {
 
 	@Test
 	void isNull_onNestedPath_matchesNullAssociations() {
-		// Jane's city has no name; the other four have no city at all.
-		assertMatches(new CityNameFilter(), "Jane", "Alice", "johnny", "Ann_B", "AnnXB");
+		// Jane's city has no name; the others have no city at all.
+		assertMatches(new CityNameFilter(), "Jane", "Alice", "johnny", "Ann_B", "AnnXB", "Hey!");
 	}
 
 	@Test
@@ -310,6 +313,61 @@ class BaseFilterPipelineTest {
 		filter.addOrder("city.name");
 		assertMatches(filter, "John");
 		assertEquals(1, dao.rootJoins.get(), "city must be joined once");
+	}
+
+	// ----- empty and blank strings -----
+
+	@Test
+	void blankString_isTreatedAsNull_forLike() {
+		assertMatches(new LikeFilter().setNameContains(""), EVERYONE);
+		// On a nested path, a predicate would also inner-join away people without a city.
+		assertMatches(new LikeFilter().setCityEnds("  "), EVERYONE);
+	}
+
+	@Test
+	void blankString_isTreatedAsNull_forEquality() {
+		assertMatches(new OrFilter().setLastName(""), EVERYONE);
+	}
+
+	@Test
+	void blankString_followsTheWhenNullPolicy() {
+		assertMatches(new CityNameFilter().setCityName(" "), "Jane", "Alice", "johnny", "Ann_B", "AnnXB", "Hey!");
+	}
+
+	@Test
+	void blankStrings_inOrFields_leaveTheDisjunctionOut() {
+		assertMatches(new OrFilter().setName("").setCityName("\t"), EVERYONE);
+	}
+
+	// ----- collection paths -----
+
+	@Setter
+	@Accessors(chain = true)
+	static class CollectionPathFilter extends BaseFilter {
+		@Attribute("city.people.name")
+		private String neighbourName;
+	}
+
+	@Test
+	void collectionPath_inFilterField_isRejected() {
+		assertRejected(new CollectionPathFilter().setNeighbourName("John"),
+				"goes through the collection \"people\"");
+	}
+
+	@Test
+	void collectionPath_inSortOrder_isRejected() {
+		OrFilter filter = new OrFilter();
+		filter.addOrder("city.people.name");
+		IllegalStateException ex = assertThrows(IllegalStateException.class, () -> dao.filter(filter));
+		assertTrue(ex.getMessage().contains("goes through the collection \"people\""), ex.getMessage());
+	}
+
+	@Test
+	void collectionPath_endingAtTheCollection_isRejected() {
+		OrFilter filter = new OrFilter();
+		filter.addOrder("city.people");
+		IllegalStateException ex = assertThrows(IllegalStateException.class, () -> dao.filter(filter));
+		assertTrue(ex.getMessage().contains("goes through the collection \"people\""), ex.getMessage());
 	}
 
 	// ----- field discovery -----

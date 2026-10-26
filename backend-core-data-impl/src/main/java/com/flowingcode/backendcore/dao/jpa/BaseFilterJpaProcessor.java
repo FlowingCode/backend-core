@@ -30,8 +30,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
 
 import com.flowingcode.backendcore.model.Identifiable;
@@ -88,8 +86,17 @@ class BaseFilterJpaProcessor<T extends Identifiable<K>, K extends Serializable> 
 	private static final List<Class<? extends Annotation>> MODIFIERS =
 			List.of(From.class, To.class, Like.class, In.class, WhenNull.class, Or.class);
 
-	private static final ConcurrentMap<Class<? extends BaseFilter>, List<FieldHandler>> HANDLER_CACHE =
-			new ConcurrentHashMap<>();
+	/**
+	 * Handlers per filter class. A {@code ClassValue} stores each entry with the
+	 * filter class itself, so it does not keep the class (and its class loader)
+	 * reachable once the application that defined it is unloaded.
+	 */
+	private static final ClassValue<List<FieldHandler>> HANDLERS = new ClassValue<>() {
+		@Override
+		protected List<FieldHandler> computeValue(Class<?> filterClass) {
+			return buildHandlers(filterClass.asSubclass(BaseFilter.class));
+		}
+	};
 
 	private final EntityManager em;
 	private final Class<T> persistentClass;
@@ -229,7 +236,7 @@ class BaseFilterJpaProcessor<T extends Identifiable<K>, K extends Serializable> 
 	// ----- metadata reflection + caching -----
 
 	private static List<FieldHandler> handlersFor(Class<? extends BaseFilter> filterClass) {
-		return HANDLER_CACHE.computeIfAbsent(filterClass, BaseFilterJpaProcessor::buildHandlers);
+		return HANDLERS.get(filterClass);
 	}
 
 	private static List<FieldHandler> buildHandlers(Class<? extends BaseFilter> filterClass) {
@@ -403,6 +410,16 @@ class BaseFilterJpaProcessor<T extends Identifiable<K>, K extends Serializable> 
 		abstract Predicate toPredicate(BaseFilter filter, CriteriaBuilder cb,
 				AttributePathResolver resolver) throws IllegalAccessException;
 
+		/**
+		 * Reads {@code field} on {@code filter}. An empty or blank {@code String}
+		 * is returned as {@code null}, so it means "no criterion" exactly like
+		 * {@code null}: a cleared text field must not turn into a predicate.
+		 */
+		static Object read(Field field, BaseFilter filter) throws IllegalAccessException {
+			Object value = field.get(filter);
+			return value instanceof String string && string.isBlank() ? null : value;
+		}
+
 		abstract String describe();
 	}
 
@@ -419,7 +436,7 @@ class BaseFilterJpaProcessor<T extends Identifiable<K>, K extends Serializable> 
 		@Override
 		Predicate toPredicate(BaseFilter filter, CriteriaBuilder cb, AttributePathResolver resolver)
 				throws IllegalAccessException {
-			Object value = field.get(filter);
+			Object value = read(field, filter);
 			if (value == null) {
 				// IS NULL must also match rows whose association is null, which an
 				// inner join would drop before the predicate is evaluated.
@@ -450,7 +467,7 @@ class BaseFilterJpaProcessor<T extends Identifiable<K>, K extends Serializable> 
 		@SuppressWarnings({"unchecked", "rawtypes"})
 		Predicate toPredicate(BaseFilter filter, CriteriaBuilder cb, AttributePathResolver resolver)
 				throws IllegalAccessException {
-			Object value = field.get(filter);
+			Object value = read(field, filter);
 			if (value == null) return null;
 			Expression<Comparable> expr = resolver.resolve(attributePath, Comparable.class, joinType());
 			return inclusive ? cb.greaterThanOrEqualTo(expr, (Comparable) value)
@@ -477,7 +494,7 @@ class BaseFilterJpaProcessor<T extends Identifiable<K>, K extends Serializable> 
 		@SuppressWarnings({"unchecked", "rawtypes"})
 		Predicate toPredicate(BaseFilter filter, CriteriaBuilder cb, AttributePathResolver resolver)
 				throws IllegalAccessException {
-			Object value = field.get(filter);
+			Object value = read(field, filter);
 			if (value == null) return null;
 			Expression<Comparable> expr = resolver.resolve(attributePath, Comparable.class, joinType());
 			return inclusive ? cb.lessThanOrEqualTo(expr, (Comparable) value)
@@ -509,8 +526,8 @@ class BaseFilterJpaProcessor<T extends Identifiable<K>, K extends Serializable> 
 		@SuppressWarnings({"unchecked", "rawtypes"})
 		Predicate toPredicate(BaseFilter filter, CriteriaBuilder cb, AttributePathResolver resolver)
 				throws IllegalAccessException {
-			Object lo = lower.get(filter);
-			Object hi = upper.get(filter);
+			Object lo = read(lower, filter);
+			Object hi = read(upper, filter);
 			if (lo == null && hi == null) return null;
 			Expression<Comparable> expr = resolver.resolve(attributePath, Comparable.class, joinType());
 
@@ -538,7 +555,9 @@ class BaseFilterJpaProcessor<T extends Identifiable<K>, K extends Serializable> 
 	}
 
 	private static final class LikeHandler extends FieldHandler {
-		private static final char ESCAPE = '\\';
+		// Not a backslash: MySQL and MariaDB also treat it as an escape inside string
+		// literals, so how the dialect prints ESCAPE '\' would matter.
+		private static final char ESCAPE = '!';
 
 		private final Field field;
 		private final boolean ignoreCase;
@@ -554,7 +573,7 @@ class BaseFilterJpaProcessor<T extends Identifiable<K>, K extends Serializable> 
 		@Override
 		Predicate toPredicate(BaseFilter filter, CriteriaBuilder cb, AttributePathResolver resolver)
 				throws IllegalAccessException {
-			String value = (String) field.get(filter);
+			String value = (String) read(field, filter);
 			if (value == null) return null;
 			Expression<String> expr = resolver.resolve(attributePath, String.class, joinType());
 			if (ignoreCase) {

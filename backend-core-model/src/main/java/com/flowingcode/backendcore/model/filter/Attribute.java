@@ -34,7 +34,13 @@ import java.lang.annotation.Target;
  * to match: paths of {@link Or} fields, {@code IS NULL} predicates from
  * {@link WhenNull}, and sort orders use left joins. Consequently, an equality or
  * comparison on a nested path never matches rows whose association is
- * {@code null}.
+ * {@code null}. A path may not go through a collection (a one-to-many or
+ * many-to-many association, or an element collection), neither in a filter
+ * field nor in a sort order; such criteria are built in a DAO hook.
+ *
+ * <p>An empty or blank {@code String} value is treated exactly like
+ * {@code null}: by default the field contributes no predicate. Matching an
+ * empty string is built in a DAO hook.
  *
  * <p>A filter field carrying only {@code @Attribute} is interpreted as an
  * equality predicate against the resolved attribute. Pair it with {@link From}
