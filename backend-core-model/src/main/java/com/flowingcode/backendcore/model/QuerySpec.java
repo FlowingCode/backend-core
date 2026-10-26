@@ -30,6 +30,14 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+/**
+ * @deprecated Use {@link com.flowingcode.backendcore.model.filter.BaseFilter}
+ *             and the annotation-driven filter API instead. This type, the
+ *             {@link Constraint} hierarchy and the {@link ConstraintTransformer}
+ *             support are retained for backwards compatibility but slated for
+ *             removal in a future major version.
+ */
+@Deprecated(since = "1.2.0", forRemoval = false)
 @Accessors(chain=true)
 public class QuerySpec {
 

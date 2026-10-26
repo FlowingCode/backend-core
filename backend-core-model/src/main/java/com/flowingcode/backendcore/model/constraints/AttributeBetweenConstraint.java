@@ -26,6 +26,12 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.experimental.FieldDefaults;
 
+/**
+ * @deprecated Part of the legacy {@link com.flowingcode.backendcore.model.QuerySpec}-based
+ *             filter API. New code should use
+ *             {@link com.flowingcode.backendcore.model.filter.BaseFilter}.
+ */
+@Deprecated(since = "1.2.0", forRemoval = false)
 @Getter
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AttributeBetweenConstraint implements AttributeConstraint {

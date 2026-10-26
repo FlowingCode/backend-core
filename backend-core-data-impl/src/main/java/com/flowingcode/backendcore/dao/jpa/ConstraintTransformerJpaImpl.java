@@ -49,7 +49,12 @@ import lombok.RequiredArgsConstructor;
  * JPA/Criteria implementation of {@link ConstraintTransformer}.
  *
  * <p><b>Instances are not thread-safe.</b> A new instance must be created for each query.
+ *
+ * @deprecated Part of the legacy {@code QuerySpec}-based filter API. New code
+ *             should use {@link com.flowingcode.backendcore.model.filter.BaseFilter}
+ *             and the DAO {@code filter(BaseFilter)} overloads.
  */
+@Deprecated(since = "1.2.0", forRemoval = false)
 @RequiredArgsConstructor
 public class ConstraintTransformerJpaImpl extends ConstraintTransformer<Predicate> {
 

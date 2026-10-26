@@ -37,8 +37,11 @@ import com.flowingcode.backendcore.model.constraints.NegatedConstraint;
  * and one or more of the {@code transform*Constraint} methods for providing the actual representations for the underlying database technology. 
  *  
  * @param <T> The type of the implementation-specific representation of the constraint.
- * @author Javier Godoy / Flowing Code 
+ * @author Javier Godoy / Flowing Code
+ * @deprecated Part of the legacy {@link QuerySpec}-based filter API. New code
+ *             should use {@link com.flowingcode.backendcore.model.filter.BaseFilter}.
  */
+@Deprecated(since = "1.2.0", forRemoval = false)
 public abstract class ConstraintTransformer<T> implements Function<Constraint, T> {
 	
 	/**Return an implementation-specific representation of the constraint. 

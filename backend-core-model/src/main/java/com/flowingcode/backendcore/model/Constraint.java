@@ -22,6 +22,11 @@ package com.flowingcode.backendcore.model;
 import com.flowingcode.backendcore.model.constraints.DisjunctionConstraint;
 import com.flowingcode.backendcore.model.constraints.NegatedConstraint;
 
+/**
+ * @deprecated Part of the legacy {@link QuerySpec}-based filter API. New code
+ *             should use {@link com.flowingcode.backendcore.model.filter.BaseFilter}.
+ */
+@Deprecated(since = "1.2.0", forRemoval = false)
 public interface Constraint {
 
   default Constraint not() {
