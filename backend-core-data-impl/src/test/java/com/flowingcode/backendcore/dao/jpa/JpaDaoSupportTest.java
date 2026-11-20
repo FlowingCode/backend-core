@@ -45,6 +45,7 @@ import com.flowingcode.backendcore.model.impl.Person;
 import com.flowingcode.backendcore.model.impl.State;
 import com.github.javafaker.Faker;
 
+@SuppressWarnings("deprecation")
 class JpaDaoSupportTest {
 
 	private PersonCrudDaoImpl dao;
