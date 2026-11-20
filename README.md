@@ -12,7 +12,24 @@ Snapshots are available [here](https://maven.flowingcode.com/snapshots).
 
 ## Download release
 
-Comming soon
+Release versions are available from Maven Central repository. Add the modules you need to your pom.xml file, for example:
+
+```xml
+<dependency>
+   <groupId>com.flowingcode.backend-core</groupId>
+   <artifactId>backend-core-business-spring-impl</artifactId>
+   <version>X.Y.Z</version>
+</dependency>
+```
+
+Available modules:
+
+- `backend-core-model`
+- `backend-core-data`
+- `backend-core-data-impl`
+- `backend-core-business`
+- `backend-core-business-impl`
+- `backend-core-business-spring-impl`
 
 ## Building
 
